@@ -1,0 +1,69 @@
+export ZSH=$HOME/.oh-my-zsh
+
+export LC_CTYPE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+
+if command -v nvim > /dev/null 2>&1; then
+  export EDITOR='nvim'
+fi
+
+export NVIM_TUI_ENABLE_TRUE_COLOR=1
+
+export XDG_CONFIG_HOME="$HOME/.config"
+
+if command -v rg > /dev/null 2>&1; then
+  export FZF_DEFAULT_COMMAND='rg --files'
+fi
+
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+export PATH="$PATH:$HOME/Library/Android/sdk/tools/"
+export PATH="$PATH:$HOME/.npm/bin"
+
+ZSH_THEME="spaceship"
+
+plugins=(
+  git
+  git-flow
+  fzf
+  gatsby
+  nvm
+  tmux
+  vscode
+  vi-mode
+  zsh-autosuggestions
+  zsh-completions
+  zsh-syntax-highlighting
+)
+
+alias vi="nvim"
+source $ZSH/oh-my-zsh.sh
+
+autoload -U add-zsh-hook
+load-nvmrc() {
+  local node_version="$(nvm version)"
+  local nvmrc_path="$(nvm_find_nvmrc)"
+
+  if [ -n "$nvmrc_path" ]; then
+    local nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
+
+    if [ "$nvmrc_node_version" = "N/A" ]; then
+      nvm install
+    elif [ "$nvmrc_node_version" != "$node_version" ]; then
+      nvm use
+    fi
+  elif [ "$node_version" != "$(nvm version default)" ]; then
+    echo "Reverting to nvm default version"
+    nvm use default
+  fi
+}
+add-zsh-hook chpwd load-nvmrc
+load-nvmrc
+
+alias decrypt-prod="openssl aes-256-cbc -d -a -salt -in .env.enc.prod -out prod-prod && openssl aes-256-cbc -d -a -salt -in .env.enc.training -out prod-training && openssl aes-256-cbc -d -a -salt -in .env.enc.uat -out prod-uat && openssl aes-256-cbc -d -a -salt -in .env.enc.test -out prod-test"
+alias decrypt-dev="openssl aes-256-cbc -d -a -salt -in .env.enc.prod -out dev-prod && openssl aes-256-cbc -d -a -salt -in .env.enc.training -out dev-training && openssl aes-256-cbc -d -a -salt -in .env.enc.uat -out dev-uat && openssl aes-256-cbc -d -a -salt -in .env.enc.test -out dev-test"
+alias gs="git status"
+
+source  $HOME/.zshsecrets
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

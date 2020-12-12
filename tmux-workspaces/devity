@@ -1,0 +1,7 @@
+if ! tmux has-session -t devity; then
+  tmux new -s devity -d
+  tmux new-window -t devity:2
+  tmux send-keys -t devity cd ~/WebstormProjects/devity/energylink-connect2-app 
+fi
+
+tmux attach -t devity

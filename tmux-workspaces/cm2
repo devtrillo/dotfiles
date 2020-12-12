@@ -1,0 +1,7 @@
+if ! tmux has-session -t cm2; then
+  tmux new -s cm2 -d
+  tmux new-window -t cm2:2
+  tmux send-keys -t cm2 cd ~/WebstormProjects/cm2/energylink-connect2-app 
+fi
+
+tmux attach -t cm2
