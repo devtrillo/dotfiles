@@ -103,7 +103,7 @@ function setup_shell() {
     info "$ZSHFILE exists, creating a backup"
     cp $ZSHFILE $ZSHFILE.backup
   fi
-  ln -sf $DOTFILES/config/zshrc.symlink $HOME/.zshrc
+  ln -sfv $DOTFILES/config/zshrc.symlink $HOME/.zshrc
 
 }
 
@@ -205,9 +205,6 @@ setup_macos() {
 
 title "Welcome to my aweomse installer"
 case "$1" in
-    link)
-        setup_symlinks
-        ;;
     git)
         setup_git
         ;;
@@ -215,22 +212,27 @@ case "$1" in
         setup_homebrew
         ;;
     shell)
-        setup_shell
+        setup_shell 
         ;;
     terminfo)
-        setup_terminfo
+        setup_terminfo 
         ;;
     macos)
-        setup_macos
-        ;;
-    all)
-        setup_macos
+        setup_macos 
         ;;
     neovim)
-        setup_neovim
+        setup_neovim 
       ;;
+    all)
+        setup_shell
+        setup_neovim
+        setup_macos
+        setup_terminfo
+        setup_homebrew
+        setup_git
+        ;;
     *)
-        echo -e $"\nUsage: $(basename "$0") {neovim|link|git|homebrew|shell|terminfo|macos|all}\n"
+        echo -e $"\nUsage: $(basename "$0") {neovim|git|homebrew|shell|terminfo|macos|all}\n"
 
         exit 1
         ;;
