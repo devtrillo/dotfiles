@@ -1,0 +1,11 @@
+{
+  "coc.preferences.formatOnInsertLeave":true,
+  "prettier.disableSuccessMessage":true,
+  "diagnostic.virtualText": true,
+  "diagnostic.errorSign": "•",
+  "diagnostic.warningSign": "•",
+  "diagnostic.infoSign": "•",
+  "list.source.files.args": ["--hidden", "--files"],
+  "list.source.files.excludePatterns": ["**/.git/**/*", "**/yarn.lock", "**/package-lock.json"],
+  "list.source.grep.excludePatterns": ["**/.git/**/*", "**/yarn.lock", "**/package-lock.json"]
+}

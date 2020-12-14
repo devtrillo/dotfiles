@@ -1,15 +1,22 @@
 set syntax
 set tabstop=2 shiftwidth=2 expandtab
 set number relativenumber
+set nohlsearch
 
+" ==============================
+" In case vim plug is not installed
+" ==============================
 if empty (glob('~/.local/share/nvim/site/autoload/plug.vim'))
   silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
         \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
+" ==============================
+" Run PlugUpdate every week automatically when entering Vim.
+" ==============================
+
 function! OnVimEnter() abort
-  " Run PlugUpdate every week automatically when entering Vim.
   if exists('g:plug_home')
     let l:filename = printf('%s/.vim_plug_update', g:plug_home)
     if filereadable(l:filename) == 0
@@ -30,12 +37,12 @@ autocmd VimEnter * call OnVimEnter()
 
 call plug#begin('~/.config/nvim/plugged')
 	Plug 'neoclide/coc.nvim', {'branch': 'release'}
-  Plug 'tpope/vim-commentary'
-  Plug 'tpope/vim-surround'
-  Plug 'mattn/vim-sonictemplate'
+	Plug 'tpope/vim-commentary'
+	Plug 'tpope/vim-surround'
+	Plug 'mattn/vim-sonictemplate'
 call plug#end()
 
-let g:coc_global_extensions=[]
+let g:coc_global_extensions=["coc-json", "coc-tsserver"]
 
 if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
   let g:coc_global_extensions += ['coc-prettier']
@@ -47,3 +54,7 @@ endif
 
 nnoremap <silent> K :call CocAction('doHover')<CR>
 
+" ==============================
+" FZF plugin
+" ==============================
+source $HOME/.config/nvim/plugins/fzf.vim 
