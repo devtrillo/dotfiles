@@ -33,6 +33,23 @@ success() {
     echo -e "${COLOR_GREEN}$1${COLOR_NONE}"
 }
 
+setup_tmux(){
+  mkdir -p "$HOME/.tmux/plugins"
+  if [ ! -d "$HOME/.tmux/plugins/tmp" ];then
+    git clone --depth=1 https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+  fi
+
+  TMUX_FILE=$HOME/.tmux.conf
+  if [ -f "$TMUX_FILE" ]; then
+    info "$TMUX_FILE exists, creating a backup"
+    cp $TMUX_FILE $TMUX_FILE.backup
+  fi
+  ln -sfv $DOTFILES/config/tmux/tmux.conf $TMUX_FILE
+  if ! { [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; } then
+    tmux source-file $TMUX_FILE
+  fi
+
+}
 setup_git() {
     title "Setting up Git"
     
@@ -79,9 +96,14 @@ function setup_shell() {
     git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
   fi
 
-  info "Changing the shell to zsh"
-  chsh -s $(which zsh)
-  
+  if [ ! -d "$HOME/.nvm" ]; then
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+  fi
+
+  if [[ "$SHELL" != *"zsh"* ]]; then
+    info "Changing the shell to zsh"
+    chsh -s $(which zsh)
+  fi
   if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-completions" ];then
     git clone --depth=1 git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions ~/.oh-my-zsh/custom/plugins/zsh-completions
   fi
@@ -109,11 +131,18 @@ function setup_shell() {
 
 function setup_neovim(){
   title "Setting up neovim"
+  if [ -d "$HOME/.vim/undodir" ]; then
+    mkdir -p $HOME/.vim/undodir
+  fi
   if [ -d "$HOME/.config/nvim" ]; then
     info "There is a neovim config, creating backup to $HOME/backup-neovim"
     rm -rf $HOME/backup-neovim 
     mv -f $HOME/.config/nvim $HOME/backup-neovim
+  fi
 
+  if [ -f "$HOME/.config/nvim/plugged/.vim_plug_update" ]; then
+    mkdir -p $HOME/.config/nvim/plugged
+    touch $HOME/.config/nvim/plugged/.vim_plug_update
   fi
   
   if [ ! $(command -v nvim) ]; then
@@ -205,37 +234,39 @@ setup_macos() {
 
 title "Welcome to my aweomse installer"
 case "$1" in
-    git)
-        setup_git
-        ;;
-    homebrew)
-        setup_homebrew
-        ;;
-    shell)
-        setup_shell 
-        ;;
-    terminfo)
-        setup_terminfo 
-        ;;
-    macos)
-        setup_macos 
-        ;;
-    neovim)
-        setup_neovim 
-      ;;
-    all)
-        setup_shell
-        setup_neovim
-        setup_macos
-        setup_terminfo
-        setup_homebrew
-        setup_git
-        ;;
-    *)
-        echo -e $"\nUsage: $(basename "$0") {neovim|git|homebrew|shell|terminfo|macos|all}\n"
-
-        exit 1
-        ;;
+  tmux)
+    setup_tmux
+    ;;
+  git)
+    setup_git
+    ;;
+  homebrew)
+    setup_homebrew
+    ;;
+  shell)
+    setup_shell 
+    ;;
+  terminfo)
+    setup_terminfo 
+    ;;
+  macos)
+    setup_macos 
+    ;;
+  neovim)
+    setup_neovim 
+    ;;
+  all)
+    setup_shell
+    setup_neovim
+    setup_macos
+    setup_terminfo
+    setup_homebrew
+    setup_git
+    ;;
+  *)
+    echo -e $"\nUsage: $(basename "$0") {neovim|git|homebrew|shell|terminfo|macos|all}\n"
+    exit 1
+    ;;
 esac
 
 echo -e

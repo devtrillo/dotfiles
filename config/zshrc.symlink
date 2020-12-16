@@ -67,3 +67,5 @@ alias gs="git status"
 
 source  $HOME/.zshsecrets
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+alias PR-elon-tusk="gh pr create -a devtrillo -d -l 'Elon Tusk' -B elontusk -r wizevlad,ragrum,matiasmm,alvinycheung,fercervantesx"
+alias PR-eli="gh pr create -a devtrillo -d -l 'Eli' -B eli -r wizevlad,ragrum,matiasmm,alvinycheung,fercervantesx"

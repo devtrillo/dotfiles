@@ -1,7 +1,4 @@
-set syntax
-set tabstop=2 shiftwidth=2 expandtab
-set number relativenumber
-set nohlsearch
+source $HOME/.config/nvim/settings.vim 
 
 " ==============================
 " In case vim plug is not installed
@@ -15,8 +12,8 @@ endif
 " ==============================
 " Run PlugUpdate every week automatically when entering Vim.
 " ==============================
-
 function! OnVimEnter() abort
+  " Run PlugUpdate every week automatically when entering Vim.
   if exists('g:plug_home')
     let l:filename = printf('%s/.vim_plug_update', g:plug_home)
     if filereadable(l:filename) == 0
@@ -26,7 +23,6 @@ function! OnVimEnter() abort
     let l:this_week = strftime('%Y_%V')
     let l:contents = readfile(l:filename)
     if index(l:contents, l:this_week) < 0
-      call execute('PlugUpgrade')
       call execute('PlugUpdate')
       call writefile([l:this_week], l:filename, 'a')
     endif
@@ -36,25 +32,37 @@ endfunction
 autocmd VimEnter * call OnVimEnter()
 
 call plug#begin('~/.config/nvim/plugged')
-	Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  " Configuration script plugins/coc.vim
+	Plug 'neoclide/coc.nvim', {'branch': 'release'} 
 	Plug 'tpope/vim-commentary'
 	Plug 'tpope/vim-surround'
 	Plug 'mattn/vim-sonictemplate'
+  " Configuration script plugins/airline.vim
+  Plug 'vim-airline/vim-airline'
+  Plug 'vim-airline/vim-airline-themes'
+  " Configuration script plugins/airline.vim
+  Plug 'preservim/nerdtree'
+  Plug 'Xuyuanp/nerdtree-git-plugin'
+  Plug 'ryanoasis/vim-devicons'
+  " Configuration script plugins/airline.vim
+  Plug 'tpope/vim-fugitive'
+  " Configuration script plugins/airline.vim
+  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+  Plug 'junegunn/fzf.vim'
+  Plug 'airblade/vim-rooter'
 call plug#end()
 
-let g:coc_global_extensions=["coc-json", "coc-tsserver"]
 
-if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
-  let g:coc_global_extensions += ['coc-prettier']
-endif
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_statusline_ontop=0
+let g:airline#extensions#tabline#formatter = 'unique_tail'
 
-if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
-  let g:coc_global_extensions += ['coc-eslint']
-endif
-
-nnoremap <silent> K :call CocAction('doHover')<CR>
 
 " ==============================
-" FZF plugin
+" plugins section
 " ==============================
 source $HOME/.config/nvim/plugins/fzf.vim 
+source $HOME/.config/nvim/plugins/fugitive.vim 
+source $HOME/.config/nvim/plugins/coc.vim 
+source $HOME/.config/nvim/plugins/nerdtree.vim 

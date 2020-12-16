@@ -1,5 +1,6 @@
 {
   "coc.preferences.formatOnInsertLeave":true,
+  "eslint.autoFixOnSave":true,
   "prettier.disableSuccessMessage":true,
   "diagnostic.virtualText": true,
   "diagnostic.errorSign": "•",
