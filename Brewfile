@@ -11,6 +11,7 @@ if OS.mac?
   cask "telegram-desktop"
   cask "joplin"
   cask "firefox"
+  cask "blender"
   cask "google-chrome"
   cask "amethyst"
   cask "discord"
