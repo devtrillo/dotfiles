@@ -19,6 +19,7 @@ fi
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 export PATH="$PATH:$HOME/Library/Android/sdk/tools/"
+export PATH="$PATH:$HOME/.bin"
 export PATH="$PATH:$HOME/.npm/bin"
 
 ZSH_THEME="spaceship"
@@ -69,3 +70,4 @@ source  $HOME/.zshsecrets
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 alias PR-elon-tusk="gh pr create -a devtrillo -d -l 'Elon Tusk' -B elontusk -r wizevlad,ragrum,matiasmm,alvinycheung,fercervantesx"
 alias PR-eli="gh pr create -a devtrillo -d -l 'Eli' -B eli -r wizevlad,ragrum,matiasmm,alvinycheung,fercervantesx"
+alias PR-develop="gh pr create -a devtrillo -d -B develop -r wizevlad,ragrum,matiasmm,alvinycheung,fercervantesx"

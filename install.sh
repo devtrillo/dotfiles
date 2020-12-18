@@ -99,7 +99,12 @@ function setup_shell() {
   if [ ! -d "$HOME/.nvm" ]; then
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
   fi
-
+  if [ ! -d "$HOME/.bin" ]; then
+    info "Creating bin folder"
+    mkdir -p "$HOME/.bin"
+  fi
+  cp $DOTFILES/bin/* $HOME/.bin
+  
   if [[ "$SHELL" != *"zsh"* ]]; then
     info "Changing the shell to zsh"
     chsh -s $(which zsh)
@@ -113,7 +118,7 @@ function setup_shell() {
   fi
 
   if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" ] ;then
-  git clone --depth=1 git clone https://github.com/zsh-users/zsh-syntax-highlighting ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+    git clone --depth=1 git clone https://github.com/zsh-users/zsh-syntax-highlighting ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
   fi
   if [ ! -d "$HOME/.oh-my-zsh/custom/themes/spaceship-prompt" ]; then
     git clone https://github.com/denysdovhan/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt" --depth=1
@@ -126,7 +131,6 @@ function setup_shell() {
     cp $ZSHFILE $ZSHFILE.backup
   fi
   ln -sfv $DOTFILES/config/zshrc.symlink $HOME/.zshrc
-
 }
 
 function setup_neovim(){

@@ -40,16 +40,14 @@ call plug#begin('~/.config/nvim/plugged')
   " Configuration script plugins/airline.vim
   Plug 'vim-airline/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
-  " Configuration script plugins/airline.vim
-  Plug 'preservim/nerdtree'
-  Plug 'Xuyuanp/nerdtree-git-plugin'
-  Plug 'ryanoasis/vim-devicons'
-  " Configuration script plugins/airline.vim
+  " Configuration script plugins/fugitive.vim
   Plug 'tpope/vim-fugitive'
-  " Configuration script plugins/airline.vim
+  " Configuration script plugins/fzf.vim
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
   Plug 'junegunn/fzf.vim'
   Plug 'airblade/vim-rooter'
+  " Configuration script plugins/startify
+  Plug 'mhinz/vim-startify'
 call plug#end()
 
 
@@ -65,4 +63,4 @@ let g:airline#extensions#tabline#formatter = 'unique_tail'
 source $HOME/.config/nvim/plugins/fzf.vim 
 source $HOME/.config/nvim/plugins/fugitive.vim 
 source $HOME/.config/nvim/plugins/coc.vim 
-source $HOME/.config/nvim/plugins/nerdtree.vim 
+source $HOME/.config/nvim/plugins/strartify.vim
