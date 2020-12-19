@@ -88,6 +88,12 @@ setup_homebrew() {
     fi
 
 }
+setup_ubuntu(){
+  sudo apt update
+  sudo apt full-upgrade -y
+  sudo apt install git git-flow fzf zsh tmux neovim wget curl -y 
+
+}
 
 function setup_shell() {
   title "Configuring shell"
@@ -253,13 +259,17 @@ case "$1" in
   terminfo)
     setup_terminfo 
     ;;
-  macos)
-    setup_macos 
+  ubuntu)
+    setup_ubuntu
+    setup_shell
+    setup_neovim
+    setup_git
+    setup_tmux
     ;;
   neovim)
     setup_neovim 
     ;;
-  all)
+  macos)
     setup_shell
     setup_neovim
     setup_macos
@@ -268,7 +278,7 @@ case "$1" in
     setup_git
     ;;
   *)
-    echo -e $"\nUsage: $(basename "$0") {neovim|git|homebrew|shell|terminfo|macos|all}\n"
+    echo -e $"\nUsage: $(basename "$0") {neovim|git|homebrew|shell|terminfo|macos}\n"
     exit 1
     ;;
 esac
