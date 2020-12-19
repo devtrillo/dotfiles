@@ -1,4 +1,4 @@
-let g:coc_global_extensions=["coc-json", "coc-tsserver","coc-explorer"]
+let g:coc_global_extensions=["coc-json", "coc-tsserver","coc-explorer","coc-styled-components"]
 
 if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
   let g:coc_global_extensions += ['coc-prettier']

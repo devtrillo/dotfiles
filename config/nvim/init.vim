@@ -50,13 +50,6 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'mhinz/vim-startify'
 call plug#end()
 
-
-let g:airline_powerline_fonts = 1
-let g:airline#extensions#tabline#enabled = 1
-let g:airline_statusline_ontop=0
-let g:airline#extensions#tabline#formatter = 'unique_tail'
-
-
 " ==============================
 " plugins section
 " ==============================
@@ -64,3 +57,4 @@ source $HOME/.config/nvim/plugins/fzf.vim
 source $HOME/.config/nvim/plugins/fugitive.vim 
 source $HOME/.config/nvim/plugins/coc.vim 
 source $HOME/.config/nvim/plugins/strartify.vim
+source $HOME/.config/nvim/plugins/airline.vim
