@@ -24,6 +24,7 @@ function! OnVimEnter() abort
     let l:contents = readfile(l:filename)
     if index(l:contents, l:this_week) < 0
       call execute('PlugUpdate')
+      call execute('PlugUpgrade')
       call writefile([l:this_week], l:filename, 'a')
     endif
   endif
@@ -48,7 +49,18 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'airblade/vim-rooter'
   " Configuration script plugins/startify
   Plug 'mhinz/vim-startify'
+  Plug 'preservim/nerdtree'
+  Plug 'Xuyuanp/nerdtree-git-plugin'
+
+  Plug 'airblade/vim-gitgutter'
 call plug#end()
+
+nnoremap <leader>n :NERDTreeFocus<CR>
+nnoremap <C-n> :NERDTree<CR>
+nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
+
+
 
 " ==============================
 " plugins section

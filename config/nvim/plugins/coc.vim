@@ -1,4 +1,8 @@
-let g:coc_global_extensions=["coc-json", "coc-tsserver","coc-explorer","coc-styled-components"]
+let g:coc_global_extensions=["coc-json", "coc-tsserver"]
+
+if isdirectory('./node_modules') && isdirectory('./node_modules/styled-components')
+  let g:coc_global_extensions += ['coc-styled-components']
+endif
 
 if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
   let g:coc_global_extensions += ['coc-prettier']
@@ -9,12 +13,13 @@ if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
 endif
 
 nnoremap <silent> K :call CocAction('doHover')<CR>
-nnoremap <C-N> :CocCommand explorer <CR>
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
       \ <SID>check_back_space() ? "\<TAB>" :
       \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
 
 " GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
@@ -33,4 +38,10 @@ function! s:show_documentation()
   else
     execute '!' . &keywordprg . " " . expand('<cword>')
   endif
+endfunction
+
+" Check if backspace was just pressed      
+function! s:check_back_space() abort                    
+  let col = col('.') - 1    
+  return !col || getline('.')[col - 1]  =~# '\s'    
 endfunction

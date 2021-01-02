@@ -11,6 +11,7 @@ fi
 export NVIM_TUI_ENABLE_TRUE_COLOR=1
 
 export XDG_CONFIG_HOME="$HOME/.config"
+export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
 
 if command -v rg > /dev/null 2>&1; then
   export FZF_DEFAULT_COMMAND='rg --files'
@@ -67,8 +68,12 @@ alias decrypt-prod="openssl aes-256-cbc -d -a -salt -in .env.enc.prod -out prod-
 alias decrypt-dev="openssl aes-256-cbc -d -a -salt -in .env.enc.prod -out dev-prod && openssl aes-256-cbc -d -a -salt -in .env.enc.training -out dev-training && openssl aes-256-cbc -d -a -salt -in .env.enc.uat -out dev-uat && openssl aes-256-cbc -d -a -salt -in .env.enc.test -out dev-test"
 alias gs="git status"
 
-source  $HOME/.zshsecrets
+[ -f ~/.zshsecrets ] && source  $HOME/.zshsecrets
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 alias PR-elon-tusk="gh pr create -a devtrillo -d -l 'Elon Tusk' -B elontusk -r wizevlad,ragrum,matiasmm,alvinycheung,fercervantesx"
 alias PR-eli="gh pr create -a devtrillo -d -l 'Eli' -B eli -r wizevlad,ragrum,matiasmm,alvinycheung,fercervantesx"
 alias PR-develop="gh pr create -a devtrillo -d -B develop -r wizevlad,ragrum,matiasmm,alvinycheung,fercervantesx"
+alias save-nvm-version="node -v > .nvmrc"
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
