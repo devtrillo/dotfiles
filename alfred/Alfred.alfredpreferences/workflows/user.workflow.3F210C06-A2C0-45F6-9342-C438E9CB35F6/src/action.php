@@ -60,7 +60,7 @@ if ($other_action != 'reset_settings' && $other_action != 'spot_mini_debug' && $
             return;
         }
 
-        if ($other_action != '' && $other_action != 'Oauth_Login' &&
+        if ($other_action != '' && $other_action != 'app_setup' && $other_action != 'oauth_login' &&
             !startsWith($other_action, 'current')) {
             exec("osascript -e 'tell application id \"".getAlfredName()."\" to search \"".getenv('c_spot_mini')." \"'");
 
@@ -100,7 +100,7 @@ if($oauth_access_token != '' && $now_playing_notifications == true) {
 
 // make sure spotify is running
 if ($output_application == 'APPLESCRIPT') {
-    if($oauth_access_token != '' && $other_action != 'update_library' && $other_action != 'refresh_library' && $type != 'DOWNLOAD_ARTWORKS' && $type != 'DOWNLOAD_ARTWORKS_SILENT') {
+    if($oauth_access_token != '' && $other_action != 'create_library' && $other_action != 'refresh_library' && $type != 'DOWNLOAD_ARTWORKS' && $type != 'DOWNLOAD_ARTWORKS_SILENT') {
         exec('./src/is_spotify_running.ksh 2>&1', $retArr, $retVal);
         if ($retArr[0] != 0) {
             exec('open -a "Spotify"');
@@ -497,24 +497,6 @@ if ($type == 'TRACK' && $other_settings == '' &&
         }
 
         return;
-    } elseif ($setting[0] == 'Oauth_Client_ID') {
-        $ret = updateSetting($w, 'oauth_client_id', $setting[1]);
-        if ($ret == true) {
-            displayNotificationWithArtwork($w, "Client ID set to $setting[1]", './images/settings.png', 'Settings');
-        } else {
-            displayNotificationWithArtwork($w, 'Error while updating settings', './images/settings.png', 'Error!');
-        }
-
-        return;
-    } elseif ($setting[0] == 'Oauth_Client_SECRET') {
-        $ret = updateSetting($w, 'oauth_client_secret', $setting[1]);
-        if ($ret == true) {
-            displayNotificationWithArtwork($w, "Client Secret set to $setting[1]", './images/settings.png', 'Settings');
-        } else {
-            displayNotificationWithArtwork($w, 'Error while updating settings', './images/settings.png', 'Error!');
-        }
-
-        return;
     } elseif ($setting[0] == 'ALFRED_PLAYLIST') {
         $ret = updateSetting($w, 'alfred_playlist_uri', $setting[1]);
         if ($ret == true) {
@@ -833,7 +815,7 @@ if ($type == 'TRACK' && $other_settings == '' &&
     } elseif ($other_action == 'enable_artworks') {
         $ret = updateSetting($w, 'use_artworks', 1);
         if ($ret == true) {
-            displayNotificationWithArtwork($w, 'Artworks are now enabled, library update is started', './images/enable_artworks.png', 'Settings');
+            displayNotificationWithArtwork($w, 'Artworks are now enabled, library creation is started', './images/enable_artworks.png', 'Settings');
             createLibrary($w);
         } else {
             displayNotificationWithArtwork($w, 'Error while updating settings', './images/settings.png', 'Error!');
@@ -847,9 +829,8 @@ if ($type == 'TRACK' && $other_settings == '' &&
             if (file_exists($w->data().'/artwork')) {
                 exec("rm -rf '".$w->data()."/artwork'");
             }
-            displayNotificationWithArtwork($w, 'All artworks have been erased', './images/warning.png', 'Warning!');
             createLibrary($w);
-            displayNotificationWithArtwork($w, 'Artworks are now disabled', './images/disable_artworks.png', 'Settings');
+            displayNotificationWithArtwork($w, 'Artworks are now disabled, library creation is started', './images/disable_artworks.png', 'Settings');
         } else {
             displayNotificationWithArtwork($w, 'Error while updating settings', './images/settings.png', 'Error!');
         }
@@ -1006,10 +987,6 @@ if ($type == 'TRACK' && $other_settings == '' &&
             displayNotificationWithArtwork($w, 'Error while updating settings', './images/settings.png', 'Error!');
         }
 
-        return;
-    } elseif ($other_action == 'change_theme_color') {
-
-        exec("osascript -e 'tell application id \"".getAlfredName()."\" to run trigger \"change_theme_color\" in workflow \"com.vdesabou.spotify.mini.player\" with argument \"\"'");
         return;
     } elseif ($other_action == 'change_search_order') {
         exec("osascript -e 'tell application id \"".getAlfredName()."\" to run trigger \"change_search_order\" in workflow \"com.vdesabou.spotify.mini.player\" with argument \"\"'");
@@ -1340,7 +1317,7 @@ if ($type == 'TRACK' && $other_settings == '' &&
         endif;
 
         return;
-    } elseif ($other_action == 'Oauth_Login') {
+    } elseif ($other_action == 'app_setup') {
         // check PHP version
         $version = explode('.', phpversion());
         if ($version[0] < 5 && $version[1] < 4) {
@@ -1354,21 +1331,66 @@ if ($type == 'TRACK' && $other_settings == '' &&
         $cache_log = $w->cache().'/spotify_mini_player_web_server.log';
         exec("php -S 127.0.0.1:15298 > \"$cache_log\" 2>&1 &");
         sleep(2);
-        # https://github.com/vdesabou/alfred-spotify-mini-player/issues/341
-        $isOk = false;
-        foreach(array('Google Chrome', 'Firefox', 'Brave Browser', 'Google Chrome Canary', 'Chromium', 'Microsoft Edge', 'Vivaldi') as $browser) {
-            exec("open -a \"$browser\" http://127.0.0.1:15298", $retArr, $retVal);
-            if($retVal == 0) {
-                $isOk = true;
-                break;
+        // https://github.com/vdesabou/alfred-spotify-mini-player/issues/447
+        exec('./src/is_safari_default_browser.ksh 2>&1', $retArr, $retVal);
+        if ($retArr[0] != 0) {
+            // https://github.com/vdesabou/alfred-spotify-mini-player/issues/341
+            $isOk = false;
+            foreach(array('Google Chrome', 'Firefox', 'Brave Browser', 'Google Chrome Canary', 'Chromium', 'Microsoft Edge', 'Vivaldi') as $browser) {
+                exec("open -a \"$browser\" http://127.0.0.1:15298/setup.php", $retArr, $retVal);
+                if($retVal == 0) {
+                    $isOk = true;
+                    break;
+                }
             }
+            if(! $isOk) {
+                logMsg($w,"Error(app_setup): Could not open any supported browsers for authentication");
+                displayNotificationWithArtwork($w, 'Could not open any supported browsers for authentication', './images/warning.png', 'Error!');
+                exec('open http://alfred-spotify-mini-player.com/setup/');
+
+                return;
+            }
+        } else {
+            // open default browser
+            exec("open http://127.0.0.1:15298/setup.php");
         }
-        if(! $isOk) {
-            logMsg($w,"Error(action): Could not open any supported browsers for authentication");
-            displayNotificationWithArtwork($w, 'Could not open any supported browsers for authentication', './images/warning.png', 'Error!');
-            exec('open http://alfred-spotify-mini-player.com/setup/');
+        return;
+    } elseif ($other_action == 'oauth_login') {
+        // check PHP version
+        $version = explode('.', phpversion());
+        if ($version[0] < 5 && $version[1] < 4) {
+            displayNotificationWithArtwork($w, 'PHP 5.4.0 or later is required for authentication', './images/warning.png', 'Error!');
+            exec('open http://alfred-spotify-mini-player.com/known-issues/#php_requirement');
 
             return;
+        }
+        exec("kill -9 $(ps -efx | grep \"php\" | egrep \"php -S 127.0.0.1:15298\" | grep -v grep | awk '{print $2}')");
+        sleep(1);
+        $cache_log = $w->cache().'/spotify_mini_player_web_server.log';
+        exec("php -S 127.0.0.1:15298 > \"$cache_log\" 2>&1 &");
+        sleep(2);
+        // https://github.com/vdesabou/alfred-spotify-mini-player/issues/447
+        exec('./src/is_safari_default_browser.ksh 2>&1', $retArr, $retVal);
+        if ($retArr[0] != 0) {
+            // https://github.com/vdesabou/alfred-spotify-mini-player/issues/341
+            $isOk = false;
+            foreach(array('Google Chrome', 'Firefox', 'Brave Browser', 'Google Chrome Canary', 'Chromium', 'Microsoft Edge', 'Vivaldi') as $browser) {
+                exec("open -a \"$browser\" http://127.0.0.1:15298", $retArr, $retVal);
+                if($retVal == 0) {
+                    $isOk = true;
+                    break;
+                }
+            }
+            if(! $isOk) {
+                logMsg($w,"Error(action): Could not open any supported browsers for authentication");
+                displayNotificationWithArtwork($w, 'Could not open any supported browsers for authentication', './images/warning.png', 'Error!');
+                exec('open https://github.com/vdesabou/alfred-spotify-mini-player/issues/447');
+
+                return;
+            }
+        } else {
+            // open default browser
+            exec("open http://127.0.0.1:15298");
         }
         return;
     } elseif ($other_action == 'current') {
@@ -1537,12 +1559,18 @@ if ($type == 'TRACK' && $other_settings == '' &&
         return;
     } elseif ($other_action == 'reset_settings') {
         deleteTheFile($w,$w->data().'/settings.json');
+        logMsg($w,"Settings are reset");
 
         return;
     } elseif ($other_action == 'reset_oauth_settings') {
         updateSetting($w,'oauth_access_token','');
         updateSetting($w,'oauth_refresh_token','');
         displayNotificationWithArtwork($w, 'Oauth settings have been correctly reset', './images/settings.png', 'Info');
+
+        return;
+    } elseif ($other_action == 'reset_client_secret') {
+        updateSetting($w,'oauth_client_secret','');
+        displayNotificationWithArtwork($w, 'Client Secret settings have been correctly reset', './images/settings.png', 'Info');
 
         return;
     } elseif ($other_action == 'biography') {
@@ -2033,7 +2061,15 @@ if ($type == 'TRACK' && $other_settings == '' &&
         stathat_ez_count('AlfredSpotifyMiniPlayer', 'play', 1);
 
         return;
-    } elseif ($other_action == 'update_library') {
+    } elseif ($other_action == 'download_artworks_verification') {
+
+        exec("osascript -e 'tell application id \"".getAlfredName()."\" to run trigger \"download_artworks_verification\" in workflow \"com.vdesabou.spotify.mini.player\" with argument \"\"'");
+        return;
+    } elseif ($other_action == 'open_debug_tools') {
+
+        exec("osascript -e 'tell application id \"".getAlfredName()."\" to run trigger \"spot_mini_debug\" in workflow \"com.vdesabou.spotify.mini.player\" with argument \"\"'");
+        return;
+    }  elseif ($other_action == 'create_library') {
         if (file_exists($w->data().'/update_library_in_progress')) {
             displayNotificationWithArtwork($w, 'Cannot modify library while update is in progress', './images/warning.png', 'Error!');
 

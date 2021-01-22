@@ -1,5 +1,9 @@
 let g:coc_global_extensions=["coc-json", "coc-tsserver"]
 
+if isdirectory('./node_modules') && isdirectory('./node_modules/tailwindcss')
+  let g:coc_global_extensions += ['coc-tailwindcss']
+endif
+
 if isdirectory('./node_modules') && isdirectory('./node_modules/styled-components')
   let g:coc_global_extensions += ['coc-styled-components']
 endif

@@ -33,12 +33,11 @@ endfunction
 autocmd VimEnter * call OnVimEnter()
 
 call plug#begin('~/.config/nvim/plugged')
-  " Configuration script plugins/coc.vim
 	Plug 'neoclide/coc.nvim', {'branch': 'release'} 
-	Plug 'tpope/vim-commentary'
+	Plug 'ap/vim-css-color'
+  Plug 'tpope/vim-commentary'
 	Plug 'tpope/vim-surround'
 	Plug 'mattn/vim-sonictemplate'
-  " Configuration script plugins/airline.vim
   Plug 'vim-airline/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
   " Configuration script plugins/fugitive.vim
@@ -51,15 +50,12 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'mhinz/vim-startify'
   Plug 'preservim/nerdtree'
   Plug 'Xuyuanp/nerdtree-git-plugin'
-
   Plug 'airblade/vim-gitgutter'
+  Plug 'vimwiki/vimwiki'
+  Plug 'tpope/vim-eunuch'
+  Plug 'wakatime/vim-wakatime'
+
 call plug#end()
-
-nnoremap <leader>n :NERDTreeFocus<CR>
-nnoremap <C-n> :NERDTree<CR>
-nnoremap <C-t> :NERDTreeToggle<CR>
-nnoremap <C-f> :NERDTreeFind<CR>
-
 
 
 " ==============================
@@ -70,3 +66,4 @@ source $HOME/.config/nvim/plugins/fugitive.vim
 source $HOME/.config/nvim/plugins/coc.vim 
 source $HOME/.config/nvim/plugins/strartify.vim
 source $HOME/.config/nvim/plugins/airline.vim
+source $HOME/.config/nvim/plugins/vim-wiki.vim

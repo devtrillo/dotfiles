@@ -11,7 +11,7 @@ fi
 export NVIM_TUI_ENABLE_TRUE_COLOR=1
 
 export XDG_CONFIG_HOME="$HOME/.config"
-export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_271.jdk/Contents/Home
 
 if command -v rg > /dev/null 2>&1; then
   export FZF_DEFAULT_COMMAND='rg --files'
@@ -38,6 +38,7 @@ plugins=(
   zsh-autosuggestions
   zsh-completions
   zsh-syntax-highlighting
+  osx
 )
 
 alias vi="nvim"
@@ -70,10 +71,11 @@ alias gs="git status"
 
 [ -f ~/.zshsecrets ] && source  $HOME/.zshsecrets
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-alias PR-elon-tusk="gh pr create -a devtrillo -d -l 'Elon Tusk' -B elontusk -r wizevlad,ragrum,matiasmm,alvinycheung,fercervantesx"
-alias PR-eli="gh pr create -a devtrillo -d -l 'Eli' -B eli -r wizevlad,ragrum,matiasmm,alvinycheung,fercervantesx"
-alias PR-develop="gh pr create -a devtrillo -d -B develop -r wizevlad,ragrum,matiasmm,alvinycheung,fercervantesx"
+alias PR-elon-tusk="gh pr create -a devtrillo -d -l 'Elon Tusk' -B elontusk -r wizevlad,ragrum,alvinycheung,fercervantesx"
+alias PR-eli="gh pr create -a devtrillo -d -l 'Eli' -B eli -r wizevlad,ragrum,alvinycheung,fercervantesx"
+alias PR-develop="gh pr create -a devtrillo -d -B develop -r wizevlad,ragrum,alvinycheung,fercervantesx"
+alias PR-stable="gh pr create -a devtrillo -d -B stable -r wizevlad,ragrum,alvinycheung,fercervantesx"
+alias start-cm2-project="cordova prepare android && npm run dev:android & cordova run android --device --noprepare && fg"
 alias save-nvm-version="node -v > .nvmrc"
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
