@@ -97,7 +97,7 @@ setup_ubuntu(){
 
 function setup_shell() {
   title "Configuring shell"
-
+  ZSH_CUSTOM=~/.oh-my-zsh/custom
   if [ ! -d "$HOME/.oh-my-zsh" ];then
     git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
   fi
@@ -116,18 +116,19 @@ function setup_shell() {
     chsh -s $(which zsh)
   fi
   if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-completions" ];then
-    git clone --depth=1 git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions ~/.oh-my-zsh/custom/plugins/zsh-completions
+      git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:=~/.oh-my-zsh/custom}/plugins/zsh-completions
   fi
 
   if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ] ;then
-    git clone --depth=1 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-  fi
+    git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+fi
 
   if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" ] ;then
-    git clone --depth=1 git clone https://github.com/zsh-users/zsh-syntax-highlighting ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
   fi
   if [ ! -d "$HOME/.oh-my-zsh/custom/themes/spaceship-prompt" ]; then
     git clone https://github.com/denysdovhan/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt" --depth=1
+    ln -s "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM/themes/spaceship.zsh-theme" 
   fi
 
   [ ! -d "$HOME/.zshrc" ]
