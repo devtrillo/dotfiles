@@ -54,7 +54,7 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'vimwiki/vimwiki'
   Plug 'tpope/vim-eunuch'
   Plug 'wakatime/vim-wakatime'
-
+Plug 'HerringtonDarkholme/yats.vim'
 call plug#end()
 
 

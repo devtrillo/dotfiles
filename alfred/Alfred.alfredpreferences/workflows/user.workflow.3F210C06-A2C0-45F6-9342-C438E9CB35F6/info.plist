@@ -13156,6 +13156,8 @@ Example: https://open.spotify.com/track/6hxgHNJjadmCHAJPXw6AYL</string>
 		<string>#NowPlaying {track_name} by {artist_name} {url}</string>
 		<key>clipboard_text2</key>
 		<string></string>
+		<key>connect_switch_string</key>
+		<string>Switch playback to {device_type} {device_name} {volume}</string>
 		<key>emoji_album</key>
 		<string>💿</string>
 		<key>emoji_alfred</key>
@@ -13248,7 +13250,7 @@ Example: https://open.spotify.com/track/6hxgHNJjadmCHAJPXw6AYL</string>
 		<string>♫</string>
 	</dict>
 	<key>version</key>
-	<string>10.6</string>
+	<string>10.8</string>
 	<key>webaddress</key>
 	<string>https://alfred-spotify-mini-player.com</string>
 </dict>

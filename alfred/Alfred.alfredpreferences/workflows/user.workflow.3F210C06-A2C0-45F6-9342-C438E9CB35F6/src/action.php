@@ -1088,7 +1088,6 @@ if ($type == 'TRACK' && $other_settings == '' &&
         }
 
         stathat_ez_count('AlfredSpotifyMiniPlayer', 'play', 1);
-        //addAlbumToPlayQueue($w, $album_uri, $album_name);
 
         return;
     } elseif ($other_action == 'play_episode_simplified') {
@@ -1110,7 +1109,6 @@ if ($type == 'TRACK' && $other_settings == '' &&
         }
 
         stathat_ez_count('AlfredSpotifyMiniPlayer', 'play', 1);
-        //addAlbumToPlayQueue($w, $album_uri, $album_name);
 
         return;
     } elseif ($other_action == 'play') {
@@ -1123,7 +1121,7 @@ if ($type == 'TRACK' && $other_settings == '' &&
             } else {
                 $device_id = getSpotifyConnectCurrentDeviceId($w);
                 if($device_id != '') {
-                    playSpotifyConnect($w, $device_id);
+                    playSpotifyConnect($w, $device_id, $country_code);
                 } else {
                     displayNotificationWithArtwork($w, 'No Spotify Connect device is available', './images/warning.png', 'Error!');
                     return;
@@ -1581,10 +1579,11 @@ if ($type == 'TRACK' && $other_settings == '' &&
 
         if ($history == false) {
             displayNotificationWithArtwork($w, 'No history yet', './images/warning.png', 'Error!');
+            return;
         }
         $query = array_pop($history);
-            // pop twice
-            $query = array_pop($history);
+        // pop twice
+        $query = array_pop($history);
         $w->write($history, 'history.json');
         exec("osascript -e 'tell application id \"".getAlfredName()."\" to search \"".getenv('c_spot_mini')." $query\"'");
 

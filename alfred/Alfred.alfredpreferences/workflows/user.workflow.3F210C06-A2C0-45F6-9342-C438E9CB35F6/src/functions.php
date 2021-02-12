@@ -550,9 +550,7 @@ function copy2clipboard($string) {
         fwrite($pipes[0], $string);
         fclose($pipes[0]);
         fclose($pipes[1]);
-
-        $return_value = proc_close($process);
-        return $return_value;
+        return proc_close($process);
     }
 }
 
@@ -588,7 +586,6 @@ function showInSpotify($w)
  */
 function getPlaylistOwner($w, $playlist_uri)
 {
-    $url = '';
     $tmp = explode(':', $playlist_uri);
     if(isset($tmp[4])) {
         $playlist_id = $tmp[4];
@@ -884,7 +881,6 @@ function getEpisode($w, $episode_uri)
  */
  function getPlaylistName($w, $playlist_uri)
  {
-     $url = '';
      $tmp = explode(':', $playlist_uri);
      if(isset($tmp[4])) {
         $playlist_id = $tmp[4];
@@ -1314,7 +1310,7 @@ function addToQueueSpotifyConnect($w, $trackId, $device_id)
    while ($retry) {
        try {
            $api = getSpotifyWebAPI($w);
-           $api->addToQueue($trackId, $device_id);
+           $api->queue($trackId, $device_id);
            $retry = false;
        } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
            logMsg($w,'Error(addToQueueSpotifyConnect): retry '.$nb_retry.' (exception '.jTraceEx($e).')');
@@ -1515,15 +1511,34 @@ function seekToBeginning($w)
  *
  * @param mixed $w
  */
- function playSpotifyConnect($w, $device_id)
+ function playSpotifyConnect($w, $device_id, $country_code)
  {
     $retry = true;
     $nb_retry = 0;
     while ($retry) {
         try {
+
             $api = getSpotifyWebAPI($w);
-            $api->play($device_id);
-            $retry = false;
+
+            $playback_info = $api->getMyCurrentPlaybackInfo(array(
+            'market' => $country_code,
+            'additional_types' => 'track,episode',
+            ));
+
+            if(isset($playback_info->is_playing)) {
+                $is_playing = $playback_info->is_playing;
+                $options = [
+                    'position_ms' => $playback_info->progress_ms,
+                ];
+                if ($is_playing) {
+                    // ignore
+                } else {
+                    $api->play($device_id,$options);
+                }
+                $retry = false;
+            } else {
+                logMsg($w,'Error(playSpotifyConnect): is_playing not set '.$device_id);
+            }
         } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
             logMsg($w,'Error(playSpotifyConnect): retry '.$nb_retry.' (exception '.jTraceEx($e).')');
             if ($e->getCode() == 404) {
@@ -1950,7 +1965,7 @@ function getCurrentUser($w)
             return;
         }
 
-        $ret = $w->write($userid, 'current_user.json');
+        $w->write($userid, 'current_user.json');
 
         $user_folder = $w->data().'/users/'.$userid;
         if (!file_exists($user_folder)) {
@@ -2006,7 +2021,7 @@ function switchUser($w, $new_user)
         link($new_user_folder.'/history.json',$w->data().'/history.json');
     }
 
-    $ret = $w->write($new_user, 'current_user.json');
+    $w->write($new_user, 'current_user.json');
 
     displayNotificationWithArtwork($w, 'Current user is now ' . $new_user, getUserArtwork($w, $new_user, true), 'Switch User');
 
@@ -2192,7 +2207,6 @@ function switchThemeColor($w,$theme_color)
     // Read settings from JSON
 
     $settings = getSettings($w);
-    $output_application = $settings->output_application;
 
     $imgs = scandir('./images/');
 
@@ -2490,7 +2504,7 @@ function switchThemeColor($w,$theme_color)
 
     exec('open "'.'./App/'.$theme_color.'/Spotify Mini Player.app'.'"');
     //update settings
-    $ret = updateSetting($w, 'theme_color', $theme_color);
+    updateSetting($w, 'theme_color', $theme_color);
 
     deleteTheFile($w,$w->data().'/change_theme_color_in_progress');
     if (!$hasError) {
@@ -2627,10 +2641,10 @@ function createDebugFile($w)
 
     copy2clipboard($output);
 
-    $output = str_replace('"', '\"', $output);
+    $output = urlencode($output);
+    $command = "open \"mailto:alfred.spotify.mini.player@gmail.com?subject=Alfred%20Spotify%20Mini%20Player%20debug%20file%20version%20".getenv('alfred_workflow_version')."&body=$output\"";
 
-    exec("open \"mailto:alfred.spotify.mini.player@gmail.com?subject=Alfred Spotify Mini Player debug file (version ".getenv('alfred_workflow_version').")&body=$output\"");
-    print_r("open \"mailto:alfred.spotify.mini.player@gmail.com?subject=Alfred Spotify Mini Player debug file (version ".getenv('alfred_workflow_version').")&body=$output\"");
+    exec($command);
 }
 
 /**
@@ -2928,7 +2942,7 @@ function followThePlaylist($w, $playlist_uri)
     }
     try {
         $api = getSpotifyWebAPI($w);
-        $ret = $api->followPlaylistForCurrentUser($playlist_id, array('public' => $public));
+        $ret = $api->followPlaylist($playlist_id, array('public' => $public));
         if ($ret == true) {
             // refresh library
             if(getenv('automatically_refresh_library') == 1) {
@@ -2959,7 +2973,7 @@ function unfollowThePlaylist($w, $playlist_uri)
         } else {
             $playlist_id = $tmp[2];
         }
-        $ret = $api->unfollowPlaylistForCurrentUser($playlist_id);
+        $ret = $api->unfollowPlaylist($playlist_id);
         if ($ret == true) {
             // refresh library
             if(getenv('automatically_refresh_library') == 1) {
@@ -4313,11 +4327,12 @@ function removeTrackFromPlaylist($w, $track_uri, $playlist_uri, $playlist_name, 
         } else {
             $playlist_id = $tmp[2];
         }
-        $api->deletePlaylistTracks($playlist_id, array(
-                array(
-                    'id' => $track_uri,
-                ),
-            ));
+        $tracks = [
+            'tracks' => [
+                ['uri' => $track_uri],
+            ],
+        ];
+        $api->deletePlaylistTracks($playlist_id, $tracks);
     } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
         logMsg($w,'Error(removeTrackFromPlaylist): (exception '.jTraceEx($e).')');
         handleSpotifyWebAPIException($w, $e);
@@ -6388,8 +6403,6 @@ function getTrackOrAlbumArtwork($w, $spotifyURL, $fetchIfNotPresent, $fetchLater
                 $currentArtwork,
             );
         }
-        // always return currentArtwork
-        return $currentArtwork;
     }
 
     if (!is_file($currentArtwork) || (is_file($currentArtwork) && filesize($currentArtwork) == 0) || $hrefs[2] == 'fakeuri' || $forceFetch) {
@@ -6670,8 +6683,6 @@ function getShowArtwork($w, $show_uri, $fetchIfNotPresent = false, $fetchLater =
                 $currentArtwork,
             );
         }
-        // always return currentArtwork
-        return $currentArtwork;
     }
 
     if (!is_file($currentArtwork) || (is_file($currentArtwork) && filesize($currentArtwork) == 0)) {
@@ -6795,8 +6806,6 @@ function getEpisodeArtwork($w, $episode_uri, $fetchIfNotPresent = false, $fetchL
                 $currentArtwork,
             );
         }
-        // always return currentArtwork
-        return $currentArtwork;
     }
 
     if (!is_file($currentArtwork) || (is_file($currentArtwork) && filesize($currentArtwork) == 0)) {
@@ -6919,8 +6928,6 @@ function getArtistArtwork($w, $artist_uri, $artist_name, $fetchIfNotPresent = fa
                 $currentArtwork,
             );
         }
-        // always return currentArtwork
-        return $currentArtwork;
     }
 
     if (!is_file($currentArtwork) || (is_file($currentArtwork) && filesize($currentArtwork) == 0)) {
@@ -7919,7 +7926,7 @@ function checkForUpdate($w, $last_check_update_time, $download = false)
 
         if($local_version != $workflow_version) {
             // update workflow_version
-            $ret = updateSetting($w, 'workflow_version', ''.$local_version);
+            updateSetting($w, 'workflow_version', ''.$local_version);
             stathat_ez_count('AlfredSpotifyMiniPlayer', 'workflow_installations', 1);
 
             // open SpotifyMiniPlayer.app for notifications
@@ -8517,6 +8524,7 @@ function getSettings($w)
         );
 
         $w->write($default, 'settings.json');
+        logMsg($w,"getSettings: Settings have been set to default");
         displayNotificationWithArtwork($w, 'Settings have been set to default', './images/info.png', 'Settings reset');
 
         $settings = $w->read('settings.json');

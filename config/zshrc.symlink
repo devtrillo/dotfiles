@@ -29,6 +29,7 @@ ZSH_THEME="spaceship"
 plugins=(
   git
   git-flow
+  osx
   fzf
   gatsby
   nvm
@@ -38,12 +39,10 @@ plugins=(
   zsh-autosuggestions
   zsh-completions
   zsh-syntax-highlighting
-  osx
 )
 
 alias vi="nvim"
 source $ZSH/oh-my-zsh.sh
-
 autoload -U add-zsh-hook
 load-nvmrc() {
   local node_version="$(nvm version)"
@@ -65,6 +64,11 @@ load-nvmrc() {
 add-zsh-hook chpwd load-nvmrc
 load-nvmrc
 
+SPACESHIP_VI_MODE_INSERT="I"
+SPACESHIP_VI_MODE_NORMAL="N"
+eval spaceship_vi_mode_enable
+
+
 alias decrypt-prod="openssl aes-256-cbc -d -a -salt -in .env.enc.prod -out prod-prod && openssl aes-256-cbc -d -a -salt -in .env.enc.training -out prod-training && openssl aes-256-cbc -d -a -salt -in .env.enc.uat -out prod-uat && openssl aes-256-cbc -d -a -salt -in .env.enc.test -out prod-test"
 alias decrypt-dev="openssl aes-256-cbc -d -a -salt -in .env.enc.prod -out dev-prod && openssl aes-256-cbc -d -a -salt -in .env.enc.training -out dev-training && openssl aes-256-cbc -d -a -salt -in .env.enc.uat -out dev-uat && openssl aes-256-cbc -d -a -salt -in .env.enc.test -out dev-test"
 alias gs="git status"
@@ -72,10 +76,10 @@ alias gs="git status"
 [ -f ~/.zshsecrets ] && source  $HOME/.zshsecrets
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 alias PR-elon-tusk="gh pr create -a devtrillo -d -l 'Elon Tusk' -B elontusk -r wizevlad,ragrum,alvinycheung,fercervantesx"
-alias PR-eli="gh pr create -a devtrillo -d -l 'Eli' -B eli -r wizevlad,ragrum,alvinycheung,fercervantesx"
 alias PR-develop="gh pr create -a devtrillo -d -B develop -r wizevlad,ragrum,alvinycheung,fercervantesx"
 alias PR-stable="gh pr create -a devtrillo -d -B stable -r wizevlad,ragrum,alvinycheung,fercervantesx"
-alias start-cm2-project="cordova prepare android && npm run dev:android & cordova run android --device --noprepare && fg"
+alias start-cm2-project="cd ~/Documents/cm2/energylink-connect2-app && cordova prepare android && npm run dev:android & cordova run android --device --noprepare && fg"
+alias start-cm2-project-ios="cd ~/Documents/cm2/energylink-connect2-app && cordova prepare ios && open ../platforms/ios/SunPowerProConnect-dev.xcodeproj && npm run dev:ios"
 alias save-nvm-version="node -v > .nvmrc"
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
