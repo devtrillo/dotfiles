@@ -138,6 +138,8 @@ fi
     cp $ZSHFILE $ZSHFILE.backup
   fi
   ln -sfv $DOTFILES/config/zshrc.symlink $HOME/.zshrc
+
+
 }
 
 function setup_neovim(){
@@ -174,6 +176,10 @@ function setup_neovim(){
     numbers="${#relative}"
     ln -sfv $file "$HOME/.config/nvim${file:$numbers}"
   done
+
+  info "Linking config files"
+
+  ln -sfv $DOTFILES/config/wakatime.cfg.symlink $HOME/.wakatime.cfg
 }
 
 function setup_terminfo() {
