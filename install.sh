@@ -91,7 +91,7 @@ setup_homebrew() {
 setup_ubuntu(){
   sudo apt update
   sudo apt full-upgrade -y
-  sudo apt install git git-flow fzf zsh tmux neovim wget curl -y 
+  sudo apt install git git-flow fzf zsh tmux neovim wget curl tree ripgrep universal-ctags silversearcher-ag fd-find -y 
 
 }
 
