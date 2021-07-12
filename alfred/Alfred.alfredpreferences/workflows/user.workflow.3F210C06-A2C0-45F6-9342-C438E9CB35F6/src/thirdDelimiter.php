@@ -4,14 +4,14 @@
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function thirdDelimiterAdd($w, $query, $settings, $db, $update_in_progress) {
+function thirdDelimiterAdd($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
 
-    $is_public_playlists = $settings->is_public_playlists;
+    $is_public_playlists = getSetting($w,'is_public_playlists');
 
     $tmp = explode('∙', $words[1]);
     $uri = $tmp[0];
@@ -135,14 +135,14 @@ function thirdDelimiterAdd($w, $query, $settings, $db, $update_in_progress) {
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function thirdDelimiterBrowse($w, $query, $settings, $db, $update_in_progress) {
+function thirdDelimiterBrowse($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
 
-    $use_artworks = $settings->use_artworks;
+    $use_artworks = getSetting($w,'use_artworks');
 
     $country = $words[1];
     $category = $words[2];

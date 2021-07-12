@@ -4,16 +4,16 @@
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterShows($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterShows($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
-    $max_results = $settings->max_results;
-    $output_application = $settings->output_application;
-    $use_artworks = $settings->use_artworks;
-    $fuzzy_search = $settings->fuzzy_search;
+    $max_results = getSetting($w,'max_results');
+    $output_application = getSetting($w,'output_application');
+    $use_artworks = getSetting($w,'use_artworks');
+    $fuzzy_search = getSetting($w,'fuzzy_search');
 
     // display episodes for selected show
     $tmp = explode('∙', $words[1]);
@@ -22,26 +22,7 @@ function secondDelimiterShows($w, $query, $settings, $db, $update_in_progress) {
     $episode = $words[2];
 
     if (countCharacters($episode) < 2) {
-        $show_artwork_path = getShowArtwork($w, $show_uri, false, false, false, $use_artworks);
-        // $w->result(null, serialize(array(
-        //             $show_uri /*track_uri*/,
-        //             '' /* album_uri */,
-        //             '' /* artist_uri */,
-        //             '' /* playlist_uri */,
-        //             '' /* spotify_command */,
-        //             '' /* query */,
-        //             '' /* other_settings*/,
-        //             'playshow' /* other_action */,
-        //             '' /* artist_name */,
-        //             $show_name /* track_name */,
-        //             '' /* album_name */,
-        //             '' /* track_artwork_path */,
-        //             $show_artwork_path /* artist_artwork_path */,
-        //             '' /* album_artwork_path */,
-        //             '' /* playlist_name */,
-        //             '', /* playlist_artwork_path */
-        //         )), getenv('emoji_show').' '.$show_name, 'Play show', $show_artwork_path, 'yes', null, '');
-
+        getShowArtwork($w, $show_uri, false, false, false, $use_artworks);
 
         $w->result(null, '', 'Follow/Unfollow Show', array('Display options to follow/unfollow the show', 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/follow.png', 'no', null, 'Follow/Unfollow▹' . $show_uri . '@' . $show_name . '▹');
 
@@ -71,7 +52,6 @@ function secondDelimiterShows($w, $query, $settings, $db, $update_in_progress) {
     $noresult = true;
     foreach ($results as $episodes) {
         $noresult = false;
-        $subtitle = $episodes[6];
 
         $fully_played = '';
         if ($episodes[16] == 1) {
@@ -79,7 +59,7 @@ function secondDelimiterShows($w, $query, $settings, $db, $update_in_progress) {
             $fully_played = '✔️';
         }
         if (checkIfResultAlreadyThere($w->results(), $fully_played . $episodes[1]) == false) {
-            if ($episodes[7] == true) {
+            if ($episodes[7] == true || getenv('ignore_unplayable_tracks') == 1) {
                 $w->result(null, serialize(array($episodes[2] /*track_uri*/, $episodes[3] /* album_uri */, $episodes[4] /* artist_uri */, ''
                 /* playlist_uri */, ''
                 /* spotify_command */, ''
@@ -131,19 +111,19 @@ function secondDelimiterShows($w, $query, $settings, $db, $update_in_progress) {
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterArtists($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterArtists($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
-    $radio_number_tracks = $settings->radio_number_tracks;
-    $max_results = $settings->max_results;
-    $country_code = $settings->country_code;
-    $is_public_playlists = $settings->is_public_playlists;
-    $output_application = $settings->output_application;
-    $use_artworks = $settings->use_artworks;
-    $fuzzy_search = $settings->fuzzy_search;
+    $radio_number_tracks = getSetting($w,'radio_number_tracks');
+    $max_results = getSetting($w,'max_results');
+    $country_code = getSetting($w,'country_code');
+    $is_public_playlists = getSetting($w,'is_public_playlists');
+    $output_application = getSetting($w,'output_application');
+    $use_artworks = getSetting($w,'use_artworks');
+    $fuzzy_search = getSetting($w,'fuzzy_search');
 
     // display tracks for selected artists
     $tmp = explode('∙', $words[1]);
@@ -299,7 +279,7 @@ function secondDelimiterArtists($w, $query, $settings, $db, $update_in_progress)
             $added = getenv('emoji_local_track').' ';
         }
         if (checkIfResultAlreadyThere($w->results(), $added . $track[7] . ' '.getenv('emoji_separator').' ' . $track[5]) == false) {
-            if ($track[14] == true) {
+            if ($track[14] == true || getenv('ignore_unplayable_tracks') == 1) {
                 $w->result(null, serialize(array($track[2] /*track_uri*/, $track[3] /* album_uri */, $track[4] /* artist_uri */, ''
                 /* playlist_uri */, ''
                 /* spotify_command */, ''
@@ -351,18 +331,18 @@ function secondDelimiterArtists($w, $query, $settings, $db, $update_in_progress)
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterAlbums($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterAlbums($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
 
-    $all_playlists = $settings->all_playlists;
-    $max_results = $settings->max_results;
-    $output_application = $settings->output_application;
-    $use_artworks = $settings->use_artworks;
-    $fuzzy_search = $settings->fuzzy_search;
+    $all_playlists = getSetting($w,'all_playlists');
+    $max_results = getSetting($w,'max_results');
+    $output_application = getSetting($w,'output_application');
+    $use_artworks = getSetting($w,'use_artworks');
+    $fuzzy_search = getSetting($w,'fuzzy_search');
 
     // display tracks for selected album
     $tmp = explode('∙', $words[1]);
@@ -491,7 +471,7 @@ function secondDelimiterAlbums($w, $query, $settings, $db, $update_in_progress) 
             $added = getenv('emoji_local_track').' ';
         }
         if (checkIfResultAlreadyThere($w->results(), $added . $track[7] . ' '.getenv('emoji_separator').' ' . $track[5]) == false) {
-            if ($track[14] == true) {
+            if ($track[14] == true || getenv('ignore_unplayable_tracks') == 1) {
                 $w->result(null, serialize(array($track[2] /*track_uri*/, $track[3] /* album_uri */, $track[4] /* artist_uri */, ''
                 /* playlist_uri */, ''
                 /* spotify_command */, ''
@@ -536,17 +516,17 @@ function secondDelimiterAlbums($w, $query, $settings, $db, $update_in_progress) 
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterPlaylists($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterPlaylists($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
-    $max_results = $settings->max_results;
-    $alfred_playlist_uri = $settings->alfred_playlist_uri;
-    $userid = $settings->userid;
-    $fuzzy_search = $settings->fuzzy_search;
-    $output_application = $settings->output_application;
+    $max_results = getSetting($w,'max_results');
+    $alfred_playlist_uri = getSetting($w,'alfred_playlist_uri');
+    $userid = getSetting($w,'userid');
+    $fuzzy_search = getSetting($w,'fuzzy_search');
+    $output_application = getSetting($w,'output_application');
 
     $theplaylisturi = $words[1];
     $thetrack = $words[2];
@@ -700,7 +680,7 @@ function secondDelimiterPlaylists($w, $query, $settings, $db, $update_in_progres
                     $added = getenv('emoji_local_track').' ';
                 }
                 if (checkIfResultAlreadyThere($w->results(), $added . $track[7] . ' '.getenv('emoji_separator').' ' . $track[5]) == false) {
-                    if ($track[14] == true) {
+                    if ($track[14] == true || getenv('ignore_unplayable_tracks') == 1) {
                         $w->result(null, serialize(array($track[2] /*track_uri*/, $track[3] /* album_uri */, $track[4] /* artist_uri */, $theplaylisturi
                         /* playlist_uri */, ''
                         /* spotify_command */, ''
@@ -744,17 +724,17 @@ function secondDelimiterPlaylists($w, $query, $settings, $db, $update_in_progres
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterOnline($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterOnline($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
     $search = $words[2];
 
-    $radio_number_tracks = $settings->radio_number_tracks;
-    $country_code = $settings->country_code;
-    $use_artworks = $settings->use_artworks;
+    $radio_number_tracks = getSetting($w,'radio_number_tracks');
+    $country_code = getSetting($w,'country_code');
+    $use_artworks = getSetting($w,'use_artworks');
 
     if (substr_count($query, '@') == 1) {
 
@@ -834,7 +814,6 @@ function secondDelimiterOnline($w, $query, $settings, $db, $update_in_progress) 
                     ->items) . ' tracks)') == false) {
                     $noresult = false;
                     $genre = (count($album->genres) > 0) ? ' '.getenv('emoji_separator').' Genre: ' . implode('|', $album->genres) : '';
-                    $tracks = $album->tracks;
                     if (countCharacters($search) < 2 || strpos(strtolower($artist_name), strtolower($search)) !== false || strpos(strtolower($album->name), strtolower($search)) !== false) {
                         $w->result(null, '', $album->name . ' (' . count($album
                             ->tracks
@@ -935,7 +914,6 @@ function secondDelimiterOnline($w, $query, $settings, $db, $update_in_progress) 
         $tmp = $words[1];
         $words = explode('@', $tmp);
         $artist_uri = $words[0];
-        $artist_name = $words[1];
         $album_uri = $words[2];
         $album_name = $words[3];
 
@@ -995,7 +973,7 @@ function secondDelimiterOnline($w, $query, $settings, $db, $update_in_progress) 
             $artist = $artists[0];
 
             $track_artwork = getTrackOrAlbumArtwork($w, $track->uri, false, false, false, $use_artworks);
-            if (isset($track->is_playable) && $track->is_playable) {
+            if ((isset($track->is_playable) && $track->is_playable) || getenv('ignore_unplayable_tracks') == 1) {
                 $noresult = false;
                 if (countCharacters($search) < 2 || strpos(strtolower($artist->name), strtolower($search)) !== false || strpos(strtolower($track->name), strtolower($search)) !== false) {
                     $w->result(null, serialize(array($track->uri
@@ -1031,15 +1009,15 @@ function secondDelimiterOnline($w, $query, $settings, $db, $update_in_progress) 
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterOnlineRelated($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterOnlineRelated($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
     $search = $words[2];
 
-    $use_artworks = $settings->use_artworks;
+    $use_artworks = getSetting($w,'use_artworks');
 
     if (substr_count($query, '@') == 1) {
 
@@ -1047,7 +1025,6 @@ function secondDelimiterOnlineRelated($w, $query, $settings, $db, $update_in_pro
         $tmp = $words[1];
         $words = explode('@', $tmp);
         $artist_uri = $words[0];
-        $artist_name = $words[1];
 
         // call to web api, if it fails,
         // it displays an error in main window
@@ -1066,20 +1043,20 @@ function secondDelimiterOnlineRelated($w, $query, $settings, $db, $update_in_pro
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterOnlinePlaylist($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterOnlinePlaylist($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
 
-    $is_alfred_playlist_active = $settings->is_alfred_playlist_active;
-    $max_results = $settings->max_results;
-    $alfred_playlist_name = $settings->alfred_playlist_name;
-    $country_code = $settings->country_code;
-    $is_public_playlists = $settings->is_public_playlists;
-    $output_application = $settings->output_application;
-    $use_artworks = $settings->use_artworks;
+    $is_alfred_playlist_active = getSetting($w,'is_alfred_playlist_active');
+    $max_results = getSetting($w,'max_results');
+    $alfred_playlist_name = getSetting($w,'alfred_playlist_name');
+    $country_code = getSetting($w,'country_code');
+    $is_public_playlists = getSetting($w,'is_public_playlists');
+    $output_application = getSetting($w,'output_application');
+    $use_artworks = getSetting($w,'use_artworks');
 
     // display tracks for selected online playlist
     $tmp = explode('∙', $words[1]);
@@ -1199,20 +1176,18 @@ function secondDelimiterOnlinePlaylist($w, $query, $settings, $db, $update_in_pr
         }
     }
 
-    $noresult = true;
     $nb_results = 0;
     foreach ($savedPlaylistTracks as $item) {
         if ($nb_results > $max_results) {
             break;
         }
         $track = $item->track;
-        $noresult = false;
         $artists = $track->artists;
         $artist = $artists[0];
         $album = $track->album;
 
         $track_artwork_path = getTrackOrAlbumArtwork($w, $track->uri, false, false, false, $use_artworks);
-        if (isset($track->is_playable) && $track->is_playable) {
+        if ((isset($track->is_playable) && $track->is_playable) || getenv('ignore_unplayable_tracks') == 1) {
 
             if (countCharacters($search) < 2 || strpos(strtolower($artist->name), strtolower($search)) !== false || strpos(strtolower($track->name), strtolower($search)) !== false || strpos(strtolower($album->name), strtolower($search)) !== false) {
                 $w->result(null, serialize(array($track->uri
@@ -1253,20 +1228,19 @@ function secondDelimiterOnlinePlaylist($w, $query, $settings, $db, $update_in_pr
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterYourMusicTracks($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterYourMusicTracks($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
     $thetrack = $words[2];
 
-    $max_results = $settings->max_results;
-    $output_application = $settings->output_application;
-    $fuzzy_search = $settings->fuzzy_search;
+    $max_results = getSetting($w,'max_results');
+    $output_application = getSetting($w,'output_application');
+    $fuzzy_search = getSetting($w,'fuzzy_search');
 
     // display tracks for Your Music
-    $search = $words[2];
 
     if (countCharacters($thetrack) < 2) {
         $w->result(null, serialize(array(''
@@ -1330,7 +1304,7 @@ function secondDelimiterYourMusicTracks($w, $query, $settings, $db, $update_in_p
             $added = getenv('emoji_local_track').' ';
         }
         if (checkIfResultAlreadyThere($w->results(), $added . $track[7] . ' '.getenv('emoji_separator').' ' . $track[5]) == false) {
-            if ($track[14] == true) {
+            if ($track[14] == true || getenv('ignore_unplayable_tracks') == 1) {
                 $w->result(null, serialize(array($track[2] /*track_uri*/, $track[3] /* album_uri */, $track[4] /* artist_uri */, ''
                 /* playlist_uri */, ''
                 /* spotify_command */, ''
@@ -1379,15 +1353,15 @@ function secondDelimiterYourMusicTracks($w, $query, $settings, $db, $update_in_p
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterYourMusicAlbums($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterYourMusicAlbums($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
-    $fuzzy_search = $settings->fuzzy_search;
+    $fuzzy_search = getSetting($w,'fuzzy_search');
 
-    $max_results = $settings->max_results;
+    $max_results = getSetting($w,'max_results');
 
     // Search albums
     $album = $words[2];
@@ -1441,16 +1415,16 @@ function secondDelimiterYourMusicAlbums($w, $query, $settings, $db, $update_in_p
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterYourTopArtists($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterYourTopArtists($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
     $time_range = $words[2];
 
-    $max_results = $settings->max_results;
-    $use_artworks = $settings->use_artworks;
+    $max_results = getSetting($w,'max_results');
+    $use_artworks = getSetting($w,'use_artworks');
 
     try {
         $api = getSpotifyWebAPI($w);
@@ -1479,16 +1453,16 @@ function secondDelimiterYourTopArtists($w, $query, $settings, $db, $update_in_pr
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterYourTopTracks($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterYourTopTracks($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
     $time_range = $words[2];
 
-    $max_results = $settings->max_results;
-    $use_artworks = $settings->use_artworks;
+    $max_results = getSetting($w,'max_results');
+    $use_artworks = getSetting($w,'use_artworks');
 
     try {
         $api = getSpotifyWebAPI($w);
@@ -1537,14 +1511,14 @@ function secondDelimiterYourTopTracks($w, $query, $settings, $db, $update_in_pro
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterYourMusicArtists($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterYourMusicArtists($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
-    $max_results = $settings->max_results;
-    $fuzzy_search = $settings->fuzzy_search;
+    $max_results = getSetting($w,'max_results');
+    $fuzzy_search = getSetting($w,'fuzzy_search');
 
     // Search artists
     $artist = $words[2];
@@ -1601,13 +1575,13 @@ function secondDelimiterYourMusicArtists($w, $query, $settings, $db, $update_in_
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterSettings($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterSettings($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
-    $output_application = $settings->output_application;
+    $output_application = getSetting($w,'output_application');
 
     $setting_kind = $words[1];
     $the_query = $words[2];
@@ -1942,31 +1916,38 @@ function secondDelimiterSettings($w, $query, $settings, $db, $update_in_progress
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterFeaturedPlaylist($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterFeaturedPlaylist($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
-    $max_results = $settings->max_results;
-    $country_code = $settings->country_code;
-    $use_artworks = $settings->use_artworks;
+    $max_results = getSetting($w,'max_results');
+    $country_code = getSetting($w,'country_code');
+    $use_artworks = getSetting($w,'use_artworks');
 
     $country = $words[1];
     $search = $words[2];
 
     if ($country == 'Choose a Country') {
 
-        $spotify_country_codes = getSpotifyCountryCodesList();
+        try {
+            $api = getSpotifyWebAPI($w);
+            $spotify_country_codes = $api->getMarkets();
+            foreach ($spotify_country_codes->markets as $spotify_country_code) {
+                if (strtoupper($spotify_country_code) != 'US' && strtoupper($spotify_country_code) != 'GB' && strtoupper($spotify_country_code) != strtoupper($country_code)) {
 
-        foreach ($spotify_country_codes as $spotify_country_code) {
-            if (strtoupper($spotify_country_code) != 'US' && strtoupper($spotify_country_code) != 'GB' && strtoupper($spotify_country_code) != strtoupper($country_code)) {
+                    if (countCharacters($search) < 1 || strpos(strtolower($spotify_country_code), strtolower($search)) !== false || strpos(strtolower(getCountryName(strtoupper($spotify_country_code))), strtolower($search)) !== false) {
 
-                if (countCharacters($search) < 1 || strpos(strtolower($spotify_country_code), strtolower($search)) !== false || strpos(strtolower(getCountryName(strtoupper($spotify_country_code))), strtolower($search)) !== false) {
-
-                    $w->result(null, '', getCountryName(strtoupper($spotify_country_code)), array('Browse the current featured playlists in ' . getCountryName(strtoupper($spotify_country_code)), 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/star.png', 'no', null, 'Featured Playlist▹' . strtoupper($spotify_country_code) . '▹');
+                        $w->result(null, '', getCountryName(strtoupper($spotify_country_code)), array('Browse the current featured playlists in ' . getCountryName(strtoupper($spotify_country_code)), 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/star.png', 'no', null, 'Featured Playlist▹' . strtoupper($spotify_country_code) . '▹');
+                    }
                 }
             }
+        }
+        catch(SpotifyWebAPI\SpotifyWebAPIException $e) {
+            $w->result(null, 'help', 'Exception occurred', array('' . $e->getMessage(), 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/warning.png', 'no', null, '');
+            echo $w->tojson();
+            exit;
         }
     }
     else {
@@ -1974,7 +1955,6 @@ function secondDelimiterFeaturedPlaylist($w, $query, $settings, $db, $update_in_
             $api = getSpotifyWebAPI($w);
             $featuredPlaylists = $api->getFeaturedPlaylists(array('country' => $country, 'limit' => ($max_results <= 50) ? $max_results : 50, 'offset' => 0,));
 
-            $subtitle = 'Launch Playlist';
             $playlists = $featuredPlaylists->playlists;
             $w->result(null, '', $featuredPlaylists->message, array('' . $playlists->total . ' playlists available', 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/info.png', 'no', null, '');
             $items = $playlists->items;
@@ -1997,30 +1977,36 @@ function secondDelimiterFeaturedPlaylist($w, $query, $settings, $db, $update_in_
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterNewReleases($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterNewReleases($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
-    $max_results = $settings->max_results;
-    $country_code = $settings->country_code;
-    $use_artworks = $settings->use_artworks;
+    $max_results = getSetting($w,'max_results');
+    $country_code = getSetting($w,'country_code');
+    $use_artworks = getSetting($w,'use_artworks');
 
     $country = $words[1];
     $search = $words[2];
 
     if ($country == 'Choose a Country') {
+        try {
+            $api = getSpotifyWebAPI($w);
+            $spotify_country_codes = $api->getMarkets();
+            foreach ($spotify_country_codes->markets as $spotify_country_code) {
+                if (strtoupper($spotify_country_code) != 'US' && strtoupper($spotify_country_code) != 'GB' && strtoupper($spotify_country_code) != strtoupper($country_code)) {
 
-        $spotify_country_codes = getSpotifyCountryCodesList();
-
-        foreach ($spotify_country_codes as $spotify_country_code) {
-            if (strtoupper($spotify_country_code) != 'US' && strtoupper($spotify_country_code) != 'GB' && strtoupper($spotify_country_code) != strtoupper($country_code)) {
-
-                if (countCharacters($search) < 1 || strpos(strtolower($spotify_country_code), strtolower($search)) !== false || strpos(strtolower(getCountryName(strtoupper($spotify_country_code))), strtolower($search)) !== false) {
-                    $w->result(null, '', getCountryName(strtoupper($spotify_country_code)), array('Browse the new album releases in ' . getCountryName(strtoupper($spotify_country_code)), 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/new_releases.png', 'no', null, 'New Releases▹' . strtoupper($spotify_country_code) . '▹');
+                    if (countCharacters($search) < 1 || strpos(strtolower($spotify_country_code), strtolower($search)) !== false || strpos(strtolower(getCountryName(strtoupper($spotify_country_code))), strtolower($search)) !== false) {
+                        $w->result(null, '', getCountryName(strtoupper($spotify_country_code)), array('Browse the new album releases in ' . getCountryName(strtoupper($spotify_country_code)), 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/new_releases.png', 'no', null, 'New Releases▹' . strtoupper($spotify_country_code) . '▹');
+                    }
                 }
             }
+        }
+        catch(SpotifyWebAPI\SpotifyWebAPIException $e) {
+            $w->result(null, 'help', 'Exception occurred', array('' . $e->getMessage(), 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/warning.png', 'no', null, '');
+            echo $w->tojson();
+            exit;
         }
     }
     else {
@@ -2134,20 +2120,20 @@ function secondDelimiterNewReleases($w, $query, $settings, $db, $update_in_progr
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterAdd($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterAdd($w, $query, $db, $update_in_progress) {
 
     $words = explode('▹', $query);
 
-    $is_alfred_playlist_active = $settings->is_alfred_playlist_active;
-    $alfred_playlist_uri = $settings->alfred_playlist_uri;
-    $alfred_playlist_name = $settings->alfred_playlist_name;
-    $is_public_playlists = $settings->is_public_playlists;
-    $fuzzy_search = $settings->fuzzy_search;
-    $max_results = $settings->max_results;
+    $is_alfred_playlist_active = getSetting($w,'is_alfred_playlist_active');
+    $alfred_playlist_uri = getSetting($w,'alfred_playlist_uri');
+    $alfred_playlist_name = getSetting($w,'alfred_playlist_name');
+    $is_public_playlists = getSetting($w,'is_public_playlists');
+    $fuzzy_search = getSetting($w,'fuzzy_search');
+    $max_results = getSetting($w,'max_results');
 
     if ($update_in_progress == true) {
         $w->result(null, '', 'Cannot add tracks/albums/playlists while update is in progress', array('Please retry when update is finished', 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/warning.png', 'no', null, '');
@@ -2310,11 +2296,11 @@ function secondDelimiterAdd($w, $query, $settings, $db, $update_in_progress) {
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterRemove($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterRemove($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
 
     if ($update_in_progress == true) {
@@ -2388,7 +2374,7 @@ function secondDelimiterRemove($w, $query, $settings, $db, $update_in_progress) 
                     $stmtGetPlaylists->bindValue(':playlist', '%' . deburr($theplaylist) . '%');
                 }
 
-                $playlists = $stmtGetPlaylists->execute();
+                $stmtGetPlaylists->execute();
 
                 while ($playlist = $stmtGetPlaylists->fetch()) {
                     if ($noresult == true) {
@@ -2435,14 +2421,14 @@ function secondDelimiterRemove($w, $query, $settings, $db, $update_in_progress) 
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterAlfredPlaylist($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterAlfredPlaylist($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
-    $alfred_playlist_uri = $settings->alfred_playlist_uri;
-    $alfred_playlist_name = $settings->alfred_playlist_name;
+    $alfred_playlist_uri = getSetting($w,'alfred_playlist_uri');
+    $alfred_playlist_name = getSetting($w,'alfred_playlist_name');
 
     $setting_kind = $words[1];
     $theplaylist = $words[2];
@@ -2522,14 +2508,14 @@ function secondDelimiterAlfredPlaylist($w, $query, $settings, $db, $update_in_pr
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterFollowUnfollow($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterFollowUnfollow($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
 
-    $use_artworks = $settings->use_artworks;
+    $use_artworks = getSetting($w,'use_artworks');
 
     if (substr_count($query, '@') == 1) {
 
@@ -2625,11 +2611,11 @@ function secondDelimiterFollowUnfollow($w, $query, $settings, $db, $update_in_pr
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterFollowOrUnfollow($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterFollowOrUnfollow($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
     $kind = $words[0];
 
@@ -2683,124 +2669,15 @@ function secondDelimiterFollowOrUnfollow($w, $query, $settings, $db, $update_in_
 }
 
 /**
- * secondDelimiterDisplayBiography function.
- *
- * @param mixed $w
- * @param mixed $query
- * @param mixed $settings
- * @param mixed $db
- * @param mixed $update_in_progress
- */
-function secondDelimiterDisplayBiography($w, $query, $settings, $db, $update_in_progress) {
-    $words = explode('▹', $query);
-    $use_artworks = $settings->use_artworks;
-
-    if (substr_count($query, '∙') == 1) {
-
-        // Search Biography
-        $tmp = $words[1];
-        $words = explode('∙', $tmp);
-        $artist_uri = $words[0];
-        $artist_name = $words[1];
-
-        list($biography_url, $source, $biography, $twitter_url, $official_url) = getBiography($w, $artist_uri, $artist_name);
-
-        if ($biography_url != false) {
-            if ($source == 'Last FM') {
-                $image = './images/lastfm.png';
-            }
-            elseif ($source == 'Wikipedia') {
-                $image = './images/wikipedia.png';
-            }
-            else {
-                $image = './images/biography.png';
-            }
-
-            if ($twitter_url != '') {
-                $twitter_account = end((explode('/', rtrim($twitter_url, '/'))));
-                $w->result(null, serialize(array(''
-                /*track_uri*/, ''
-                /* album_uri */, ''
-                /* artist_uri */, ''
-                /* playlist_uri */, ''
-                /* spotify_command */, ''
-                /* query */, 'Open▹' . $twitter_url /* other_settings*/, ''
-                /* other_action */,
-
-                ''
-                /* artist_name */, ''
-                /* track_name */, ''
-                /* album_name */, ''
-                /* track_artwork_path */, ''
-                /* artist_artwork_path */, ''
-                /* album_artwork_path */, ''
-                /* playlist_name */, '', /* playlist_artwork_path */
-                )), 'See twitter account @' . $twitter_account, 'This will open your default browser with the twitter of the artist', './images/twitter.png', 'yes', null, '');
-            }
-
-            if ($official_url != '') {
-                $w->result(null, serialize(array(''
-                /*track_uri*/, ''
-                /* album_uri */, ''
-                /* artist_uri */, ''
-                /* playlist_uri */, ''
-                /* spotify_command */, ''
-                /* query */, 'Open▹' . $official_url /* other_settings*/, ''
-                /* other_action */,
-
-                ''
-                /* artist_name */, ''
-                /* track_name */, ''
-                /* album_name */, ''
-                /* track_artwork_path */, ''
-                /* artist_artwork_path */, ''
-                /* album_artwork_path */, ''
-                /* playlist_name */, '', /* playlist_artwork_path */
-                )), 'See official website for the artist (' . $official_url . ')', 'This will open your default browser with the official website of the artist', './images/artists.png', 'yes', null, '');
-            }
-
-            $w->result(null, serialize(array(''
-            /*track_uri*/, ''
-            /* album_uri */, ''
-            /* artist_uri */, ''
-            /* playlist_uri */, ''
-            /* spotify_command */, ''
-            /* query */, 'Open▹' . $biography_url /* other_settings*/, ''
-            /* other_action */, ''
-            /* artist_name */, ''
-            /* track_name */, ''
-            /* album_name */, ''
-            /* track_artwork_path */, ''
-            /* artist_artwork_path */, ''
-            /* album_artwork_path */, ''
-            /* playlist_name */, '', /* playlist_artwork_path */
-            )), 'See biography for ' . $artist_name . ' on ' . $source, 'This will open your default browser', $image, 'yes', null, '');
-
-            $wrapped = wordwrap($biography, 70, "\n", false);
-            $biography_sentances = explode("\n", $wrapped);
-            $artist_artwork_path = getArtistArtwork($w, $artist_uri, $artist_name, false, false, false, $use_artworks);
-            for ($i = 0;$i < count($biography_sentances);++$i) {
-                $w->result(null, '', $biography_sentances[$i], array('', 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), $artist_artwork_path, 'no', null, '');
-            }
-        }
-        else {
-            $w->result(null, 'help', 'No biography found!', array('', 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/warning.png', 'no', null, '');
-            echo $w->tojson();
-            exit;
-        }
-    }
-}
-
-/**
  * secondDelimiterDisplayConfirmRemovePlaylist function.
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterDisplayConfirmRemovePlaylist($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterDisplayConfirmRemovePlaylist($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
 
     if (substr_count($query, '∙') == 1) {
@@ -2854,30 +2731,37 @@ function secondDelimiterDisplayConfirmRemovePlaylist($w, $query, $settings, $db,
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterBrowse($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterBrowse($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
 
-    $country_code = $settings->country_code;
-    $use_artworks = $settings->use_artworks;
+    $country_code = getSetting($w,'country_code');
+    $use_artworks = getSetting($w,'use_artworks');
 
     $country = $words[1];
     $search = $words[2];
 
     if ($country == 'Choose a Country') {
 
-        $spotify_country_codes = getSpotifyCountryCodesList();
+        try {
+            $api = getSpotifyWebAPI($w);
+            $spotify_country_codes = $api->getMarkets();
+            foreach ($spotify_country_codes->markets as $spotify_country_code) {
+                if (strtoupper($spotify_country_code) != 'US' && strtoupper($spotify_country_code) != 'GB' && strtoupper($spotify_country_code) != strtoupper($country_code)) {
 
-        foreach ($spotify_country_codes as $spotify_country_code) {
-            if (strtoupper($spotify_country_code) != 'US' && strtoupper($spotify_country_code) != 'GB' && strtoupper($spotify_country_code) != strtoupper($country_code)) {
-
-                if (countCharacters($search) < 1 || strpos(strtolower($spotify_country_code), strtolower($search)) !== false || strpos(strtolower(getCountryName(strtoupper($spotify_country_code))), strtolower($search)) !== false) {
-                    $w->result(null, '', getCountryName(strtoupper($spotify_country_code)), array('Browse the Spotify categories in ' . getCountryName(strtoupper($spotify_country_code)), 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/browse.png', 'no', null, 'Browse▹' . strtoupper($spotify_country_code) . '▹');
+                    if (countCharacters($search) < 1 || strpos(strtolower($spotify_country_code), strtolower($search)) !== false || strpos(strtolower(getCountryName(strtoupper($spotify_country_code))), strtolower($search)) !== false) {
+                        $w->result(null, '', getCountryName(strtoupper($spotify_country_code)), array('Browse the Spotify categories in ' . getCountryName(strtoupper($spotify_country_code)), 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/browse.png', 'no', null, 'Browse▹' . strtoupper($spotify_country_code) . '▹');
+                    }
                 }
             }
+        }
+        catch(SpotifyWebAPI\SpotifyWebAPIException $e) {
+            $w->result(null, 'help', 'Exception occurred', array('' . $e->getMessage(), 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/warning.png', 'no', null, '');
+            echo $w->tojson();
+            exit;
         }
     }
     else {
@@ -2914,17 +2798,17 @@ function secondDelimiterBrowse($w, $query, $settings, $db, $update_in_progress) 
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function secondDelimiterPreview($w, $query, $settings, $db, $update_in_progress) {
+function secondDelimiterPreview($w, $query, $db, $update_in_progress) {
     $words = explode('▹', $query);
 
-    $country_code = $settings->country_code;
-    $use_artworks = $settings->use_artworks;
-    $is_display_rating = $settings->is_display_rating;
-    $output_application = $settings->output_application;
+    $country_code = getSetting($w,'country_code');
+    $use_artworks = getSetting($w,'use_artworks');
+    $is_display_rating = getSetting($w,'is_display_rating');
+    $output_application = getSetting($w,'output_application');
 
     if (!file_exists('/usr/local/bin/mpg123')) {
         $w->result(null, '', 'mpg123 is not installed, install using brew install mpg123', array('install using brew install mpg123', 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/warning.png', 'no', null, '');
@@ -2933,7 +2817,6 @@ function secondDelimiterPreview($w, $query, $settings, $db, $update_in_progress)
     }
 
     $track_uri = $words[1];
-    $search = $words[2];
 
     $tmp = explode(':', $track_uri);
     if ($tmp[1] == 'track') {

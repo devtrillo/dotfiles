@@ -31,26 +31,23 @@ $album_artwork_path = $arg[13];
 $playlist_name = $arg[14];
 $playlist_artwork_path = $arg[15];
 
-// Read settings from JSON
-
-$settings = getSettings($w);
-$is_alfred_playlist_active = $settings->is_alfred_playlist_active;
-$now_playing_notifications = $settings->now_playing_notifications;
-$alfred_playlist_uri = $settings->alfred_playlist_uri;
-$alfred_playlist_name = $settings->alfred_playlist_name;
-$country_code = $settings->country_code;
-$userid = $settings->userid;
-$oauth_client_id = $settings->oauth_client_id;
-$oauth_client_secret = $settings->oauth_client_secret;
-$oauth_redirect_uri = $settings->oauth_redirect_uri;
-$oauth_access_token = $settings->oauth_access_token;
-$volume_percent = $settings->volume_percent;
-$use_artworks = $settings->use_artworks;
-$use_facebook = $settings->use_facebook;
-$always_display_lyrics_in_browser = $settings->always_display_lyrics_in_browser;
-$output_application = $settings->output_application;
-$theme_color = $settings->theme_color;
-$fuzzy_search = $settings->fuzzy_search;
+$is_alfred_playlist_active = getSetting($w,'is_alfred_playlist_active');
+$now_playing_notifications = getSetting($w,'now_playing_notifications');
+$alfred_playlist_uri = getSetting($w,'alfred_playlist_uri');
+$alfred_playlist_name = getSetting($w,'alfred_playlist_name');
+$country_code = getSetting($w,'country_code');
+$userid = getSetting($w,'userid');
+$oauth_client_id = getSetting($w,'oauth_client_id');
+$oauth_client_secret = getSetting($w,'oauth_client_secret');
+$oauth_redirect_uri = getSetting($w,'oauth_redirect_uri');
+$oauth_access_token = getSetting($w,'oauth_access_token');
+$volume_percent = getSetting($w,'volume_percent');
+$use_artworks = getSetting($w,'use_artworks');
+$use_facebook = getSetting($w,'use_facebook');
+$always_display_lyrics_in_browser = getSetting($w,'always_display_lyrics_in_browser');
+$output_application = getSetting($w,'output_application');
+$theme_color = getSetting($w,'theme_color');
+$fuzzy_search = getSetting($w,'fuzzy_search');
 
 if ($other_action != 'reset_settings' && $other_action != 'spot_mini_debug' && $other_action != 'kill_update' && !startswith($other_settings,'SWITCH_USER▹')) {
     if ($oauth_client_id == '' || $oauth_client_secret == '' || $oauth_access_token == '') {
@@ -140,7 +137,7 @@ if ($type == 'TRACK' && $other_settings == '' &&
                 $query = 'track:'.$track_name.' artist:'.$artist_name;
                 $results = searchWebApi($w, $country_code, $query, 'track', 1);
 
-                if (is_array($results) && count($results) > 0) {
+                if (is_array($results) && !empty($results)) {
                     // only one track returned
                     $track = $results[0];
                     $artists = $track->artists;
@@ -535,7 +532,7 @@ if ($type == 'TRACK' && $other_settings == '' &&
                     $query = 'track:'.$track_name.' artist:'.$artist_name;
                     $results = searchWebApi($w, $country_code, $query, 'track', 1);
 
-                    if (is_array($results) && count($results) > 0) {
+                    if (is_array($results) && !empty($results)) {
                         // only one track returned
                         $track = $results[0];
                         $artists = $track->artists;
@@ -634,7 +631,7 @@ if ($type == 'TRACK' && $other_settings == '' &&
                     $query = 'track:'.$track_name.' artist:'.$artist_name;
                     $results = searchWebApi($w, $country_code, $query, 'track', 1);
 
-                    if (is_array($results) && count($results) > 0) {
+                    if (is_array($results) && !empty($results)) {
                         // only one track returned
                         $track = $results[0];
                         $artists = $track->artists;
@@ -714,6 +711,10 @@ if ($type == 'TRACK' && $other_settings == '' &&
             }
     } elseif ($setting[0] == 'Open') {
         exec("open \"$setting[1]\"");
+
+        return;
+    } elseif ($setting[0] == 'OpenInFinder') {
+        exec("open -R \"$setting[1]\"");
 
         return;
     } elseif ($setting[0] == 'Reveal') {
@@ -815,7 +816,7 @@ if ($type == 'TRACK' && $other_settings == '' &&
     } elseif ($other_action == 'enable_artworks') {
         $ret = updateSetting($w, 'use_artworks', 1);
         if ($ret == true) {
-            displayNotificationWithArtwork($w, 'Artworks are now enabled, library creation is started', './images/enable_artworks.png', 'Settings');
+            displayNotificationWithArtwork($w, 'Artworks are now enabled, library creation has started', './images/enable_artworks.png', 'Settings');
             createLibrary($w);
         } else {
             displayNotificationWithArtwork($w, 'Error while updating settings', './images/settings.png', 'Error!');
@@ -830,11 +831,38 @@ if ($type == 'TRACK' && $other_settings == '' &&
                 exec("rm -rf '".$w->data()."/artwork'");
             }
             createLibrary($w);
-            displayNotificationWithArtwork($w, 'Artworks are now disabled, library creation is started', './images/disable_artworks.png', 'Settings');
+            displayNotificationWithArtwork($w, 'Artworks are now disabled, library creation has started', './images/disable_artworks.png', 'Settings');
         } else {
             displayNotificationWithArtwork($w, 'Error while updating settings', './images/settings.png', 'Error!');
         }
 
+        return;
+    } elseif ($other_action == 'enable_podcasts') {
+        $ret = updateSetting($w, 'podcasts_enabled', 1);
+        if ($ret == true) {
+            displayNotificationWithArtwork($w, 'Shows/Podcasts are now enabled, library refresh is started', './images/shows.png', 'Settings');
+            refreshLibrary($w);
+        } else {
+            displayNotificationWithArtwork($w, 'Error while updating settings', './images/settings.png', 'Error!');
+        }
+
+        return;
+    } elseif ($other_action == 'disable_podcasts') {
+        $ret = updateSetting($w, 'podcasts_enabled', 0);
+        if ($ret == true) {
+            killUpdate($w);
+            refreshLibrary($w);
+            displayNotificationWithArtwork($w, 'Shows/Podcasts are now disabled, library refresh is started', './images/shows.png', 'Settings');
+        } else {
+            displayNotificationWithArtwork($w, 'Error while updating settings', './images/settings.png', 'Error!');
+        }
+
+        return;
+    } elseif ($other_action == 'enable_podcasts_settings') {
+        $ret = updateSetting($w, 'podcasts_enabled', 1);
+        return;
+    } elseif ($other_action == 'disable_podcasts_settingss') {
+        $ret = updateSetting($w, 'podcasts_enabled', 0);
         return;
     } elseif ($other_action == 'enable_display_rating') {
         $ret = updateSetting($w, 'is_display_rating', 1);
@@ -1408,7 +1436,7 @@ if ($type == 'TRACK' && $other_settings == '' &&
 
         return;
     } elseif ($other_action == 'current_connect') {
-        $ret = getCurrentTrackInfoWithSpotifyConnect($w, false);
+        $ret = getCurrentTrackInfoWithSpotifyConnect($w);
         echo "$ret";
 
         return;
@@ -1505,6 +1533,26 @@ if ($type == 'TRACK' && $other_settings == '' &&
         stathat_ez_count('AlfredSpotifyMiniPlayer', 'add_or_remove', 1);
 
         return;
+    } elseif ($other_action == 'add_current_track_to_alfred_playlist') {
+        if (file_exists($w->data().'/update_library_in_progress')) {
+            displayNotificationWithArtwork($w, 'Cannot modify library while update is in progress', './images/warning.png', 'Error!');
+
+            return;
+        }
+        addCurrentTrackToAlfredPlaylist($w);
+        stathat_ez_count('AlfredSpotifyMiniPlayer', 'add_or_remove', 1);
+
+        return;
+    } elseif ($other_action == 'add_current_track_to_your_music') {
+        if (file_exists($w->data().'/update_library_in_progress')) {
+            displayNotificationWithArtwork($w, 'Cannot modify library while update is in progress', './images/warning.png', 'Error!');
+
+            return;
+        }
+        addCurrentTrackToYourMusic($w);
+        stathat_ez_count('AlfredSpotifyMiniPlayer', 'add_or_remove', 1);
+
+        return;
     } elseif ($other_action == 'remove_current_track') {
         if (file_exists($w->data().'/update_library_in_progress')) {
             displayNotificationWithArtwork($w, 'Cannot modify library while update is in progress', './images/warning.png', 'Error!');
@@ -1512,6 +1560,26 @@ if ($type == 'TRACK' && $other_settings == '' &&
             return;
         }
         removeCurrentTrackFromAlfredPlaylistOrYourMusic($w);
+        stathat_ez_count('AlfredSpotifyMiniPlayer', 'add_or_remove', 1);
+
+        return;
+    }  elseif ($other_action == 'remove_current_track_from_alfred_playlist') {
+        if (file_exists($w->data().'/update_library_in_progress')) {
+            displayNotificationWithArtwork($w, 'Cannot modify library while update is in progress', './images/warning.png', 'Error!');
+
+            return;
+        }
+        removeCurrentTrackFromAlfredPlaylist($w);
+        stathat_ez_count('AlfredSpotifyMiniPlayer', 'add_or_remove', 1);
+
+        return;
+    } elseif ($other_action == 'remove_current_track_from_your_music') {
+        if (file_exists($w->data().'/update_library_in_progress')) {
+            displayNotificationWithArtwork($w, 'Cannot modify library while update is in progress', './images/warning.png', 'Error!');
+
+            return;
+        }
+        removeCurrentTrackFromYourMusic($w);
         stathat_ez_count('AlfredSpotifyMiniPlayer', 'add_or_remove', 1);
 
         return;
@@ -1556,7 +1624,7 @@ if ($type == 'TRACK' && $other_settings == '' &&
 
         return;
     } elseif ($other_action == 'reset_settings') {
-        deleteTheFile($w,$w->data().'/settings.json');
+        resetSettings($w);
         logMsg($w,"Settings are reset");
 
         return;
@@ -1687,7 +1755,7 @@ if ($type == 'TRACK' && $other_settings == '' &&
         } else {
             $device_id = getSpotifyConnectCurrentDeviceId($w);
             if($device_id != '') {
-                $theVolume = getVolumeSpotifyConnect($w,$device_id);
+                $theVolume = getVolumeSpotifyConnect($w);
                 if(!$theVolume) {
                     displayNotificationWithArtwork($w, 'Cannot control volume on this Spotify Connect device', './images/warning.png', 'Error!');
                     return;
@@ -1700,7 +1768,7 @@ if ($type == 'TRACK' && $other_settings == '' &&
                     $theVolume = $theVolume + $volume_percent;
                     displayNotificationWithArtwork($w, 'Spotify volume has been increased to '.$theVolume.'%', './images/volume_up.png', 'Volume Up');
                 }
-                changeVolumeSpotifyConnect($w, $device_id, $theVolume);
+                changeVolumeSpotifyConnect($w, $theVolume);
             } else {
                 displayNotificationWithArtwork($w, 'No Spotify Connect device is available', './images/warning.png', 'Error!');
                 return;
@@ -1739,7 +1807,7 @@ if ($type == 'TRACK' && $other_settings == '' &&
         } else {
             $device_id = getSpotifyConnectCurrentDeviceId($w);
             if($device_id != '') {
-                $theVolume = getVolumeSpotifyConnect($w,$device_id);
+                $theVolume = getVolumeSpotifyConnect($w);
                 if(!$theVolume) {
                     displayNotificationWithArtwork($w, 'Cannot control volume on this Spotify Connect device', './images/warning.png', 'Error!');
                     return;
@@ -1751,7 +1819,7 @@ if ($type == 'TRACK' && $other_settings == '' &&
                     $theVolume = $theVolume - $volume_percent;
                     displayNotificationWithArtwork($w, 'Spotify volume has been decreased to '.$theVolume.'%', './images/volume_down.png', 'Volume Down');
                 }
-                changeVolumeSpotifyConnect($w, $device_id, $theVolume);
+                changeVolumeSpotifyConnect($w, $theVolume);
             } else {
                 displayNotificationWithArtwork($w, 'No Spotify Connect device is available', './images/warning.png', 'Error!');
                 return;
@@ -1772,13 +1840,13 @@ if ($type == 'TRACK' && $other_settings == '' &&
         } else {
             $device_id = getSpotifyConnectCurrentDeviceId($w);
             if($device_id != '') {
-                $theVolume = getVolumeSpotifyConnect($w,$device_id);
+                $theVolume = getVolumeSpotifyConnect($w);
                 if(!$theVolume) {
                     displayNotificationWithArtwork($w, 'Cannot control volume on this Spotify Connect device', './images/warning.png', 'Error!');
                     return;
                 }
                 $volume_max = getenv('settings_volume_max');
-                changeVolumeSpotifyConnect($w, $device_id, $volume_max);
+                changeVolumeSpotifyConnect($w, $volume_max);
             } else {
                 displayNotificationWithArtwork($w, 'No Spotify Connect device is available', './images/warning.png', 'Error!');
                 return;
@@ -1800,13 +1868,13 @@ if ($type == 'TRACK' && $other_settings == '' &&
         } else {
             $device_id = getSpotifyConnectCurrentDeviceId($w);
             if($device_id != '') {
-                $theVolume = getVolumeSpotifyConnect($w,$device_id);
+                $theVolume = getVolumeSpotifyConnect($w);
                 if(!$theVolume) {
                     displayNotificationWithArtwork($w, 'Cannot control volume on this Spotify Connect device', './images/warning.png', 'Error!');
                     return;
                 }
                 $volume_mid = getenv('settings_volume_mid');
-                changeVolumeSpotifyConnect($w, $device_id, $volume_mid);
+                changeVolumeSpotifyConnect($w, $volume_mid);
             } else {
                 displayNotificationWithArtwork($w, 'No Spotify Connect device is available', './images/warning.png', 'Error!');
                 return;
@@ -1840,13 +1908,13 @@ if ($type == 'TRACK' && $other_settings == '' &&
         } else {
             $device_id = getSpotifyConnectCurrentDeviceId($w);
             if($device_id != '') {
-                $theVolume = getVolumeSpotifyConnect($w,$device_id);
+                $theVolume = getVolumeSpotifyConnect($w);
                 if(!$theVolume) {
                     displayNotificationWithArtwork($w, 'Cannot control volume on this Spotify Connect device', './images/warning.png', 'Error!');
                     return;
                 }
                 if ($theVolume <= 0) {
-                    changeVolumeSpotifyConnect($w, $device_id, $volume_max);
+                    changeVolumeSpotifyConnect($w, $volume_max);
                     $command_output = 'Spotify volume is unmuted.';
                 } else {
                     if($volume_min == 0) {
@@ -1854,7 +1922,7 @@ if ($type == 'TRACK' && $other_settings == '' &&
                         // control is no more possible
                         $volume_min = 5;
                     }
-                    changeVolumeSpotifyConnect($w, $device_id, $volume_min);
+                    changeVolumeSpotifyConnect($w, $volume_min);
                     $command_output = 'Spotify volume is muted.';
                 }
             } else {
@@ -2060,9 +2128,9 @@ if ($type == 'TRACK' && $other_settings == '' &&
         stathat_ez_count('AlfredSpotifyMiniPlayer', 'play', 1);
 
         return;
-    } elseif ($other_action == 'download_artworks_verification') {
+    } elseif ($other_action == 'guided_setup') {
 
-        exec("osascript -e 'tell application id \"".getAlfredName()."\" to run trigger \"download_artworks_verification\" in workflow \"com.vdesabou.spotify.mini.player\" with argument \"\"'");
+        exec("osascript -e 'tell application id \"".getAlfredName()."\" to run trigger \"guided_setup\" in workflow \"com.vdesabou.spotify.mini.player\" with argument \"\"'");
         return;
     } elseif ($other_action == 'open_debug_tools') {
 

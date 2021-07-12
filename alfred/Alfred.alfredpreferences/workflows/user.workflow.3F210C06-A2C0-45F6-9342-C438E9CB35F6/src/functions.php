@@ -5,6 +5,32 @@ require_once './src/createLibrary.php';
 require_once './src/refreshLibrary.php';
 require './vendor/autoload.php';
 
+
+/**
+ * getExternalSettings function.
+ *
+ */
+function getExternalSettings($w)
+{
+    $dbfile = $w->data().'/settings.db';
+
+    $delimiter = '{::}';
+    exec("/usr/bin/sqlite3 -header -separator $delimiter '$dbfile' 'select * from settings where id=0;'" , $retArr, $retVal);
+    if($retVal != 0) {
+        logMsg($w,'Error(getExternalSettings) '.print_r($retArr));
+        return false;
+    }
+    $headers = explode($delimiter, $retArr[0]);
+    $values = explode($delimiter, $retArr[1]);
+    $settings = new stdClass();
+    $i=0;
+    foreach ($headers as $header) {
+        $settings->$header = $values[$i];
+        ++$i;
+    }
+    return $settings;
+}
+
 /**
  * countCharacters function.
  *
@@ -22,10 +48,7 @@ function countCharacters($str) {
  */
 function setVolume($w, $volume)
 {
-    // Read settings from JSON
-
-    $settings = getSettings($w);
-    $output_application = $settings->output_application;
+    $output_application = getSetting($w,'output_application');
 
     if ($output_application == 'MOPIDY') {
         invokeMopidyMethod($w, 'core.mixer.set_volume', array('volume' => $volume));
@@ -43,7 +66,7 @@ function setVolume($w, $volume)
     } else {
         $device_id = getSpotifyConnectCurrentDeviceId($w);
         if($device_id != '') {
-            changeVolumeSpotifyConnect($w, $device_id, $volume);
+            changeVolumeSpotifyConnect($w, $volume);
             displayNotificationWithArtwork($w, 'Spotify volume has been set to '.$volume.'%', './images/volume_up.png', 'Set Volume');
         } else {
             displayNotificationWithArtwork($w, 'No Spotify Connect device is available', './images/warning.png', 'Error!');
@@ -233,12 +256,12 @@ function getAlfredName()
 function createAndPlayLikedSongsPlaylist($w)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
-    $country_code = $settings->country_code;
-    $use_artworks = $settings->use_artworks;
-    $output_application = $settings->output_application;
+
+
+    $country_code = getSetting($w,'country_code');
+    $use_artworks = getSetting($w,'use_artworks');
+    $output_application = getSetting($w,'output_application');
 
     $savedMySavedTracks = array();
     $offsetGetMySavedTracks = 0;
@@ -379,7 +402,7 @@ function getCurrentTrackinfo($w, $output_application)
             $results = explode('▹', $retArr[count($retArr) - 1]);
         }
     } else {
-        $ret = getCurrentTrackInfoWithSpotifyConnect($w, false);
+        $ret = getCurrentTrackInfoWithSpotifyConnect($w);
         $results = explode('▹', $ret);
     }
 
@@ -398,8 +421,8 @@ function getCurrentTrackinfo($w, $output_application)
 
         if (isset($tmp[1]) && $tmp[1] == 'local') {
             // local track, look it up online
-            $settings = getSettings($w);
-            $country_code = $settings->country_code;
+
+            $country_code = getSetting($w,'country_code');
 
             // spotify:local:The+D%c3%b8:On+My+Shoulders+-+Single:On+My+Shoulders:318
             // spotify:local:Damien+Rice:B-Sides:Woman+Like+a+Man+%28Live%2c+Unplugged%29:284
@@ -448,8 +471,8 @@ function getCurrentTrackinfo($w, $output_application)
         }
 
         if($results[1] == '' || $results[2] == '') {
-            $settings = getSettings($w);
-            $country_code = $settings->country_code;
+
+            $country_code = getSetting($w,'country_code');
             $error = false;
             // get info from track uri
             //
@@ -509,12 +532,7 @@ function getCurrentArtistAndTrackName($w, $output_application)
  */
 function copyCurrentTrackUrlToClipboard($w)
 {
-
-    // Read settings from JSON
-
-    $settings = getSettings($w);
-
-    $output_application = $settings->output_application;
+    $output_application = getSetting($w,'output_application');
 
     $results = getCurrentTrackinfo($w, $output_application);
 
@@ -562,11 +580,11 @@ function copy2clipboard($string) {
 function showInSpotify($w)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $output_application = $settings->output_application;
+
+
+    $output_application = getSetting($w,'output_application');
 
     $results = getCurrentTrackinfo($w, $output_application);
 
@@ -714,11 +732,11 @@ function updatePlaylistNumberTimesPlayed($w, $playlist_uri)
  */
 function getShowFromEpisode($w, $episode_uri)
 {
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $country_code = $settings->country_code;
+
+
+    $country_code = getSetting($w,'country_code');
 
     try {
         $api = getSpotifyWebAPI($w);
@@ -813,11 +831,11 @@ function getShowFromEpisode($w, $episode_uri)
  */
 function getEpisodeName($w, $episode_uri)
 {
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $country_code = $settings->country_code;
+
+
+    $country_code = getSetting($w,'country_code');
 
     try {
         $api = getSpotifyWebAPI($w);
@@ -847,11 +865,11 @@ function getEpisodeName($w, $episode_uri)
  */
 function getEpisode($w, $episode_uri)
 {
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $country_code = $settings->country_code;
+
+
+    $country_code = getSetting($w,'country_code');
 
     try {
         $api = getSpotifyWebAPI($w);
@@ -969,11 +987,11 @@ function getEpisode($w, $episode_uri)
  */
  function isRepeatStateSpotifyConnectActive($w)
  {
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $country_code = $settings->country_code;
+
+
+    $country_code = getSetting($w,'country_code');
 
     $retry = true;
     $nb_retry = 0;
@@ -1080,7 +1098,7 @@ function getEpisode($w, $episode_uri)
  *
  * @param mixed $w
  */
- function getVolumeSpotifyConnect($w, $device_id)
+ function getVolumeSpotifyConnect($w)
  {
     $retry = true;
     $nb_retry = 0;
@@ -1136,7 +1154,7 @@ function getEpisode($w, $episode_uri)
  *
  * @param mixed $w
  */
- function changeVolumeSpotifyConnect($w, $device_id, $volume_percent)
+ function changeVolumeSpotifyConnect($w, $volume_percent)
  {
     $retry = true;
     $nb_retry = 0;
@@ -1219,7 +1237,7 @@ function getEpisode($w, $episode_uri)
                 $retry = false;
             }
         } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
-            logMsg($w,'Error(playTrackSpotifyConnect): retry '.$nb_retry.' (exception '.jTraceEx($e).')');
+            logMsg($w,'Error(playTrackSpotifyConnect): track_uri '.$track_uri.' retry '.$nb_retry.' (exception '.jTraceEx($e).')');
             if ($e->getCode() == 404) {
                 // skip
                 break;
@@ -1626,13 +1644,9 @@ function seekToBeginning($w)
  */
  function getSpotifyConnectCurrentDeviceId($w)
  {
-    // Read settings from JSON
-
-    $settings = getSettings($w);
-
-    $preferred_spotify_connect_device = $settings->preferred_spotify_connect_device;
-    $preferred_spotify_connect_device_pushcut_webhook = $settings->preferred_spotify_connect_device_pushcut_webhook;
-    $preferred_spotify_connect_device_pushcut_webhook_json_body = $settings->preferred_spotify_connect_device_pushcut_webhook_json_body;
+    $preferred_spotify_connect_device = getSetting($w,'preferred_spotify_connect_device');
+    $preferred_spotify_connect_device_pushcut_webhook = getSetting($w,'preferred_spotify_connect_device_pushcut_webhook');
+    $preferred_spotify_connect_device_pushcut_webhook_json_body = getSetting($w,'preferred_spotify_connect_device_pushcut_webhook_json_body');
 
     $retry = true;
     $nb_retry = 0;
@@ -1770,6 +1784,9 @@ function seekToBeginning($w)
                 // https://github.com/vdesabou/alfred-spotify-mini-player/issues/251
                 // retry any SSL error
                 ++$nb_retry;
+            } else if (strpos(strtolower($e->getMessage()), 'violated') !== false) {
+                // ignore
+                return false;
             } else if ($e->getCode() == 500 || $e->getCode() == 502 || $e->getCode() == 503 || $e->getCode() == 202 || $e->getCode() == 400 || $e->getCode() == 504) {
                 // retry
                 if ($nb_retry > 3) {
@@ -1808,12 +1825,12 @@ function isShuffleActive($print_output)
 {
     $w = new Workflows('com.vdesabou.spotify.mini.player');
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $output_application = $settings->output_application;
-    $country_code = $settings->country_code;
+
+
+    $output_application = getSetting($w,'output_application');
+    $country_code = getSetting($w,'country_code');
 
     if ($output_application == 'MOPIDY') {
         $isShuffleEnabled = invokeMopidyMethod($w, 'core.tracklist.get_random', array());
@@ -1958,8 +1975,8 @@ function getCurrentUser($w)
     if ($current_user == false) {
         // This should only happen once
 
-        $settings = getSettings($w);
-        $userid = $settings->userid;
+
+        $userid = getSetting($w,'userid');
 
         if($userid == false) {
             return;
@@ -1975,9 +1992,9 @@ function getCurrentUser($w)
                     rename($w->data().'/library.db', $user_folder.'/library.db');
                     link($user_folder.'/library.db',$w->data().'/library.db');
                 }
-                if (file_exists($w->data().'/settings.json')) {
-                    rename($w->data().'/settings.json', $user_folder.'/settings.json');
-                    link($user_folder.'/settings.json',$w->data().'/settings.json');
+                if (file_exists($w->data().'/settings.db')) {
+                    rename($w->data().'/settings.db', $user_folder.'/settings.db');
+                    link($user_folder.'/settings.db',$w->data().'/settings.db');
                 }
                 if (file_exists($w->data().'/history.json')) {
                     rename($w->data().'/history.json', $user_folder.'/history.json');
@@ -2007,11 +2024,11 @@ function switchUser($w, $new_user)
         link($new_user_folder.'/library.db',$w->data().'/library.db');
     }
 
-    if (file_exists($w->data().'/settings.json')) {
-        deleteTheFile($w,$w->data().'/settings.json');
+    if (file_exists($w->data().'/settings.db')) {
+        deleteTheFile($w,$w->data().'/settings.db');
     }
-    if (file_exists($new_user_folder.'/settings.json')) {
-        link($new_user_folder.'/settings.json',$w->data().'/settings.json');
+    if (file_exists($new_user_folder.'/settings.db')) {
+        link($new_user_folder.'/settings.db',$w->data().'/settings.db');
     }
 
     if (file_exists($w->data().'/history.json')) {
@@ -2038,8 +2055,8 @@ function newUser($w)
     if (file_exists($w->data().'/library.db')) {
         deleteTheFile($w,$w->data().'/library.db');
     }
-    if (file_exists($w->data().'/settings.json')) {
-        deleteTheFile($w,$w->data().'/settings.json');
+    if (file_exists($w->data().'/settings.db')) {
+        deleteTheFile($w,$w->data().'/settings.db');
     }
     if (file_exists($w->data().'/history.json')) {
         deleteTheFile($w,$w->data().'/history.json');
@@ -2096,13 +2113,10 @@ function listUsers($w)
  */
 function getSpotifyWebAPI($w)
 {
-    // Read settings from JSON
-
-    $settings = getSettings($w);
-    $oauth_client_id = $settings->oauth_client_id;
-    $oauth_client_secret = $settings->oauth_client_secret;
-    $oauth_access_token = $settings->oauth_access_token;
-    $oauth_refresh_token = $settings->oauth_refresh_token;
+    $oauth_client_id = getSetting($w,'oauth_client_id');
+    $oauth_client_secret = getSetting($w,'oauth_client_secret');
+    $oauth_access_token = getSetting($w,'oauth_access_token');
+    $oauth_refresh_token = getSetting($w,'oauth_refresh_token');
 
     // create a new api object
     $session = new SpotifyWebAPI\Session($oauth_client_id, $oauth_client_secret);
@@ -2147,11 +2161,11 @@ function getSpotifyWebAPI($w)
 function invokeMopidyMethod($w, $method, $params, $displayError = true)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
-    $mopidy_server = $settings->mopidy_server;
-    $mopidy_port = $settings->mopidy_port;
+
+
+    $mopidy_server = getSetting($w,'mopidy_server');
+    $mopidy_port = getSetting($w,'mopidy_port');
 
     exec("curl -s -X POST -H Content-Type:application/json -d '{
   \"method\": \"" .$method.'",
@@ -2204,9 +2218,9 @@ function switchThemeColor($w,$theme_color)
     $in_progress_data = $w->read('change_theme_color_in_progress');
     $words = explode('▹', $in_progress_data);
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
+
+
 
     $imgs = scandir('./images/');
 
@@ -2521,14 +2535,10 @@ function switchThemeColor($w,$theme_color)
  */
 function createDebugFile($w)
 {
-
-    // Read settings from JSON
-
-    $settings = getSettings($w);
-    $output_application = $settings->output_application;
-    $oauth_client_secret = $settings->oauth_client_secret;
-    $oauth_access_token = $settings->oauth_access_token;
-    $theme_color = $settings->theme_color;
+    $output_application = getSetting($w,'output_application');
+    $oauth_client_secret = getSetting($w,'oauth_client_secret');
+    $oauth_access_token = getSetting($w,'oauth_access_token');
+    $theme_color = getSetting($w,'theme_color');
 
     exec('mkdir -p /tmp/spot_mini_debug');
     date_default_timezone_set('UTC');
@@ -2543,16 +2553,11 @@ function createDebugFile($w)
     $output = $output."----------------------------------------------\n";
     $output = $output.'🕐 Generated: '.$date."\n";
     $output = $output."----------------------------------------------\n";
-    // settings.json
-    copy($w->data().'/settings.json', '/tmp/spot_mini_debug/settings.json');
 
     $output = $output."🔐 Encrypted data: I'm the only one able to decrypt your oauth_client_secret and oauth_access_token\n";
     $output = $output."I'll use it for troubleshooting, in order to be able to create and have same library as yours.\n";
     $output = $output."After investigation is done, you can regenerate a client secret as explained here https://developer.spotify.com/dashboard/applications.\n";
     $output = $output."----------------------------------------------\n";
-    // Remove oAuth values from file that will be uploaded
-    updateSetting($w, 'oauth_client_secret', 'xxx', '/tmp/spot_mini_debug/settings.json');
-    updateSetting($w, 'oauth_access_token', 'xxx', '/tmp/spot_mini_debug/settings.json');
     $output = $output.'* oauth_client_secret: '.encryptString($w, $oauth_client_secret)."\n\n";
     $output = $output.'* oauth_access_token: '.encryptString($w, $oauth_access_token)."\n\n";
     $output = $output."----------------------------------------------\n";
@@ -2620,10 +2625,20 @@ function createDebugFile($w)
     $output = $output.$response."\n";
 
     $output = $output."----------------------------------------------\n";
-    $output = $output."File: settings.json\n";
+    $output = $output."Settings\n";
     $output = $output."----------------------------------------------\n";
-    $response = shell_exec('cat /tmp/spot_mini_debug/settings.json');
-    $output = $output.$response."\n";
+    $array = getenv();
+    foreach ($array as $key => $value) {
+        if(startswith($key,'__')) {
+            if($key == '__oauth_client_secret') {
+                continue;
+            }
+            if($key == '__oauth_access_token') {
+                continue;
+            }
+            $output = $output.$key.'='.$value."\n";
+        }
+    }
 
     $output = $output."----------------------------------------------\n";
     $output = $output."File: action.log\n";
@@ -2741,11 +2756,9 @@ function getCurrentTrackInfoWithMopidy($w, $displayError = true)
  * @param mixed $w
  * @param bool  $displayError (default: true)
  */
- function getCurrentTrackInfoWithSpotifyConnect($w, $displayError = true)
+ function getCurrentTrackInfoWithSpotifyConnect($w)
  {
-    // Read settings from JSON
-    $settings = getSettings($w);
-    $country_code = $settings->country_code;
+    $country_code = getSetting($w,'country_code');
     $track_name = '';
     $artist_name = '';
     $album_name = '';
@@ -2925,10 +2938,10 @@ function setThePlaylistPrivacy($w, $playlist_uri, $playlist_name, $public)
 function followThePlaylist($w, $playlist_uri)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
-    $is_public_playlists = $settings->is_public_playlists;
+
+
+    $is_public_playlists = getSetting($w,'is_public_playlists');
 
     $public = false;
     if ($is_public_playlists) {
@@ -3051,10 +3064,10 @@ function addPlaylistToPlayQueue($w, $playlist_uri, $playlist_name)
         return false;
     }
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
-    $output_application = $settings->output_application;
+
+
+    $output_application = getSetting($w,'output_application');
 
     if ($output_application != 'MOPIDY') {
         $tracks = getThePlaylistFullTracks($w, $playlist_uri);
@@ -3089,10 +3102,10 @@ function addAlbumToPlayQueue($w, $album_uri, $album_name)
         return false;
     }
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
-    $output_application = $settings->output_application;
+
+
+    $output_application = getSetting($w,'output_application');
 
     if ($output_application != 'MOPIDY') {
         $tracks = getTheAlbumFullTracks($w, $album_uri);
@@ -3129,11 +3142,11 @@ function addArtistToPlayQueue($w, $artist_uri, $artist_name, $country_code)
         return false;
     }
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
-    $output_application = $settings->output_application;
-    $country_code = $settings->country_code;
+
+
+    $output_application = getSetting($w,'output_application');
+    $country_code = getSetting($w,'country_code');
 
     if ($output_application != 'MOPIDY') {
         $tracks = getTheArtistFullTracks($w, $artist_uri, $country_code);
@@ -3173,10 +3186,10 @@ function addTrackToPlayQueue($w, $track_uri, $track_name, $artist_name, $album_n
         return false;
     }
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
-    $output_application = $settings->output_application;
+
+
+    $output_application = getSetting($w,'output_application');
 
     $track = new stdClass();
     if ($output_application != 'MOPIDY') {
@@ -3253,11 +3266,11 @@ function updateCurrentTrackIndexFromPlayQueue($w)
         displayNotificationWithArtwork($w, 'No play queue yet', './images/warning.png', 'Error!');
     }
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $output_application = $settings->output_application;
+
+
+    $output_application = getSetting($w,'output_application');
 
     $results = getCurrentTrackinfo($w, $output_application);
 
@@ -3299,74 +3312,6 @@ function updateCurrentTrackIndexFromPlayQueue($w)
         }
         $w->write($newplayqueue, 'playqueue.json');
     }
-}
-
-/**
- * getBiography function.
- *
- * @param mixed $w
- * @param mixed $artist_uri
- * @param mixed $artist_name
- */
-function getBiography($w, $artist_uri, $artist_name)
-{
-
-    // Read settings from JSON
-
-    $settings = getSettings($w);
-    $echonest_api_key = $settings->echonest_api_key;
-
-    // THIS IS BROKEN, see http://developer.echonest.com
-    // SPOTIFY WEB API DOES NO SUPPORT IT YET https://github.com/spotify/web-api/issues/207
-
-    $json = doJsonRequest($w, 'http://developer.echonest.com/api/v4/artist/biographies?api_key='.$echonest_api_key.'&id='.$artist_uri);
-    $response = $json->response;
-
-    foreach ($response->biographies as $biography) {
-        if ($biography->site == 'wikipedia') {
-            $wikipedia = $biography->text;
-            $wikipedia_url = $biography->url;
-        }
-        if ($biography->site == 'last.fm') {
-            $lastfm = $biography->text;
-            $lastfm_url = $biography->url;
-        }
-        $default = 'Source: '.$biography->site.'\n'.$biography->text;
-        $default_url = $biography->url;
-    }
-
-    if ($lastfm) {
-        $text = $lastfm;
-        $source = 'Last FM';
-        $url = $lastfm_url;
-    } elseif ($wikipedia) {
-        $text = $wikipedia;
-        $source = 'Wikipedia';
-        $url = $wikipedia_url;
-    } else {
-        $text = $default;
-        $source = $biography->site;
-        $url = $default_url;
-    }
-    if ($text == '') {
-        return array(false, '', '', '');
-    }
-    $output = strip_tags($text);
-
-    // Get URLs of artist, if available
-    $json = doJsonRequest($w, 'http://developer.echonest.com/api/v4/artist/urls?api_key='.$echonest_api_key.'&id='.$artist_uri);
-
-    $twitter_url = '';
-    if (isset($json->response->urls->twitter_url)) {
-        $twitter_url = $json->response->urls->twitter_url;
-    }
-
-    $official_url = '';
-    if (isset($json->response->urls->official_url)) {
-        $official_url = $json->response->urls->official_url;
-    }
-
-    return array($url, $source, $output, $twitter_url, $official_url);
 }
 
 /**
@@ -3444,15 +3389,15 @@ function searchWebApi($w, $country_code, $query, $type, $limit = 50, $actionMode
 function playAlfredPlaylist($w)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $is_alfred_playlist_active = $settings->is_alfred_playlist_active;
-    $alfred_playlist_uri = $settings->alfred_playlist_uri;
-    $alfred_playlist_name = $settings->alfred_playlist_name;
-    $output_application = $settings->output_application;
-    $use_artworks = $settings->use_artworks;
+
+
+    $is_alfred_playlist_active = getSetting($w,'is_alfred_playlist_active');
+    $alfred_playlist_uri = getSetting($w,'alfred_playlist_uri');
+    $alfred_playlist_name = getSetting($w,'alfred_playlist_name');
+    $output_application = getSetting($w,'output_application');
+    $use_artworks = getSetting($w,'use_artworks');
 
     if ($alfred_playlist_uri == '' || $alfred_playlist_name == '') {
         displayNotificationWithArtwork($w, getenv('emoji_alfred') . 'Alfred Playlist is not set', './images/warning.png');
@@ -3485,11 +3430,11 @@ function playAlfredPlaylist($w)
 function lookupCurrentArtist($w)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $output_application = $settings->output_application;
+
+
+    $output_application = getSetting($w,'output_application');
 
     $results = getCurrentTrackinfo($w, $output_application);
 
@@ -3525,11 +3470,11 @@ function displayCurrentArtistBiography($w)
         return;
     }
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $output_application = $settings->output_application;
+
+
+    $output_application = getSetting($w,'output_application');
 
     $results = getCurrentTrackinfo($w, $output_application);
 
@@ -3559,12 +3504,12 @@ function displayCurrentArtistBiography($w)
 function followCurrentArtist($w)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $output_application = $settings->output_application;
-    $use_artworks = $settings->use_artworks;
+
+
+    $output_application = getSetting($w,'output_application');
+    $use_artworks = getSetting($w,'use_artworks');
 
     $results = getCurrentTrackinfo($w, $output_application);
 
@@ -3620,12 +3565,12 @@ function followCurrentArtist($w)
 function unfollowCurrentArtist($w)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $output_application = $settings->output_application;
-    $use_artworks = $settings->use_artworks;
+
+
+    $output_application = getSetting($w,'output_application');
+    $use_artworks = getSetting($w,'use_artworks');
 
     $results = getCurrentTrackinfo($w, $output_application);
 
@@ -3680,13 +3625,13 @@ function unfollowCurrentArtist($w)
 function playCurrentArtist($w)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $output_application = $settings->output_application;
-    $country_code = $settings->country_code;
-    $use_artworks = $settings->use_artworks;
+
+
+    $output_application = getSetting($w,'output_application');
+    $country_code = getSetting($w,'country_code');
+    $use_artworks = getSetting($w,'use_artworks');
 
     $results = getCurrentTrackinfo($w, $output_application);
 
@@ -3730,12 +3675,12 @@ function playCurrentArtist($w)
 function playCurrentAlbum($w)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $output_application = $settings->output_application;
-    $use_artworks = $settings->use_artworks;
+
+
+    $output_application = getSetting($w,'output_application');
+    $use_artworks = getSetting($w,'use_artworks');
 
     $results = getCurrentTrackinfo($w, $output_application);
 
@@ -3776,13 +3721,13 @@ function playCurrentAlbum($w)
 function addCurrentTrackTo($w,$playlist_uri='')
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $output_application = $settings->output_application;
-    $use_artworks = $settings->use_artworks;
-    $country_code = $settings->country_code;
+
+
+    $output_application = getSetting($w,'output_application');
+    $use_artworks = getSetting($w,'use_artworks');
+    $country_code = getSetting($w,'country_code');
 
     $results = getCurrentTrackinfo($w, $output_application);
 
@@ -3840,11 +3785,11 @@ function addCurrentTrackTo($w,$playlist_uri='')
 function removeCurrentTrackFrom($w)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $output_application = $settings->output_application;
+
+
+    $output_application = getSetting($w,'output_application');
 
     $results = getCurrentTrackinfo($w, $output_application);
 
@@ -3862,12 +3807,7 @@ function removeCurrentTrackFrom($w)
  */
 function removeCurrentTrackFromAlfredPlaylistOrYourMusic($w)
 {
-
-    // Read settings from JSON
-
-    $settings = getSettings($w);
-
-    $is_alfred_playlist_active = $settings->is_alfred_playlist_active;
+    $is_alfred_playlist_active = getSetting($w,'is_alfred_playlist_active');
 
     if ($is_alfred_playlist_active == true) {
         removeCurrentTrackFromAlfredPlaylist($w);
@@ -3883,12 +3823,7 @@ function removeCurrentTrackFromAlfredPlaylistOrYourMusic($w)
  */
 function addCurrentTrackToAlfredPlaylistOrYourMusic($w)
 {
-
-    // Read settings from JSON
-
-    $settings = getSettings($w);
-
-    $is_alfred_playlist_active = $settings->is_alfred_playlist_active;
+    $is_alfred_playlist_active = getSetting($w,'is_alfred_playlist_active');
 
     if ($is_alfred_playlist_active == true) {
         addCurrentTrackToAlfredPlaylist($w);
@@ -3904,17 +3839,12 @@ function addCurrentTrackToAlfredPlaylistOrYourMusic($w)
  */
 function removeCurrentTrackFromAlfredPlaylist($w)
 {
-
-    // Read settings from JSON
-
-    $settings = getSettings($w);
-
-    $output_application = $settings->output_application;
-    $is_alfred_playlist_active = $settings->is_alfred_playlist_active;
-    $alfred_playlist_uri = $settings->alfred_playlist_uri;
-    $alfred_playlist_name = $settings->alfred_playlist_name;
-    $country_code = $settings->country_code;
-    $use_artworks = $settings->use_artworks;
+    $output_application = getSetting($w,'output_application');
+    $is_alfred_playlist_active = getSetting($w,'is_alfred_playlist_active');
+    $alfred_playlist_uri = getSetting($w,'alfred_playlist_uri');
+    $alfred_playlist_name = getSetting($w,'alfred_playlist_name');
+    $country_code = getSetting($w,'country_code');
+    $use_artworks = getSetting($w,'use_artworks');
 
     $results = getCurrentTrackinfo($w, $output_application);
 
@@ -3968,17 +3898,12 @@ function removeCurrentTrackFromAlfredPlaylist($w)
  */
 function addCurrentTrackToAlfredPlaylist($w)
 {
-
-    // Read settings from JSON
-
-    $settings = getSettings($w);
-
-    $output_application = $settings->output_application;
-    $is_alfred_playlist_active = $settings->is_alfred_playlist_active;
-    $alfred_playlist_uri = $settings->alfred_playlist_uri;
-    $alfred_playlist_name = $settings->alfred_playlist_name;
-    $country_code = $settings->country_code;
-    $use_artworks = $settings->use_artworks;
+    $output_application = getSetting($w,'output_application');
+    $is_alfred_playlist_active = getSetting($w,'is_alfred_playlist_active');
+    $alfred_playlist_uri = getSetting($w,'alfred_playlist_uri');
+    $alfred_playlist_name = getSetting($w,'alfred_playlist_name');
+    $country_code = getSetting($w,'country_code');
+    $use_artworks = getSetting($w,'use_artworks');
 
     $results = getCurrentTrackinfo($w, $output_application);
 
@@ -4033,13 +3958,13 @@ function addCurrentTrackToAlfredPlaylist($w)
 function removeCurrentTrackFromYourMusic($w)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $output_application = $settings->output_application;
-    $use_artworks = $settings->use_artworks;
-    $country_code = $settings->country_code;
+
+
+    $output_application = getSetting($w,'output_application');
+    $use_artworks = getSetting($w,'use_artworks');
+    $country_code = getSetting($w,'country_code');
 
     $results = getCurrentTrackinfo($w, $output_application);
 
@@ -4086,13 +4011,13 @@ function removeCurrentTrackFromYourMusic($w)
 function addCurrentTrackToYourMusic($w)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $output_application = $settings->output_application;
-    $use_artworks = $settings->use_artworks;
-    $country_code = $settings->country_code;
+
+
+    $output_application = getSetting($w,'output_application');
+    $use_artworks = getSetting($w,'use_artworks');
+    $country_code = getSetting($w,'country_code');
 
     $results = getCurrentTrackinfo($w, $output_application);
 
@@ -4359,10 +4284,10 @@ function removeTrackFromPlaylist($w, $track_uri, $playlist_uri, $playlist_name, 
 function removeTrackFromYourMusic($w, $track_uri, $refreshLibrary = true)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
-    $userid = $settings->userid;
+
+
+    $userid = getSetting($w,'userid');
 
     try {
         $api = getSpotifyWebAPI($w);
@@ -4475,10 +4400,10 @@ function getRandomAlbum($w)
  */
 function getArtistUriFromTrack($w, $track_uri)
 {
-    // Read settings from JSON
 
-    $settings = getSettings($w);
-    $country_code = $settings->country_code;
+
+
+    $country_code = getSetting($w,'country_code');
 
     try {
         $tmp = explode(':', $track_uri);
@@ -4539,11 +4464,11 @@ function getArtistUriFromSearch($w, $artist_name, $country_code = '')
     }
     if ($country_code == '') {
 
-        // Read settings from JSON
 
-        $settings = getSettings($w);
 
-        $country_code = $settings->country_code;
+
+
+        $country_code = getSetting($w,'country_code');
     }
     $searchResults = searchWebApi($w, $country_code, $artist_name, 'artist', 1);
 
@@ -4570,10 +4495,10 @@ function getAlbumUriFromTrack($w, $track_uri)
 
         if (isset($tmp[1]) && $tmp[1] == 'local') {
 
-            // Read settings from JSON
 
-            $settings = getSettings($w);
-            $country_code = $settings->country_code;
+
+
+            $country_code = getSetting($w,'country_code');
             // local track, look it up online
             // spotify:local:The+D%c3%b8:On+My+Shoulders+-+Single:On+My+Shoulders:318
             // spotify:local:Damien+Rice:B-Sides:Woman+Like+a+Man+%28Live%2c+Unplugged%29:284
@@ -4649,10 +4574,10 @@ function clearPlaylist($w, $playlist_uri, $playlist_name)
 function createTheUserPlaylist($w, $playlist_name)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
-    $is_public_playlists = $settings->is_public_playlists;
+
+
+    $is_public_playlists = getSetting($w,'is_public_playlists');
 
     $public = false;
     if ($is_public_playlists) {
@@ -4682,11 +4607,11 @@ function createTheUserPlaylist($w, $playlist_name)
 function createRadioArtistPlaylistForCurrentArtist($w)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $output_application = $settings->output_application;
+
+
+    $output_application = getSetting($w,'output_application');
 
     $results = getCurrentTrackinfo($w, $output_application);
 
@@ -4719,16 +4644,16 @@ function createRadioArtistPlaylistForCurrentArtist($w)
 function createRadioArtistPlaylist($w, $artist_name, $artist_uri)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
-    $radio_number_tracks = $settings->radio_number_tracks;
-    $userid = $settings->userid;
-    $is_public_playlists = $settings->is_public_playlists;
-    $is_autoplay_playlist = $settings->is_autoplay_playlist;
-    $country_code = $settings->country_code;
-    $use_artworks = $settings->use_artworks;
-    $output_application = $settings->output_application;
+
+
+    $radio_number_tracks = getSetting($w,'radio_number_tracks');
+    $userid = getSetting($w,'userid');
+    $is_public_playlists = getSetting($w,'is_public_playlists');
+    $is_autoplay_playlist = getSetting($w,'is_autoplay_playlist');
+    $country_code = getSetting($w,'country_code');
+    $use_artworks = getSetting($w,'use_artworks');
+    $output_application = getSetting($w,'output_application');
 
     $public = false;
     if ($is_public_playlists) {
@@ -4824,16 +4749,16 @@ function createRadioArtistPlaylist($w, $artist_name, $artist_uri)
 function createSimilarPlaylist($w, $playlist_name, $playlist_uri)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
-    $radio_number_tracks = $settings->radio_number_tracks;
-    $userid = $settings->userid;
-    $is_public_playlists = $settings->is_public_playlists;
-    $is_autoplay_playlist = $settings->is_autoplay_playlist;
-    $country_code = $settings->country_code;
-    $use_artworks = $settings->use_artworks;
-    $output_application = $settings->output_application;
+
+
+    $radio_number_tracks = getSetting($w,'radio_number_tracks');
+    $userid = getSetting($w,'userid');
+    $is_public_playlists = getSetting($w,'is_public_playlists');
+    $is_autoplay_playlist = getSetting($w,'is_autoplay_playlist');
+    $country_code = getSetting($w,'country_code');
+    $use_artworks = getSetting($w,'use_artworks');
+    $output_application = getSetting($w,'output_application');
 
     $tracks = getThePlaylistTracks($w, $playlist_uri);
 
@@ -4936,15 +4861,15 @@ function createSimilarPlaylist($w, $playlist_name, $playlist_uri)
 function createCompleteCollectionArtistPlaylist($w, $artist_name, $artist_uri)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
-    $userid = $settings->userid;
-    $country_code = $settings->country_code;
-    $is_public_playlists = $settings->is_public_playlists;
-    $is_autoplay_playlist = $settings->is_autoplay_playlist;
-    $use_artworks = $settings->use_artworks;
-    $output_application = $settings->output_application;
+
+
+    $userid = getSetting($w,'userid');
+    $country_code = getSetting($w,'country_code');
+    $is_public_playlists = getSetting($w,'is_public_playlists');
+    $is_autoplay_playlist = getSetting($w,'is_autoplay_playlist');
+    $use_artworks = getSetting($w,'use_artworks');
+    $output_application = getSetting($w,'output_application');
 
     $public = false;
     if ($is_public_playlists) {
@@ -5028,11 +4953,11 @@ function createCompleteCollectionArtistPlaylist($w, $artist_name, $artist_uri)
 function createRadioSongPlaylistForCurrentTrack($w)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $output_application = $settings->output_application;
+
+
+    $output_application = getSetting($w,'output_application');
 
     $results = getCurrentTrackinfo($w, $output_application);
 
@@ -5054,16 +4979,16 @@ function createRadioSongPlaylistForCurrentTrack($w)
 function createRadioSongPlaylist($w, $track_name, $track_uri, $artist_name)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
-    $radio_number_tracks = $settings->radio_number_tracks;
-    $userid = $settings->userid;
-    $country_code = $settings->country_code;
-    $is_public_playlists = $settings->is_public_playlists;
-    $is_autoplay_playlist = $settings->is_autoplay_playlist;
-    $use_artworks = $settings->use_artworks;
-    $output_application = $settings->output_application;
+
+
+    $radio_number_tracks = getSetting($w,'radio_number_tracks');
+    $userid = getSetting($w,'userid');
+    $country_code = getSetting($w,'country_code');
+    $is_public_playlists = getSetting($w,'is_public_playlists');
+    $is_autoplay_playlist = getSetting($w,'is_autoplay_playlist');
+    $use_artworks = getSetting($w,'use_artworks');
+    $output_application = getSetting($w,'output_application');
 
     $public = false;
     if ($is_public_playlists) {
@@ -5179,11 +5104,11 @@ function getThePlaylistTracks($w, $playlist_uri)
 {
     $tracks = array();
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $country_code = $settings->country_code;
+
+
+    $country_code = getSetting($w,'country_code');
     try {
         $api = getSpotifyWebAPI($w);
         $tmp = explode(':', $playlist_uri);
@@ -5474,10 +5399,10 @@ function getTheAlbumFullTracks($w, $album_uri, $actionMode = false)
 {
     $tracks = array();
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
-    $country_code = $settings->country_code;
+
+
+    $country_code = getSetting($w,'country_code');
 
     try {
         $api = getSpotifyWebAPI($w);
@@ -5969,17 +5894,17 @@ function displayNotificationWithArtwork($w, $subtitle, $artwork, $title = 'Spoti
         // skip any non error
         return;
     }
-    // Read settings from JSON
 
-    $settings = getSettings($w);
-    $use_growl = $settings->use_growl;
+
+
+    $use_growl = getSetting($w,'use_growl');
 
     if (!$use_growl) {
-        $theme_color = $settings->theme_color;
+        $theme_color = getSetting($w,'theme_color');
         if (!is_dir('./App/'.$theme_color.'/Spotify Mini Player.app') || (is_dir('./App/'.$theme_color.'/Spotify Mini Player.app') && filesize('./App/'.$theme_color.'/Spotify Mini Player.app') == 0)) {
             // reset to default
             updateSetting($w, 'theme_color', 'green');
-            $theme_color = $settings->theme_color;
+            $theme_color = getSetting($w,'theme_color');
         }
         if ($artwork != '' && file_exists($artwork)) {
             copy($artwork, '/tmp/tmp_' . exec("whoami") );
@@ -6016,13 +5941,13 @@ function displayNotificationWithArtwork($w, $subtitle, $artwork, $title = 'Spoti
 function displayNotificationForCurrentTrack($w)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $output_application = $settings->output_application;
-    $is_display_rating = $settings->is_display_rating;
-    $use_artworks = $settings->use_artworks;
+
+
+    $output_application = getSetting($w,'output_application');
+    $is_display_rating = getSetting($w,'is_display_rating');
+    $use_artworks = getSetting($w,'use_artworks');
 
     $results = getCurrentTrackinfo($w, $output_application);
 
@@ -6098,12 +6023,12 @@ function displayLyricsForCurrentTrack($w)
         return;
     }
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $output_application = $settings->output_application;
-    $always_display_lyrics_in_browser = $settings->always_display_lyrics_in_browser;
+
+
+    $output_application = getSetting($w,'output_application');
+    $always_display_lyrics_in_browser = getSetting($w,'always_display_lyrics_in_browser');
 
     $results = getCurrentTrackinfo($w, $output_application);
 
@@ -6135,11 +6060,11 @@ function displayLyricsForCurrentTrack($w)
 function downloadArtworks($w, $silent = false)
 {
 
-    // Read settings from JSON
 
-    $settings = getSettings($w);
-    $userid = $settings->userid;
-    $use_artworks = $settings->use_artworks;
+
+
+    $userid = getSetting($w,'userid');
+    $use_artworks = getSetting($w,'use_artworks');
 
     if (!$use_artworks) {
         return;
@@ -7312,11 +7237,11 @@ function getShowArtworkURL($w, $show_uri)
  */
 function getEpisodeArtworkURL($w, $episode_uri)
 {
-    // Read settings from JSON
 
-    $settings = getSettings($w);
 
-    $country_code = $settings->country_code;
+
+
+    $country_code = getSetting($w,'country_code');
 
     $url = '';
     if (startswith($episode_uri, 'fake')) {
@@ -7878,6 +7803,10 @@ function strip_string($string)
     return preg_replace('/[^a-zA-Z0-9-\s]/', '', $string);
 }
 
+function startsWithNumber($str) {
+    return preg_match('/^\d/', $str) === 1;
+}
+
 /**
  * checkForUpdate function.
  *
@@ -7913,16 +7842,20 @@ function checkForUpdate($w, $last_check_update_time, $download = false)
         $w->request("$remote_info_plist_url", $options);
 
         if (!file_exists($remote_info_plist_name)) {
-            return 'The remove info.plist file cannot be downloaded';
+            return 'The remote info.plist file cannot be downloaded';
         }
         $remote_version = shell_exec("/usr/libexec/PlistBuddy -c 'print version' $remote_info_plist_name");
         $remote_version = preg_replace("/\s+/", "", $remote_version);
-        // Read settings from JSON
+        if (!startsWithNumber($remote_version)) {
+            return 'The remote version does not start with a number';
+        }
 
-        $settings = getSettings($w);
 
-        $workflow_version = $settings->workflow_version;
-        $theme_color = $settings->theme_color;
+
+
+
+        $workflow_version = getSetting($w,'workflow_version');
+        $theme_color = getSetting($w,'theme_color');
 
         if($local_version != $workflow_version) {
             // update workflow_version
@@ -8128,291 +8061,6 @@ function deleteTheFile($w, $filename)
 }
 
 /**
- * getSpotifyCountryCodesList function.
- *
- */
-function getSpotifyCountryCodesList()
-{
-    // from https://gist.github.com/frankkienl/a594807bf0dcd23fdb1b
-    $spotify_country_codes = array(
-        //A
-        'AD',
-        'AE',
-        'AF',
-        'AG',
-        'AI',
-        'AL',
-        'AM',
-        'AO',
-        'AQ',
-        'AR',
-        'AS',
-        'AT',
-        'AU',
-        'AW',
-        'AX',
-        'AZ',
-        //B
-        'BA',
-        'BB',
-        'BD',
-        'BE',
-        'BF',
-        'BG',
-        'BH',
-        'BI',
-        'BJ',
-        'BL',
-        'BM',
-        'BN',
-        'BO',
-        'BQ',
-        'BR',
-        'BS',
-        'BT',
-        'BV',
-        'BW',
-        'BY',
-        'BZ',
-        //C
-        'CA',
-        'CC',
-        'CD',
-        'CF',
-        'CG',
-        'CH',
-        'CI',
-        'CK',
-        'CL',
-        'CM',
-        'CN',
-        'CO',
-        'CR',
-        'CU',
-        'CV',
-        'CW',
-        'CX',
-        'CY',
-        'CZ',
-        //D
-        'DE',
-        'DJ',
-        'DK',
-        'DM',
-        'DO',
-        'DZ',
-        //E
-        'EC',
-        'EE',
-        'EG',
-        'EH',
-        'ER',
-        'ES',
-        'ET',
-        //F
-        'FI',
-        'FJ',
-        'FK',
-        'FM',
-        'FO',
-        'FR',
-        //G
-        'GA',
-        'GB',
-        'GD',
-        'GE',
-        'GF',
-        'GG',
-        'GH',
-        'GI',
-        'GL',
-        'GM',
-        'GN',
-        'GP',
-        'GQ',
-        'GR',
-        'GS',
-        'GT',
-        'GU',
-        'GW',
-        'GY',
-        //H
-        'HK',
-        'HM',
-        'HN',
-        'HR',
-        'HT',
-        'HU',
-        //I
-        'ID',
-        'IE',
-        'IL',
-        'IM',
-        'IN',
-        'IO',
-        'IQ',
-        'IR',
-        'IS',
-        'IT',
-        //J
-        'JE',
-        'JM',
-        'JO',
-        'JP',
-        //K
-        'KE',
-        'KG',
-        'KH',
-        'KI',
-        'KM',
-        'KN',
-        'KP',
-        'KR',
-        'KW',
-        'KY',
-        'KZ',
-        //L
-        'LA',
-        'LB',
-        'LC',
-        'LI',
-        'LK',
-        'LR',
-        'LS',
-        'LT',
-        'LU',
-        'LV',
-        //M
-        'MA',
-        'MC',
-        'MD',
-        'ME',
-        'MF',
-        'MG',
-        'MH',
-        'MK',
-        'ML',
-        'MM',
-        'MN',
-        'MO',
-        'MP',
-        'MQ',
-        'MR',
-        'MS',
-        'MT',
-        'MU',
-        'MV',
-        'MW',
-        'MX',
-        'MY',
-        'MZ',
-        //N
-        'NA',
-        'NC',
-        'NE',
-        'NF',
-        'NG',
-        'NI',
-        'NL',
-        'NO',
-        'NP',
-        'NR',
-        'NU',
-        'NZ',
-        //O
-        'OM',
-        //P
-        'PA',
-        'PE',
-        'PF',
-        'PG',
-        'PH',
-        'PK',
-        'PL',
-        'PM',
-        'PN',
-        'PR',
-        'PS',
-        'PT',
-        'PW',
-        'PY',
-        //Q
-        'QA',
-        //R
-        'RE',
-        'RO',
-        'RS',
-        'RU',
-        'RW',
-        //S
-        'SA',
-        'SB',
-        'SC',
-        'SD',
-        'SE',
-        'SG',
-        'SH',
-        'SI',
-        'SJ',
-        'SK',
-        'SL',
-        'SM',
-        'SN',
-        'SO',
-        'SR',
-        'SS',
-        'ST',
-        'SV',
-        'SX',
-        'SY',
-        'SZ',
-        //T
-        'TC',
-        'TD',
-        'TF',
-        'TG',
-        'TH',
-        'TJ',
-        'TK',
-        'TL',
-        'TM',
-        'TN',
-        'TO',
-        'TR',
-        'TT',
-        'TW',
-        'TZ',
-        //U
-        'UA',
-        'UG',
-        'UM',
-        'US',
-        'UY',
-        'UZ',
-        //V
-        'VA',
-        'VC',
-        'VE',
-        'VG',
-        'VI',
-        'VN',
-        'VU',
-        //W
-        'WF',
-        'WS',
-        //Y
-        'YE',
-        'YT',
-        //Z
-        'ZA',
-        'ZM',
-        'ZW',
-    );
-
-    return $spotify_country_codes;
-}
-
-/**
  * getCountryName function.
  *
  * @param mixed $cc
@@ -8475,194 +8123,76 @@ function startswith($haystack, $needle)
 
 
 /**
- * getSettings function.
+ * getSetting function.
  *
  * @param mixed $w
+ * @param string $setting_name
  */
-function getSettings($w)
+function getSetting($w, $setting_name)
 {
-    $settings = $w->read('settings.json');
+    // Migrate old settings
+    if(file_exists($w->data() . '/settings.json') || file_exists($w->data() . '/settings.db')) {
+        if (file_exists($w->data() . '/settings.json')) {
+            $settings = $w->read('settings.json');
+            logMsg($w,'Info(getSetting) migrating settings.json');
+        } elseif (file_exists($w->data() . '/settings.db')) {
+            $settings = getExternalSettings($w);
+            if ($settings == false) {
+                logMsg($w,'Error(getSetting): cannot get settings with getExternalSettings');
 
-    if ($settings == false) {
-        $default = array(
-            'all_playlists' => 1,
-            'is_alfred_playlist_active' => 1,
-            'radio_number_tracks' => 30,
-            'now_playing_notifications' => 1,
-            'max_results' => 50,
-            'alfred_playlist_uri' => '',
-            'alfred_playlist_name' => '',
-            'country_code' => '',
-            'last_check_update_time' => 0,
-            'oauth_client_id' => '',
-            'oauth_client_secret' => '',
-            'oauth_redirect_uri' => 'http://localhost:15298/callback.php',
-            'oauth_access_token' => '',
-            'oauth_refresh_token' => '',
-            'display_name' => '',
-            'userid' => '',
-            'is_public_playlists' => 0,
-            'quick_mode' => 0,
-            'output_application' => 'APPLESCRIPT',
-            'mopidy_server' => '127.0.0.1',
-            'mopidy_port' => '6680',
-            'volume_percent' => 20,
-            'is_display_rating' => 1,
-            'is_autoplay_playlist' => 1,
-            'use_growl' => 0,
-            'use_facebook' => 0,
-            'theme_color' => 'green',
-            'search_order' => 'playlist▹artist▹track▹album▹show▹episode',
-            'always_display_lyrics_in_browser' => 0,
-            'workflow_version' => '',
-            'automatic_refresh_library_interval' => 0,
-            'preferred_spotify_connect_device' => '',
-            'preferred_spotify_connect_device_pushcut_webhook' => '',
-            'fuzzy_search' => 0,
-            'debug' => 0,
-            'artwork_folder_size' => "",
-        );
-
-        $w->write($default, 'settings.json');
-        logMsg($w,"getSettings: Settings have been set to default");
-        displayNotificationWithArtwork($w, 'Settings have been set to default', './images/info.png', 'Settings reset');
-
-        $settings = $w->read('settings.json');
-    }
-
-    // add quick_mode if needed
-    if (!isset($settings->quick_mode)) {
-        updateSetting($w, 'quick_mode', 0);
-        $settings = $w->read('settings.json');
-    }
-
-    // add mopidy_server if needed
-    if (!isset($settings->mopidy_server)) {
-        updateSetting($w, 'mopidy_server', '127.0.0.1');
-        $settings = $w->read('settings.json');
-    }
-
-    // add mopidy_port if needed
-    if (!isset($settings->mopidy_port)) {
-        updateSetting($w, 'mopidy_port', '6680');
-        $settings = $w->read('settings.json');
-    }
-
-    // add volume_percent if needed
-    if (!isset($settings->volume_percent)) {
-        updateSetting($w, 'volume_percent', 20);
-        $settings = $w->read('settings.json');
-    }
-
-    // add is_display_rating if needed
-    if (!isset($settings->is_display_rating)) {
-        updateSetting($w, 'is_display_rating', 1);
-        $settings = $w->read('settings.json');
-    }
-
-    // add is_autoplay_playlist if needed
-    if (!isset($settings->is_autoplay_playlist)) {
-        updateSetting($w, 'is_autoplay_playlist', 1);
-        $settings = $w->read('settings.json');
-    }
-
-    // add use_growl if needed
-    if (!isset($settings->use_growl)) {
-        updateSetting($w, 'use_growl', 0);
-        $settings = $w->read('settings.json');
-    }
-
-    // add use_artworks if needed
-    if (!isset($settings->use_artworks)) {
-        updateSetting($w, 'use_artworks', 1);
-        $settings = $w->read('settings.json');
-    }
-
-    // add use_facebook if needed
-    if (!isset($settings->use_facebook)) {
-        updateSetting($w, 'use_facebook', 0);
-        $settings = $w->read('settings.json');
-    }
-
-    // add theme_color if needed
-    if (!isset($settings->theme_color)) {
-        updateSetting($w, 'theme_color', 'green');
-        $settings = $w->read('settings.json');
-    }
-
-    // add search_order if needed
-    if (!isset($settings->search_order)
-        || strpos($settings->search_order, 'show') === false
-        || strpos($settings->search_order, 'episode') === false) {
-        updateSetting($w, 'search_order', 'playlist▹artist▹track▹album▹show▹episode');
-        $settings = $w->read('settings.json');
-    }
-
-    // add always_display_lyrics_in_browser if needed
-    if (!isset($settings->always_display_lyrics_in_browser)) {
-        updateSetting($w, 'always_display_lyrics_in_browser', 0);
-        $settings = $w->read('settings.json');
-    }
-
-    // add workflow_version if needed
-    if (!isset($settings->workflow_version)) {
-        updateSetting($w, 'workflow_version', '');
-        $settings = $w->read('settings.json');
-    }
-
-    // add automatic_refresh_library_interval if needed
-    if (!isset($settings->automatic_refresh_library_interval)) {
-        updateSetting($w, 'automatic_refresh_library_interval', 0);
-        $settings = $w->read('settings.json');
-    }
-
-    // migrate use_mopidy
-    if (isset($settings->use_mopidy)) {
-        if ($settings->use_mopidy) {
-            updateSetting($w, 'output_application', 'MOPIDY');
-        } else {
-            updateSetting($w, 'output_application', 'APPLESCRIPT');
+                return false;
+            }
+            logMsg($w,'Info(getSetting) migrating settings.db');
         }
-        removeSetting($w,'use_mopidy');
-        $settings = $w->read('settings.json');
+
+        updateSetting($w, 'all_playlists', $settings->all_playlists);
+        updateSetting($w, 'is_alfred_playlist_active', $settings->is_alfred_playlist_active);
+        updateSetting($w, 'radio_number_tracks', $settings->radio_number_tracks);
+        updateSetting($w, 'now_playing_notifications', $settings->now_playing_notifications);
+        updateSetting($w, 'max_results', $settings->max_results);
+        updateSetting($w, 'alfred_playlist_uri', $settings->alfred_playlist_uri);
+        updateSetting($w, 'alfred_playlist_name', $settings->alfred_playlist_name);
+        updateSetting($w, 'country_code', $settings->country_code);
+        updateSetting($w, 'last_check_update_time', $settings->last_check_update_time);
+        updateSetting($w, 'oauth_client_id', $settings->oauth_client_id);
+        updateSetting($w, 'oauth_client_secret', $settings->oauth_client_secret);
+        updateSetting($w, 'oauth_redirect_uri', $settings->oauth_redirect_uri);
+        updateSetting($w, 'oauth_access_token', $settings->oauth_access_token);
+        updateSetting($w, 'oauth_refresh_token', $settings->oauth_refresh_token);
+        updateSetting($w, 'display_name', $settings->display_name);
+        updateSetting($w, 'userid', $settings->userid);
+        updateSetting($w, 'is_public_playlists', $settings->is_public_playlists);
+        updateSetting($w, 'quick_mode', $settings->quick_mode);
+        updateSetting($w, 'output_application', $settings->output_application);
+        updateSetting($w, 'mopidy_server', $settings->mopidy_server);
+        updateSetting($w, 'mopidy_port', $settings->mopidy_port);
+        updateSetting($w, 'volume_percent', $settings->volume_percent);
+        updateSetting($w, 'is_display_rating', $settings->is_display_rating);
+        updateSetting($w, 'is_autoplay_playlist', $settings->is_autoplay_playlist);
+        updateSetting($w, 'use_growl', $settings->use_growl);
+        updateSetting($w, 'use_facebook', $settings->use_facebook);
+        updateSetting($w, 'theme_color', $settings->theme_color);
+        updateSetting($w, 'search_order', $settings->search_order);
+        updateSetting($w, 'always_display_lyrics_in_browser', $settings->always_display_lyrics_in_browser);
+        updateSetting($w, 'workflow_version', $settings->workflow_version);
+        updateSetting($w, 'automatic_refresh_library_interval', $settings->automatic_refresh_library);
+        updateSetting($w, 'preferred_spotify_connect_device', $settings->preferred_spotify_connect_device);
+        updateSetting($w, 'preferred_spotify_connect_device_pushcut_webhook', $settings->preferred_spotify_connect_device_pushcut_webhook);
+        updateSetting($w, 'preferred_spotify_connect_device_pushcut_webhook_json_body', $settings->preferred_spotify_connect_device_pushcut_webhook_json_body);
+        updateSetting($w, 'fuzzy_search', $settings->fuzzy_search);
+        updateSetting($w, 'debug', $settings->debug);
+        updateSetting($w, 'artwork_folder_size', $settings->artwork_folder_size);
+        updateSetting($w, 'use_artworks', $settings->use_artworks);
+        updateSetting($w, 'podcasts_enabled', $settings->podcasts_enabled);
+
+        if (file_exists($w->data() . '/settings.json')) {
+            deleteTheFile($w,$w->data().'/settings.json');
+        } elseif (file_exists($w->data() . '/settings.db')) {
+            deleteTheFile($w,$w->data().'/settings.db');
+        }
     }
 
-    // add preferred_spotify_connect_device if needed
-    if (!isset($settings->preferred_spotify_connect_device)) {
-        updateSetting($w, 'preferred_spotify_connect_device', '');
-        $settings = $w->read('settings.json');
-    }
-
-    // add preferred_spotify_connect_device_pushcut_webhook if needed
-    if (!isset($settings->preferred_spotify_connect_device_pushcut_webhook)) {
-        updateSetting($w, 'preferred_spotify_connect_device_pushcut_webhook', '');
-        $settings = $w->read('settings.json');
-    }
-
-    // add preferred_spotify_connect_device_pushcut_webhook_json_body if needed
-    if (!isset($settings->preferred_spotify_connect_device_pushcut_webhook_json_body)) {
-        updateSetting($w, 'preferred_spotify_connect_device_pushcut_webhook_json_body', '');
-        $settings = $w->read('settings.json');
-    }
-
-    // add fuzzy_search if needed
-    if (!isset($settings->fuzzy_search)) {
-        updateSetting($w, 'fuzzy_search', 0);
-        $settings = $w->read('settings.json');
-    }
-
-    // add debug if needed
-    if (!isset($settings->debug)) {
-        updateSetting($w, 'debug', 0);
-        $settings = $w->read('settings.json');
-    }
-
-    // add artwork_folder_size if needed
-    if (!isset($settings->artwork_folder_size)) {
-        updateSetting($w, 'artwork_folder_size', "");
-        $settings = $w->read('settings.json');
-    }
-    return $settings;
+    return getenv('__'.$setting_name);
 }
 
 /**
@@ -8671,65 +8201,66 @@ function getSettings($w)
  * @param mixed  $w
  * @param mixed  $setting_name
  * @param mixed  $setting_new_value
- * @param string $settings_file     (default: 'settings.json')
+ * @param string $exportable     (default: 'false')
  */
-function updateSetting($w, $setting_name, $setting_new_value, $settings_file = 'settings.json')
+function updateSetting($w, $setting_name, $setting_new_value, $exportable = false)
 {
-    $settings = $w->read($settings_file);
-
-    if ($settings == false) {
-        logMsg($w,'Error(updateSetting) failed while reading JSON file');
-
-        return false;
+    $setting_name = '__' . $setting_name;
+    $is_exportable = '';
+    if($exportable) {
+        $is_exportable = ' with exportable';
     }
-    $new_settings = array();
-    $found = false;
-
-    foreach ($settings as $key => $value) {
-        if ($key == $setting_name) {
-            $new_settings[$key] = $setting_new_value;
-            $found = true;
-        } else {
-            $new_settings[$key] = $value;
-        }
-    }
-    if ($found == false) {
-        $new_settings[$setting_name] = $setting_new_value;
-    }
-    $ret = $w->write($new_settings, $settings_file);
-
-    return $ret;
+    exec("osascript -e 'tell application id \"".getAlfredName()."\" to set configuration \"".$setting_name."\" to value \"".$setting_new_value."\" in workflow \"com.vdesabou.spotify.mini.player\"".$is_exportable."'");
+    return true;
 }
 
 /**
- * removeSetting function.
+ * resetSettings function.
  *
- * @param mixed  $w
- * @param mixed  $setting_name
- * @param string $settings_file     (default: 'settings.json')
+ * @param mixed $w
  */
- function removeSetting($w, $setting_name, $settings_file = 'settings.json')
- {
-     $settings = $w->read($settings_file);
-
-     if ($settings == false) {
-         logMsg($w,'Error(removeSetting) failed while reading JSON file');
-
-         return false;
-     }
-     $new_settings = array();
-
-     foreach ($settings as $key => $value) {
-         if ($key == $setting_name) {
-             // do nothing
-         } else {
-             $new_settings[$key] = $value;
-         }
-     }
-     $ret = $w->write($new_settings, $settings_file);
-
-     return $ret;
- }
+function resetSettings($w)
+{
+    updateSetting($w, 'all_playlists', '1');
+    updateSetting($w, 'is_alfred_playlist_active', '1');
+    updateSetting($w, 'radio_number_tracks', '30');
+    updateSetting($w, 'now_playing_notifications', '1');
+    updateSetting($w, 'max_results', '50');
+    updateSetting($w, 'alfred_playlist_uri', '');
+    updateSetting($w, 'alfred_playlist_name', '');
+    updateSetting($w, 'country_code', '');
+    updateSetting($w, 'last_check_update_time', '0');
+    updateSetting($w, 'oauth_client_id', '');
+    updateSetting($w, 'oauth_client_secret', '');
+    updateSetting($w, 'oauth_redirect_uri', 'http://localhost:15298/callback.php');
+    updateSetting($w, 'oauth_access_token', '');
+    updateSetting($w, 'oauth_refresh_token', '');
+    updateSetting($w, 'display_name', '');
+    updateSetting($w, 'userid', '');
+    updateSetting($w, 'is_public_playlists', '0');
+    updateSetting($w, 'quick_mode', '0');
+    updateSetting($w, 'output_application', 'APPLESCRIPT');
+    updateSetting($w, 'mopidy_server', '127.0.0.1');
+    updateSetting($w, 'mopidy_port', '6680');
+    updateSetting($w, 'volume_percent', '20');
+    updateSetting($w, 'is_display_rating', '1');
+    updateSetting($w, 'is_autoplay_playlist', '1');
+    updateSetting($w, 'use_growl', '0');
+    updateSetting($w, 'use_facebook', '0');
+    updateSetting($w, 'theme_color', 'green');
+    updateSetting($w, 'search_order', 'playlist▹artist▹track▹album▹show▹episode');
+    updateSetting($w, 'always_display_lyrics_in_browser', '0');
+    updateSetting($w, 'workflow_version', '');
+    updateSetting($w, 'automatic_refresh_library_interval', '0');
+    updateSetting($w, 'preferred_spotify_connect_device', '');
+    updateSetting($w, 'preferred_spotify_connect_device_pushcut_webhook', '');
+    updateSetting($w, 'preferred_spotify_connect_device_pushcut_webhook_json_body', '');
+    updateSetting($w, 'fuzzy_search', '0');
+    updateSetting($w, 'debug', '0');
+    updateSetting($w, 'artwork_folder_size', '');
+    updateSetting($w, 'use_artworks', '1');
+    updateSetting($w, 'podcasts_enabled', '1');
+}
 
 /**
  * logMsg function.
@@ -8909,75 +8440,15 @@ function stathat_value($stat_key, $user_key, $value)
  */
 function stathat_ez_count($email, $stat_name, $count)
 {
+    if(getenv('disable_anonymous_metrics') == 1)
+    {
+        return;
+    }
     do_async_post_request('http://api.stathat.com/ez', array(
             'email' => $email,
             'stat' => $stat_name,
             'count' => $count,
         ));
-}
-
-/**
- * stathat_ez_value function.
- *
- * @param mixed $email
- * @param mixed $stat_name
- * @param mixed $value
- */
-function stathat_ez_value($email, $stat_name, $value)
-{
-    do_async_post_request('http://api.stathat.com/ez', array(
-            'email' => $email,
-            'stat' => $stat_name,
-            'value' => $value,
-        ));
-}
-
-/**
- * stathat_count_sync function.
- *
- * @param mixed $stat_key
- * @param mixed $user_key
- * @param mixed $count
- */
-function stathat_count_sync($stat_key, $user_key, $count)
-{
-    return do_post_request('http://api.stathat.com/c', "key=$stat_key&ukey=$user_key&count=$count");
-}
-
-/**
- * stathat_value_sync function.
- *
- * @param mixed $stat_key
- * @param mixed $user_key
- * @param mixed $value
- */
-function stathat_value_sync($stat_key, $user_key, $value)
-{
-    return do_post_request('http://api.stathat.com/v', "key=$stat_key&ukey=$user_key&value=$value");
-}
-
-/**
- * stathat_ez_count_sync function.
- *
- * @param mixed $email
- * @param mixed $stat_name
- * @param mixed $count
- */
-function stathat_ez_count_sync($email, $stat_name, $count)
-{
-    return do_post_request('http://api.stathat.com/ez', "email=$email&stat=$stat_name&count=$count");
-}
-
-/**
- * stathat_ez_value_sync function.
- *
- * @param mixed $email
- * @param mixed $stat_name
- * @param mixed $value
- */
-function stathat_ez_value_sync($email, $stat_name, $value)
-{
-    return do_post_request('http://api.stathat.com/ez', "email=$email&stat=$stat_name&value=$value");
 }
 
 /**

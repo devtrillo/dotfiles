@@ -7,12 +7,8 @@ require_once './src/workflows.php';
 function debug($argv) {
     $w = new Workflows('com.vdesabou.spotify.mini.player');
 
-    // Read settings from JSON
-
-    $settings = getSettings($w);
-
-    $theme_color = $settings->theme_color;
-    $artwork_folder_size = $settings->artwork_folder_size;
+    $theme_color = getSetting($w,'theme_color');
+    $artwork_folder_size = getSetting($w,'artwork_folder_size');
 
     $query = $argv[1];
 
@@ -275,7 +271,7 @@ function debug($argv) {
         '' /* playlist_uri */,
         '' /* spotify_command */,
         '' /* query */,
-        'Open▹'.$w->data().'/settings.json'/* other_settings*/,
+        'OpenInFinder▹'.exec('pwd').'/App/'.$theme_color.'/Spotify Mini Player.app' /* other_settings*/,
         '' /* other_action */,
         '' /* alfred_playlist_uri */,
         '' /* artist_name */,
@@ -291,7 +287,7 @@ function debug($argv) {
         '' /* is_alfred_playlist_active */,
         '' /* country_code*/,
         '', /* userid*/
-    )), 'Open settings file', 'This will open the json settings file', 'fileicon:'.$w->data().'/settings.json', 'yes', null, '');
+    )), 'Open Spotify Mini Player app in Finder', 'If you have permissions issue, right click on app in Finder and select open', 'fileicon:'.exec('pwd').'/App/'.$theme_color.'/Spotify Mini Player.app', 'yes', null, '');
 
     $w->result(null, serialize(array(
         '' /*track_uri*/,
@@ -300,7 +296,7 @@ function debug($argv) {
         '' /* playlist_uri */,
         '' /* spotify_command */,
         '' /* query */,
-        'Open▹'.exec('pwd').'/App/'.$theme_color.'/Spotify Mini Player.app' /* other_settings*/,
+        'OpenInFinder▹'.exec('pwd').'/terminal-notifier.app' /* other_settings*/,
         '' /* other_action */,
         '' /* alfred_playlist_uri */,
         '' /* artist_name */,
@@ -316,32 +312,7 @@ function debug($argv) {
         '' /* is_alfred_playlist_active */,
         '' /* country_code*/,
         '', /* userid*/
-    )), 'Open Spotify Mini Player app', 'This will open the app (troubleshooting notifications issues)', 'fileicon:'.exec('pwd').'/App/'.$theme_color.'/Spotify Mini Player.app', 'yes', null, '');
-
-    $w->result(null, serialize(array(
-        '' /*track_uri*/,
-        '' /* album_uri */,
-        '' /* artist_uri */,
-        '' /* playlist_uri */,
-        '' /* spotify_command */,
-        '' /* query */,
-        'Open▹'.exec('pwd').'/terminal-notifier.app' /* other_settings*/,
-        '' /* other_action */,
-        '' /* alfred_playlist_uri */,
-        '' /* artist_name */,
-        '' /* track_name */,
-        '' /* album_name */,
-        '' /* track_artwork_path */,
-        '' /* artist_artwork_path */,
-        '' /* album_artwork_path */,
-        '' /* playlist_name */,
-        '' /* playlist_artwork_path */,
-        '' /* $alfred_playlist_name */,
-        '' /* now_playing_notifications */,
-        '' /* is_alfred_playlist_active */,
-        '' /* country_code*/,
-        '', /* userid*/
-    )), 'Open terminal-notifier app', 'This will open the app (troubleshooting notifications issues)', 'fileicon:'.exec('pwd').'/terminal-notifier.app', 'yes', null, '');
+    )), 'Open terminal-notifier app in Finder', 'If you have permissions issue, right click on app in Finder and select open', 'fileicon:'.exec('pwd').'/terminal-notifier.app', 'yes', null, '');
 
     $w->result(null, serialize(array(
         '' /*track_uri*/,

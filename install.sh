@@ -144,42 +144,23 @@ fi
 
 function setup_neovim(){
   title "Setting up neovim"
-  if [ -d "$HOME/.vim/undodir" ]; then
-    mkdir -p $HOME/.vim/undodir
-  fi
   if [ -d "$HOME/.config/nvim" ]; then
     info "There is a neovim config, creating backup to $HOME/backup-neovim"
     rm -rf $HOME/backup-neovim 
     mv -f $HOME/.config/nvim $HOME/backup-neovim
   fi
 
-  if [ -f "$HOME/.config/nvim/plugged/.vim_plug_update" ]; then
-    mkdir -p $HOME/.config/nvim/plugged
-    touch $HOME/.config/nvim/plugged/.vim_plug_update
-  fi
-  
   if [ ! $(command -v nvim) ]; then
     error "NeoVim is not installed"
     error "Please run install.sh homebrew to install it"
     return
   fi
 
-  for folder in $(find "$DOTFILES/config/nvim" ! -path "$DOTFILES/config/nvim" -type d);do
-    CONFIG_FOLDER=$HOME/.config/nvim/$( basename $folder)
-    info "Creating folder $CONFIG_FOLDER"
-    mkdir -p $CONFIG_FOLDER
-  done
-
-  info "Linking files"
-  for file in $(find -H "$DOTFILES/config/nvim" -maxdepth 4 -name '*.*'); do
-    relative=$DOTFILES/config/nvim
-    numbers="${#relative}"
-    ln -sfv $file "$HOME/.config/nvim${file:$numbers}"
-  done
+  bash <(curl -s https://raw.githubusercontent.com/ChristianChiarulli/lunarvim/master/utils/installer/install.sh)
 
   info "Linking config files"
-
   ln -sfv $DOTFILES/config/wakatime.cfg.symlink $HOME/.wakatime.cfg
+  ln -sfv $DOTFILES/config/nvim/lv-config.lua $HOME/.config/nvim/lv-config.lua
 }
 
 function setup_terminfo() {
@@ -251,43 +232,43 @@ setup_macos() {
 
 title "Welcome to my aweomse installer"
 case "$1" in
-  tmux)
-    setup_tmux
-    ;;
-  git)
-    setup_git
-    ;;
-  homebrew)
-    setup_homebrew
-    ;;
-  shell)
-    setup_shell 
-    ;;
-  terminfo)
-    setup_terminfo 
-    ;;
-  ubuntu)
-    setup_ubuntu
-    setup_shell
-    setup_neovim
-    setup_git
-    setup_tmux
-    ;;
-  neovim)
-    setup_neovim 
-    ;;
-  macos)
-    setup_shell
-    setup_neovim
-    setup_macos
-    setup_terminfo
-    setup_homebrew
-    setup_git
-    ;;
-  *)
-    echo -e $"\nUsage: $(basename "$0") {neovim|git|homebrew|shell|terminfo|macos}\n"
-    exit 1
-    ;;
+    tmux)
+        setup_tmux
+        ;;
+    git)
+        setup_git
+        ;;
+    homebrew)
+        setup_homebrew
+        ;;
+    shell)
+        setup_shell 
+        ;;
+    terminfo)
+        setup_terminfo 
+        ;;
+    ubuntu)
+        setup_ubuntu
+        setup_shell
+        setup_neovim
+        setup_git
+        setup_tmux
+        ;;
+    neovim)
+        setup_neovim 
+        ;;
+    macos)
+        setup_shell
+        setup_neovim
+        setup_macos
+        setup_terminfo
+        setup_homebrew
+        setup_git
+        ;;
+    *)
+        echo -e $"\nUsage: $(basename "$0") {neovim|git|homebrew|shell|terminfo|macos}\n"
+        exit 1
+        ;;
 esac
 
 echo -e

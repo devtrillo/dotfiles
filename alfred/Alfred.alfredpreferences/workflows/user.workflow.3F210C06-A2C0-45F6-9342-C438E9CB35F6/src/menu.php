@@ -4,13 +4,13 @@
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $update_in_progress
  */
-function oAuthChecks($w, $query, $settings, $update_in_progress) {
-    $oauth_client_id = $settings->oauth_client_id;
-    $oauth_client_secret = $settings->oauth_client_secret;
-    $oauth_access_token = $settings->oauth_access_token;
+function oAuthChecks($w, $query, $update_in_progress) {
+    $oauth_client_id = getSetting($w,'oauth_client_id');
+    $oauth_client_secret = getSetting($w,'oauth_client_secret');
+    $oauth_access_token = getSetting($w,'oauth_access_token');
 
     ////
     // OAUTH checks
@@ -85,22 +85,23 @@ function oAuthChecks($w, $query, $settings, $update_in_progress) {
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function mainMenu($w, $query, $settings, $db, $update_in_progress) {
-    $all_playlists = $settings->all_playlists;
-    $is_alfred_playlist_active = $settings->is_alfred_playlist_active;
-    $radio_number_tracks = $settings->radio_number_tracks;
-    $max_results = $settings->max_results;
-    $alfred_playlist_uri = $settings->alfred_playlist_uri;
-    $alfred_playlist_name = $settings->alfred_playlist_name;
-    $userid = $settings->userid;
-    $use_artworks = $settings->use_artworks;
-    $output_application = $settings->output_application;
-    $quick_mode = $settings->quick_mode;
-    $fuzzy_search = $settings->fuzzy_search;
+function mainMenu($w, $query, $db, $update_in_progress) {
+    $all_playlists = getSetting($w,'all_playlists');
+    $is_alfred_playlist_active = getSetting($w,'is_alfred_playlist_active');
+    $radio_number_tracks = getSetting($w,'radio_number_tracks');
+    $max_results = getSetting($w,'max_results');
+    $alfred_playlist_uri = getSetting($w,'alfred_playlist_uri');
+    $alfred_playlist_name = getSetting($w,'alfred_playlist_name');
+    $userid = getSetting($w,'userid');
+    $use_artworks = getSetting($w,'use_artworks');
+    $output_application = getSetting($w,'output_application');
+    $quick_mode = getSetting($w,'quick_mode');
+    $fuzzy_search = getSetting($w,'fuzzy_search');
+    $podcasts_enabled = getSetting($w,'podcasts_enabled');
 
     ////////
     // MAIN MENU
@@ -255,7 +256,7 @@ function mainMenu($w, $query, $settings, $db, $update_in_progress) {
         )), 'Lookup Current Artist online', array(getenv('emoji_online').' Query all albums/tracks from current artist online..', 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/online_artist.png', 'yes', '');
     }
 
-    if (getenv('menu_display_show_in_spotify') == 1) {
+    if (getenv('menu_display_show_in_spotify') == 1 && $podcasts_enabled) {
         $w->result(null, serialize(array(''
         /*track_uri*/, ''
         /* album_uri */, ''
@@ -318,7 +319,7 @@ function mainMenu($w, $query, $settings, $db, $update_in_progress) {
         }
     }
 
-    if (getenv('menu_display_browse_by_show') == 1) {
+    if (getenv('menu_display_browse_by_show') == 1 && $podcasts_enabled) {
         $w->result(null, '', 'Shows', array('Browse by show' . ' (' . $nb_shows . ' shows)', 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/shows.png', 'no', null, 'Show▹');
     }
 
@@ -348,18 +349,19 @@ function mainMenu($w, $query, $settings, $db, $update_in_progress) {
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function mainSearch($w, $query, $settings, $db, $update_in_progress) {
-    $all_playlists = $settings->all_playlists;
-    $max_results = $settings->max_results;
-    $userid = $settings->userid;
-    $quick_mode = $settings->quick_mode;
-    $output_application = $settings->output_application;
-    $search_order = $settings->search_order;
-    $fuzzy_search = $settings->fuzzy_search;
+function mainSearch($w, $query, $db, $update_in_progress) {
+    $all_playlists = getSetting($w,'all_playlists');
+    $max_results = getSetting($w,'max_results');
+    $userid = getSetting($w,'userid');
+    $quick_mode = getSetting($w,'quick_mode');
+    $output_application = getSetting($w,'output_application');
+    $search_order = getSetting($w,'search_order');
+    $fuzzy_search = getSetting($w,'fuzzy_search');
+    $podcasts_enabled = getSetting($w,'podcasts_enabled');
 
     $search_categories = explode('▹', $search_order);
 
@@ -543,7 +545,7 @@ function mainSearch($w, $query, $settings, $db, $update_in_progress) {
                     $added = getenv('emoji_local_track').' ';
                 }
                 if (checkIfResultAlreadyThere($w->results(), $added . $track[7] . ' '.getenv('emoji_separator').' ' . $track[5]) == false) {
-                    if ($track[14] == true) {
+                    if ($track[14] == true || getenv('ignore_unplayable_tracks') == 1) {
                         $w->result(null, serialize(array($track[2] /*track_uri*/, $track[3] /* album_uri */, $track[4] /* artist_uri */, ''
                         /* playlist_uri */, ''
                         /* spotify_command */, ''
@@ -621,7 +623,7 @@ function mainSearch($w, $query, $settings, $db, $update_in_progress) {
             }
         }
 
-        if ($search_category == 'show') {
+        if ($search_category == 'show' && $podcasts_enabled) {
 
             if($fuzzy_search || ($update_in_progress && file_exists($w->data() . '/create_library'))) {
                 $results = getFuzzySearchResults($w, $update_in_progress, $query, 'shows', array('uri','name','description','media_type','show_artwork_path','explicit','added_at','languages','nb_times_played','is_externally_hosted', 'nb_episodes'), $max_results, '2', '');
@@ -647,7 +649,7 @@ function mainSearch($w, $query, $settings, $db, $update_in_progress) {
             }
         }
 
-        if ($search_category == 'episode') {
+        if ($search_category == 'episode' && $podcasts_enabled) {
             // Search episodes
             if($fuzzy_search || ($update_in_progress && file_exists($w->data() . '/create_library'))) {
                 $results = getFuzzySearchResults($w, $update_in_progress, $query, 'episodes', array('uri', 'name', 'uri', 'show_uri', 'show_name', 'description', 'episode_artwork_path', 'is_playable', 'languages', 'nb_times_played', 'is_externally_hosted', 'duration_ms', 'explicit', 'release_date', 'release_date_precision', 'audio_preview_url', 'fully_played', 'resume_position_ms'), $max_results, '2,4', '');
@@ -675,7 +677,7 @@ function mainSearch($w, $query, $settings, $db, $update_in_progress) {
                     $fully_played = '✔️';
                 }
                 if (checkIfResultAlreadyThere($w->results(), getenv('emoji_show').' ' . $fully_played . $episodes[1]) == false) {
-                    if ($episodes[7] == true) {
+                    if ($episodes[7] == true || getenv('ignore_unplayable_tracks') == 1) {
                         $w->result(null, serialize(array($episodes[2] /*track_uri*/, $episodes[3] /* album_uri */, $episodes[4] /* artist_uri */, ''
                         /* playlist_uri */, ''
                         /* spotify_command */, ''
@@ -722,13 +724,14 @@ function mainSearch($w, $query, $settings, $db, $update_in_progress) {
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function searchCategoriesFastAccess($w, $query, $settings, $db, $update_in_progress) {
-    $alfred_playlist_name = $settings->alfred_playlist_name;
-    $now_playing_notifications = $settings->now_playing_notifications;
+function searchCategoriesFastAccess($w, $query, $db, $update_in_progress) {
+    $alfred_playlist_name = getSetting($w,'alfred_playlist_name');
+    $now_playing_notifications = getSetting($w,'now_playing_notifications');
+    $podcasts_enabled = getSetting($w,'podcasts_enabled');
 
     // Search categories for fast access
     if (strpos(strtolower('playlists'), strtolower($query)) !== false) {
@@ -775,7 +778,9 @@ function searchCategoriesFastAccess($w, $query, $settings, $db, $update_in_progr
         $w->result(null, '', 'Artists', array('Browse by artist', 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/artists.png', 'no', null, 'Artist▹');
     }
     if (strpos(strtolower('show'), strtolower($query)) !== false || strpos(strtolower('pod'), strtolower($query)) !== false) {
-        $w->result(null, '', 'Shows', array('Browse by show', 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/shows.png', 'no', null, 'Show▹');
+        if ($podcasts_enabled) {
+            $w->result(null, '', 'Shows', array('Browse by show', 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/shows.png', 'no', null, 'Show▹');
+        }
     }
     if (strpos(strtolower('play queue'), strtolower($query)) !== false) {
         if ($now_playing_notifications == true) {
@@ -807,13 +812,13 @@ function searchCategoriesFastAccess($w, $query, $settings, $db, $update_in_progr
  *
  * @param mixed $w
  * @param mixed $query
- * @param mixed $settings
+
  * @param mixed $db
  * @param mixed $update_in_progress
  */
-function searchCommandsFastAccess($w, $query, $settings, $db, $update_in_progress) {
-    $is_alfred_playlist_active = $settings->is_alfred_playlist_active;
-    $output_application = $settings->output_application;
+function searchCommandsFastAccess($w, $query, $db, $update_in_progress) {
+    $is_alfred_playlist_active = getSetting($w,'is_alfred_playlist_active');
+    $output_application = getSetting($w,'output_application');
 
     $cmd = '';
     if ($output_application == 'CONNECT') {
@@ -1279,6 +1284,26 @@ function searchCommandsFastAccess($w, $query, $settings, $db, $update_in_progres
             /* playlist_name */, '', /* playlist_artwork_path */
             )), 'Create song radio playlist for current track', 'Create song radio playlist', './images/radio_song.png', 'yes', '');
 
+            $w->result('SpotifyMiniPlayer_' . 'add_current_track_to_alfred_playlist', serialize(array(''
+            /*track_uri*/, ''
+            /* album_uri */, ''
+            /* artist_uri */, ''
+            /* playlist_uri */, ''
+            /* spotify_command */, ''
+            /* query */, ''
+            /* other_settings*/, 'add_current_track_to_alfred_playlist'
+            /* other_action */,
+
+            ''
+            /* artist_name */, ''
+            /* track_name */, ''
+            /* album_name */, ''
+            /* track_artwork_path */, ''
+            /* artist_artwork_path */, ''
+            /* album_artwork_path */, ''
+            /* playlist_name */, '', /* playlist_artwork_path */
+            )), 'Add current track to Alfred Playlist', 'Current track will be added to Alfred Playlist', './images/add.png', 'yes', '');
+
             if ($is_alfred_playlist_active == true) {
                 $w->result('SpotifyMiniPlayer_' . 'add_current_track', serialize(array(''
                 /*track_uri*/, ''
@@ -1321,6 +1346,25 @@ function searchCommandsFastAccess($w, $query, $settings, $db, $update_in_progres
                 /* playlist_name */, '', /* playlist_artwork_path */
                 )), 'Add current track to Your Music', 'Current track will be added to Your Music', './images/add_to_ap_yourmusic.png', 'yes', '');
             }
+            $w->result('SpotifyMiniPlayer_' . 'add_current_track_to_your_music', serialize(array(''
+            /*track_uri*/, ''
+            /* album_uri */, ''
+            /* artist_uri */, ''
+            /* playlist_uri */, ''
+            /* spotify_command */, ''
+            /* query */, ''
+            /* other_settings*/, 'add_current_track_to_your_music'
+            /* other_action */,
+
+            ''
+            /* artist_name */, ''
+            /* track_name */, ''
+            /* album_name */, ''
+            /* track_artwork_path */, ''
+            /* artist_artwork_path */, ''
+            /* album_artwork_path */, ''
+            /* playlist_name */, '', /* playlist_artwork_path */
+            )), 'Add current track to Your Music', 'Current track will be added to Your Music', './images/add.png', 'yes', '');
             $w->result('SpotifyMiniPlayer_' . 'add_current_track_to', serialize(array(''
             /*track_uri*/, ''
             /* album_uri */, ''
@@ -1987,48 +2031,44 @@ function searchCommandsFastAccess($w, $query, $settings, $db, $update_in_progres
         }
         if ($update_in_progress == false) {
             if (strpos(strtolower('add'), strtolower($query)) !== false) {
-                if ($is_alfred_playlist_active == true) {
-                    $w->result('SpotifyMiniPlayer_' . 'add_current_track', serialize(array(''
-                    /*track_uri*/, ''
-                    /* album_uri */, ''
-                    /* artist_uri */, ''
-                    /* playlist_uri */, ''
-                    /* spotify_command */, ''
-                    /* query */, ''
-                    /* other_settings*/, 'add_current_track'
-                    /* other_action */,
+                $w->result('SpotifyMiniPlayer_' . 'add_current_track_to_your_music', serialize(array(''
+                /*track_uri*/, ''
+                /* album_uri */, ''
+                /* artist_uri */, ''
+                /* playlist_uri */, ''
+                /* spotify_command */, ''
+                /* query */, ''
+                /* other_settings*/, 'add_current_track_to_your_music'
+                /* other_action */,
 
-                    ''
-                    /* artist_name */, ''
-                    /* track_name */, ''
-                    /* album_name */, ''
-                    /* track_artwork_path */, ''
-                    /* artist_artwork_path */, ''
-                    /* album_artwork_path */, ''
-                    /* playlist_name */, '', /* playlist_artwork_path */
-                    )), 'Add current track to Alfred Playlist', 'Current track will be added to Alfred Playlist', './images/add_to_ap_yourmusic.png', 'yes', '');
-                }
-                else {
-                    $w->result('SpotifyMiniPlayer_' . 'add_current_track', serialize(array(''
-                    /*track_uri*/, ''
-                    /* album_uri */, ''
-                    /* artist_uri */, ''
-                    /* playlist_uri */, ''
-                    /* spotify_command */, ''
-                    /* query */, ''
-                    /* other_settings*/, 'add_current_track'
-                    /* other_action */,
+                ''
+                /* artist_name */, ''
+                /* track_name */, ''
+                /* album_name */, ''
+                /* track_artwork_path */, ''
+                /* artist_artwork_path */, ''
+                /* album_artwork_path */, ''
+                /* playlist_name */, '', /* playlist_artwork_path */
+                )), 'Add current track to Your Music', 'Current track will be added to Your Music', './images/add.png', 'yes', '');
+                $w->result('SpotifyMiniPlayer_' . 'add_current_track_to_alfred_playlist', serialize(array(''
+                /*track_uri*/, ''
+                /* album_uri */, ''
+                /* artist_uri */, ''
+                /* playlist_uri */, ''
+                /* spotify_command */, ''
+                /* query */, ''
+                /* other_settings*/, 'add_current_track_to_alfred_playlist'
+                /* other_action */,
 
-                    ''
-                    /* artist_name */, ''
-                    /* track_name */, ''
-                    /* album_name */, ''
-                    /* track_artwork_path */, ''
-                    /* artist_artwork_path */, ''
-                    /* album_artwork_path */, ''
-                    /* playlist_name */, '', /* playlist_artwork_path */
-                    )), 'Add current track to Your Music', 'Current track will be added to Your Music', './images/add_to_ap_yourmusic.png', 'yes', '');
-                }
+                ''
+                /* artist_name */, ''
+                /* track_name */, ''
+                /* album_name */, ''
+                /* track_artwork_path */, ''
+                /* artist_artwork_path */, ''
+                /* album_artwork_path */, ''
+                /* playlist_name */, '', /* playlist_artwork_path */
+                )), 'Add current track to Alfred Playlist', 'Current track will be added to Alfred Playlist', './images/add.png', 'yes', '');
                 $w->result('SpotifyMiniPlayer_' . 'add_current_track_to', serialize(array(''
                 /*track_uri*/, ''
                 /* album_uri */, ''
