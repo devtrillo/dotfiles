@@ -32,12 +32,9 @@ ZSH_THEME="spaceship"
 plugins=(
   git
   git-flow
-  osx
   fzf
   gatsby
   nvm
-  tmux
-  vscode
   vi-mode
   zsh-autosuggestions
   zsh-completions
@@ -72,32 +69,14 @@ SPACESHIP_VI_MODE_NORMAL="N"
 eval spaceship_vi_mode_enable
 
 
-alias decrypt-prod="openssl aes-256-cbc -d -a -salt -in .env.enc.prod -out prod-prod && openssl aes-256-cbc -d -a -salt -in .env.enc.training -out prod-training && openssl aes-256-cbc -d -a -salt -in .env.enc.uat -out prod-uat && openssl aes-256-cbc -d -a -salt -in .env.enc.test -out prod-test"
-alias decrypt-dev="openssl aes-256-cbc -d -a -salt -in .env.enc.prod -out dev-prod && openssl aes-256-cbc -d -a -salt -in .env.enc.training -out dev-training && openssl aes-256-cbc -d -a -salt -in .env.enc.uat -out dev-uat && openssl aes-256-cbc -d -a -salt -in .env.enc.test -out dev-test"
 alias gs="git status"
 
 [ -f ~/.zshsecrets ] && source  $HOME/.zshsecrets
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-alias PR-elon-tusk="gh pr create -a devtrillo -d -l 'Elon Tusk' -B elontusk -r wizevlad,ragrum,alvinycheung,fercervantesx"
-alias PR-develop="gh pr create -a devtrillo -d -B develop -r wizevlad,ragrum,alvinycheung,fercervantesx"
-alias PR-stable="gh pr create -a devtrillo -d -B stable -r wizevlad,ragrum,alvinycheung,fercervantesx"
-alias start-cm2-project="cd ~/Documents/cm2/energylink-connect2-app && cordova prepare android && npm run dev:android & cordova run android --device --noprepare && fg"
-alias start-cm2-project-ios="cd ~/Documents/cm2/energylink-connect2-app && cordova prepare ios && open ../platforms/ios/SunPowerProConnect-dev.xcodeproj && npm run dev:ios"
 alias save-nvm-version="node -v > .nvmrc"
 
+alias tmux="tmux -f ~/.config/tmux/tmux.conf"
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 
-function decEnvFile() {
-  case $1 in
-    'uat'|'test'|'prod'|'training') openssl enc -aes256 -d -base64 -md md5 -pass pass:${CM2_ENVFILE_PASSWORD} -in .env.enc.$1 -out decoded.$1;;
-    *) echo Invalid App environment. ;;
-  esac
-}
 
-function encEnvFile() {
-  case $1 in
-    'uat'|'test'|'prod'|'training') openssl enc -aes256 -e -base64 -md md5 -pass pass:${CM2_ENVFILE_PASSWORD} -in decoded.$1 -out .env.enc.$1 ;;
-    *) echo Invalid App environment. ;;
-  esac
-}
