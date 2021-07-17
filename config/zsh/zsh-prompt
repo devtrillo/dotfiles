@@ -1,0 +1,16 @@
+# Loads correctly spaceship prompt
+if [ ! -d "$ZDOTDIR/plugins/spaceship-prompt" ]; then 
+    title "Setting up the prompt"
+    git clone https://github.com/spaceship-prompt/spaceship-prompt.git $ZDOTDIR/plugins/spaceship-prompt --depth=1
+    mkdir $ZDOTDIR/.spaceship
+    ln -svf $ZDOTDIR/plugins/spaceship-prompt/spaceship.zsh $ZDOTDIR/.spaceship/prompt_spaceship_setup
+fi
+
+fpath=( "$ZDOTDIR/.spaceship" $fpath )
+autoload -U promptinit; promptinit
+prompt spaceship
+
+SPACESHIP_VI_MODE_INSERT="I"
+SPACESHIP_VI_MODE_NORMAL="N"
+
+spaceship_vi_mode_disable

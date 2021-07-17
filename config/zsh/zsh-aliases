@@ -1,0 +1,49 @@
+# LS
+alias la="ls -ls"
+# GIT
+alias g="git"
+alias gi="g init"
+alias ga="g add"
+alias gs="g status"
+alias gc="g commit"
+alias gcnv="gc --no-verify"
+alias gp="g push"
+alias gP="g pull"
+
+# Colorize grep output (good for log files)
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+
+# confirm before overwriting something
+alias cp="cp -i"
+alias mv='mv -i'
+alias rm='rm -i'
+
+#ZOXIDE
+alias cd="z"
+alias cdi="zi"
+#NVM
+alias save-nvm-version="node -v > .nvmrc"
+
+# NVIM
+alias vi="nvim"
+
+#TMUX
+alias tmux="tmux -f ~/.config/tmux/tmux.conf"
+
+alias zsh-update-plugins="find "$ZDOTDIR/plugins" -type d -exec test -e '{}/.git' ';' -print0 | xargs -I {} -0 git -C {} pull -q"
+
+
+#LIFELINK
+alias mfa='~/lifelink/ops/mfa.sh'
+alias startAll='cd ~/lifelink/getstarted/; ./startAll.sh'
+export SDKMAN_DIR="/Users/devtrillo/.sdkman"
+[[ -s "/Users/devtrillo/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/devtrillo/.sdkman/bin/sdkman-init.sh"
+
+# tabtab source for serverless package
+# uninstall by removing these lines or running `tabtab uninstall serverless`
+[[ -f /Users/devtrillo/.npm/_cacache/tmp/git-clone-3d1e9ad2/node_modules/tabtab/.completions/serverless.zsh ]] && . /Users/devtrillo/.npm/_cacache/tmp/git-clone-3d1e9ad2/node_modules/tabtab/.completions/serverless.zsh
+# tabtab source for sls package
+# uninstall by removing these lines or running `tabtab uninstall sls`
+[[ -f /Users/devtrillo/.npm/_cacache/tmp/git-clone-3d1e9ad2/node_modules/tabtab/.completions/sls.zsh ]] && . /Users/devtrillo/.npm/_cacache/tmp/git-clone-3d1e9ad2/node_modules/tabtab/.completions/sls.zsh

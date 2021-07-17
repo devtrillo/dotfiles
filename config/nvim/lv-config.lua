@@ -20,13 +20,10 @@ O.smart_case = true
 
 -- TODO User Config for predefined plugins
 -- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
-O.plugin.dashboard.active = true
-O.plugin.colorizer.active = false
-O.plugin.ts_playground.active = true
-O.plugin.indent_line.active = false
 O.plugin.zen.active = true
+O.plugin.dashboard.active = true
+O.plugin.telescope.active = true
 O.plugin.floatterm.active = true
-
 -- if you don't want all the parsers change this to a table of the ones you want
 O.treesitter.ensure_installed = "all"
 O.treesitter.ignore_install = { "haskell" }
@@ -47,6 +44,11 @@ O.user_autocommands = {{ "BufWinEnter", "*", "highlight Normal guibg=none"}}
 
 -- Additional Leader bindings for WhichKey
 O.user_which_key = {
+  ["."] = "LunarConfig",
+  t={
+    name="+Trouble",
+    t={"<cmd> :TroubleToggle<cr>","Trouble Toggle"}
+  },
   u={
     name="+Utils",
     b={"<cmd> lua require('lv-macos').background_selector()<cr>", "Change background"},
@@ -55,10 +57,17 @@ O.user_which_key = {
 
 -- Additional Plugins
 O.user_plugins = {
+  {"styled-components/vim-styled-components"},
+  {"morhetz/gruvbox"},
   {"tpope/vim-surround"},
   {"wakatime/vim-wakatime",event = 'VimEnter'},
   {"tpope/vim-eunuch"},
-  {"ap/vim-css-color"}
+  {"ap/vim-css-color"},
+  {"mattn/emmet-vim", opt = true, ft={"tsx","js","jsx","svelte","html"}},
+
+ {
+    "folke/trouble.nvim",
+    cmd = "TroubleToggle"}
 }
 
 vim.api.nvim_set_keymap("n", "<M-Right>", ":BufferNext<CR>", { noremap = true, silent = true })
@@ -67,7 +76,7 @@ vim.api.nvim_set_keymap("n", "<M-Down>", ":BufferClose<CR>", { noremap = true, s
 
 vim.cmd 'highlight Normal guibg=none'
 -- dashboard
-O.dashboard.custom_header = {
+O.plugin.dashboard.custom_header = {
   '██████╗ ███████╗██╗   ██╗    ██╗   ██╗██╗███╗   ███╗',
   '██╔══██╗██╔════╝██║   ██║    ██║   ██║██║████╗ ████║',
   '██║  ██║█████╗  ██║   ██║    ██║   ██║██║██╔████╔██║',
@@ -75,6 +84,3 @@ O.dashboard.custom_header = {
   '██████╔╝███████╗ ╚████╔╝      ╚████╔╝ ██║██║ ╚═╝ ██║',
   '╚═════╝ ╚══════╝  ╚═══╝        ╚═══╝  ╚═╝╚═╝     ╚═╝',
 }
-O.dashboard.footer = {"devtrillo.com"}
-
-

@@ -11,26 +11,26 @@ COLOR_YELLOW="\033[1;33m"
 COLOR_NONE="\033[0m"
 
 title() {
-    echo -e "${COLOR_GRAY}==============================${COLOR_NONE}"
-    echo -e "${COLOR_PURPLE}$1${COLOR_NONE}"
-    echo -e "${COLOR_GRAY}==============================${COLOR_NONE}"
+  echo -e "${COLOR_GRAY}==============================${COLOR_NONE}"
+  echo -e "${COLOR_PURPLE}$1${COLOR_NONE}"
+  echo -e "${COLOR_GRAY}==============================${COLOR_NONE}"
 }
 
 error() {
-    echo -e "${COLOR_RED}Error: ${COLOR_NONE}$1"
-    exit 1
+  echo -e "${COLOR_RED}Error: ${COLOR_NONE}$1"
+  exit 1
 }
 
 warning() {
-    echo -e "${COLOR_YELLOW}Warning: ${COLOR_NONE}$1"
+  echo -e "${COLOR_YELLOW}Warning: ${COLOR_NONE}$1"
 }
 
 info() {
-    echo -e "${COLOR_BLUE}Info: ${COLOR_NONE}$1"
+  echo -e "${COLOR_BLUE}Info: ${COLOR_NONE}$1"
 }
 
 success() {
-    echo -e "${COLOR_GREEN}$1${COLOR_NONE}"
+  echo -e "${COLOR_GREEN}$1${COLOR_NONE}"
 }
 
 setup_tmux(){
@@ -39,7 +39,7 @@ setup_tmux(){
     git clone --depth=1 https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
   fi
 
-  TMUX_FILE=$HOME/.tmux.conf
+  TMUX_FILE=$HOME/.config/tmux/tmux.conf
   if [ -f "$TMUX_FILE" ]; then
     info "$TMUX_FILE exists, creating a backup"
     cp $TMUX_FILE $TMUX_FILE.backup
@@ -51,41 +51,41 @@ setup_tmux(){
 
 }
 setup_git() {
-    title "Setting up Git"
-    
-    git config --global user.email "esteban@devtrillo.com"
-    git config --global user.name "Esteban Trillo"
+  title "Setting up Git"
 
-    if [[ "$(uname)" == "Darwin" ]]; then
-        git config --global credential.helper "osxkeychain"
+  git config --global user.email "esteban@devtrillo.com"
+  git config --global user.name "Esteban Trillo"
+
+  if [[ "$(uname)" == "Darwin" ]]; then
+    git config --global credential.helper "osxkeychain"
+  else
+    read -rn 1 -p "Save user and password to an unencrypted file to avoid writing? [y/N] " save
+    if [[ $save =~ ^([Yy])$ ]]; then
+      git config --global credential.helper "store"
     else
-        read -rn 1 -p "Save user and password to an unencrypted file to avoid writing? [y/N] " save
-        if [[ $save =~ ^([Yy])$ ]]; then
-            git config --global credential.helper "store"
-        else
-            git config --global credential.helper "cache --timeout 3600"
-        fi
+      git config --global credential.helper "cache --timeout 3600"
     fi
+  fi
 }
 
 setup_homebrew() {
-    title "Setting up Homebrew"
+  title "Setting up Homebrew"
 
-    if [[ "$(uname)" == "Darwin" ]]; then
-        if test ! "$(command -v brew)"; then
-            info "Homebrew not installed. Installing."
-            # Run as a login shell (non-interactive) so that the script doesn't pause for user input
-            curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh | bash --login
-        fi
-        # install brew dependencies from Brewfile
-        brew bundle
-        # install fzf
-        echo -e
-        info "Installing fzf"
-        "$(brew --prefix)"/opt/fzf/install --key-bindings --completion --no-update-rc --no-bash --no-fish
-    else 
-        error "You are not running MacOS"
+  if [[ "$(uname)" == "Darwin" ]]; then
+    if test ! "$(command -v brew)"; then
+      info "Homebrew not installed. Installing."
+      # Run as a login shell (non-interactive) so that the script doesn't pause for user input
+      curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh | bash --login
     fi
+    # install brew dependencies from Brewfile
+    brew bundle
+    # install fzf
+    echo -e
+    info "Installing fzf"
+    "$(brew --prefix)"/opt/fzf/install --key-bindings --completion --no-update-rc --no-bash --no-fish
+  else 
+    error "You are not running MacOS"
+  fi
 
 }
 setup_ubuntu(){
@@ -97,47 +97,33 @@ setup_ubuntu(){
 
 function setup_shell() {
   title "Configuring shell"
-  ZSH_CUSTOM=~/.oh-my-zsh/custom
-  if [ ! -d "$HOME/.oh-my-zsh" ];then
-    git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
-  fi
 
-  if [ ! -d "$HOME/.nvm" ]; then
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
-  fi
-  if [ ! -d "$HOME/.bin" ]; then
-    info "Creating bin folder"
-    mkdir -p "$HOME/.bin"
-  fi
-  cp $DOTFILES/bin/* $HOME/.bin
-  
-  if [[ "$SHELL" != *"zsh"* ]]; then
-    info "Changing the shell to zsh"
-    chsh -s $(which zsh)
-  fi
-  if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-completions" ];then
-      git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:=~/.oh-my-zsh/custom}/plugins/zsh-completions
-  fi
+  curl -sS https://webinstall.dev/zoxide | bash
 
-  if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ] ;then
-    git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-fi
-
-  if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" ] ;then
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-  fi
-  if [ ! -d "$HOME/.oh-my-zsh/custom/themes/spaceship-prompt" ]; then
-    git clone https://github.com/denysdovhan/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt" --depth=1
-    ln -s "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM/themes/spaceship.zsh-theme" 
-  fi
 
   [ ! -d "$HOME/.zshrc" ]
   ZSHFILE=$HOME/.zshrc
   if [ -f "$ZSHFILE" ]; then
     info "$ZSHFILE exists, creating a backup"
-    cp $ZSHFILE $ZSHFILE.backup
+    mv $ZSHFILE $ZSHFILE.backup
   fi
-  ln -sfv $DOTFILES/config/zshrc.symlink $HOME/.zshrc
+
+  if [[ "$(uname)" == "Darwin" ]]; then
+    echo "export XDG_CONFIG_HOME=$HOME/.config" >> ~/.zprofile
+    echo "export XDG_DATA_HOME=$HOME/.local/share" >> ~/.zprofile
+    echo "export XDG_CACHE_HOME=$HOME/.cache" >> ~/.zprofile
+    echo "" >> ~/.zprofile
+    echo "export ZDOTDIR=$HOME/.config/zsh" >> ~/.zprofile
+  fi
+
+  mkdir -p ~/.config/zsh
+
+  
+ for file in $(find -H "$DOTFILES/config/zsh" -maxdepth 4 -name '*'); do
+    relative=$DOTFILES/config/zsh
+    numbers="${#relative}"
+    ln -sfv $file "$HOME/.config/zsh${file:$numbers}"
+  done
 
 
 }
@@ -164,111 +150,111 @@ function setup_neovim(){
 }
 
 function setup_terminfo() {
-    title "Configuring terminfo"
+  title "Configuring terminfo"
 
-    info "adding tmux.terminfo"
-    tic -x "$DOTFILES/resources/tmux.terminfo"
+  info "adding tmux.terminfo"
+  tic -x "$DOTFILES/resources/tmux.terminfo"
 
-    info "adding xterm-256color-italic.terminfo"
-    tic -x "$DOTFILES/resources/xterm-256color-italic.terminfo"
+  info "adding xterm-256color-italic.terminfo"
+  tic -x "$DOTFILES/resources/xterm-256color-italic.terminfo"
 }
 
 setup_macos() {
-    title "Configuring macOS"
-    if [[ "$(uname)" == "Darwin" ]]; then
+  title "Configuring macOS"
+  if [[ "$(uname)" == "Darwin" ]]; then
 
-        echo "Finder: show all filename extensions"
-        defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+    echo "Finder: show all filename extensions"
+    defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 
-        echo "show hidden files by default"
-        defaults write com.apple.Finder AppleShowAllFiles -bool false
+    echo "show hidden files by default"
+    defaults write com.apple.Finder AppleShowAllFiles -bool false
 
-        echo "only use UTF-8 in Terminal.app"
-        defaults write com.apple.terminal StringEncodings -array 4
+    echo "only use UTF-8 in Terminal.app"
+    defaults write com.apple.terminal StringEncodings -array 4
 
-        echo "expand save dialog by default"
-        defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
+    echo "expand save dialog by default"
+    defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
 
-        echo "show the ~/Library folder in Finder"
-        chflags nohidden ~/Library
+    echo "show the ~/Library folder in Finder"
+    chflags nohidden ~/Library
 
-        echo "Enable full keyboard access for all controls (e.g. enable Tab in modal dialogs)"
-        defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
+    echo "Enable full keyboard access for all controls (e.g. enable Tab in modal dialogs)"
+    defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
 
-        echo "Enable subpixel font rendering on non-Apple LCDs"
-        defaults write NSGlobalDomain AppleFontSmoothing -int 2
+    echo "Enable subpixel font rendering on non-Apple LCDs"
+    defaults write NSGlobalDomain AppleFontSmoothing -int 2
 
-        echo "Use current directory as default search scope in Finder"
-        defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+    echo "Use current directory as default search scope in Finder"
+    defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
 
-        echo "Show Path bar in Finder"
-        defaults write com.apple.finder ShowPathbar -bool true
+    echo "Show Path bar in Finder"
+    defaults write com.apple.finder ShowPathbar -bool true
 
-        echo "Show Status bar in Finder"
-        defaults write com.apple.finder ShowStatusBar -bool true
+    echo "Show Status bar in Finder"
+    defaults write com.apple.finder ShowStatusBar -bool true
 
-        echo "Disable press-and-hold for keys in favor of key repeat"
-        defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
+    echo "Disable press-and-hold for keys in favor of key repeat"
+    defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
-        echo "Set a blazingly fast keyboard repeat rate"
-        defaults write NSGlobalDomain KeyRepeat -int 1
+    echo "Set a blazingly fast keyboard repeat rate"
+    defaults write NSGlobalDomain KeyRepeat -int 1
 
-        echo "Set a shorter Delay until key repeat"
-        defaults write NSGlobalDomain InitialKeyRepeat -int 15
+    echo "Set a shorter Delay until key repeat"
+    defaults write NSGlobalDomain InitialKeyRepeat -int 15
 
-        echo "Enable tap to click (Trackpad)"
-        defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+    echo "Enable tap to click (Trackpad)"
+    defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
 
-        echo "Enable Safari’s debug menu"
-        defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
+    echo "Enable Safari’s debug menu"
+    defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
 
-        echo "Kill affected applications"
+    echo "Kill affected applications"
 
-        for app in Safari Finder Dock Mail SystemUIServer; do killall "$app" >/dev/null 2>&1; done
-    else
-        warning "macOS not detected. Skipping."
-    fi
+    for app in Safari Finder Dock Mail SystemUIServer; do killall "$app" >/dev/null 2>&1; done
+  else
+    warning "macOS not detected. Skipping."
+  fi
 }
 
 title "Welcome to my aweomse installer"
 case "$1" in
-    tmux)
-        setup_tmux
-        ;;
-    git)
-        setup_git
-        ;;
-    homebrew)
-        setup_homebrew
-        ;;
-    shell)
-        setup_shell 
-        ;;
-    terminfo)
-        setup_terminfo 
-        ;;
-    ubuntu)
-        setup_ubuntu
-        setup_shell
-        setup_neovim
-        setup_git
-        setup_tmux
-        ;;
-    neovim)
-        setup_neovim 
-        ;;
-    macos)
-        setup_shell
-        setup_neovim
-        setup_macos
-        setup_terminfo
-        setup_homebrew
-        setup_git
-        ;;
-    *)
-        echo -e $"\nUsage: $(basename "$0") {neovim|git|homebrew|shell|terminfo|macos}\n"
-        exit 1
-        ;;
+  tmux)
+    setup_tmux
+    ;;
+  git)
+    setup_git
+    ;;
+  homebrew)
+    setup_homebrew
+    ;;
+  shell)
+    setup_shell 
+    ;;
+  terminfo)
+    setup_terminfo 
+    ;;
+  ubuntu)
+    setup_ubuntu
+    setup_shell
+    setup_neovim
+    setup_git
+    setup_tmux
+    ;;
+  neovim)
+    setup_neovim 
+    ;;
+  macos)
+    setup_shell
+    setup_neovim
+    setup_macos
+    setup_terminfo
+    setup_homebrew
+    setup_git
+    ;;
+  *)
+    echo -e $"\nUsage: $(basename "$0") {neovim|git|homebrew|shell|terminfo|macos}\n"
+    exit 1
+    ;;
 esac
 
 echo -e

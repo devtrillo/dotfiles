@@ -1,0 +1,20 @@
+export LC_CTYPE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+export NVM_DIR="$XDG_CONFIG_HOME/nvm"
+export NVM_LAZY_LOAD=true
+export NVM_AUTO_USE=true
+
+export NVIM_TUI_ENABLE_TRUE_COLOR=1
+
+if command -v rg > /dev/null 2>&1; then
+  export FZF_DEFAULT_COMMAND='rg --files'
+fi
+
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+export PATH="$PATH:/Applications/Postgres.app/Contents/Versions/latest/bin/"
+export PATH="$PATH:$HOME/.bin"
+export PATH="$PATH:$HOME/.npm/bin"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$(yarn global bin):$PATH"
