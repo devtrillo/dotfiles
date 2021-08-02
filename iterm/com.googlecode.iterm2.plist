@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>ClosingTmuxWindowKillsTmuxWindows</key>
+	<true/>
+	<key>ClosingTmuxWindowKillsTmuxWindows_selection</key>
+	<integer>1</integer>
 	<key>CompactMinimalTabBarHeight</key>
 	<real>38</real>
 	<key>ConvertTabDragToWindowDragForSolitaryTabInCompactOrMinimalTheme</key>
@@ -228,7 +232,7 @@
 				<real>0.0</real>
 			</dict>
 			<key>Background Image Location</key>
-			<string>/Users/devtrillo/Pictures/iterm-bg/polette-et-1.jpg</string>
+			<string>/Users/devtrillo/Pictures/iterm-bg/solo-leveling-1.png</string>
 			<key>Background Image Mode</key>
 			<integer>2</integer>
 			<key>Badge Color</key>

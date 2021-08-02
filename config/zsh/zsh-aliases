@@ -2,12 +2,13 @@
 alias la="ls -ls"
 # GIT
 alias g="git"
+alias lg="lazygit"
 alias gi="g init"
 alias ga="g add"
 alias gs="g status"
 alias gc="g commit"
 alias gcnv="gc --no-verify"
-alias gp="g push"
+alias gp="g push -u origin HEAD"
 alias gP="g pull"
 
 # Colorize grep output (good for log files)
@@ -26,8 +27,14 @@ alias cdi="zi"
 #NVM
 alias save-nvm-version="node -v > .nvmrc"
 
+#NVM
+alias vsc="code-insiders ."
+alias code="code-insiders"
+
 # NVIM
-alias vi="nvim"
+alias vi="lvim"
+alias vim="lvim"
+alias nvim="lvim"
 
 #TMUX
 alias tmux="tmux -f ~/.config/tmux/tmux.conf"

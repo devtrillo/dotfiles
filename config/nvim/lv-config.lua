@@ -30,7 +30,6 @@ O.treesitter.ignore_install = { "haskell" }
 O.treesitter.highlight.enabled = true
 
 -- python
--- O.python.linter = 'flake8'
 O.lang.python.isort = true
 O.lang.python.diagnostics.virtual_text = true
 O.lang.python.analysis.use_library_code_types = true
@@ -60,7 +59,7 @@ O.user_plugins = {
   {"styled-components/vim-styled-components"},
   {"morhetz/gruvbox"},
   {"tpope/vim-surround"},
-  {"wakatime/vim-wakatime",event = 'VimEnter'},
+  {"wakatime/vim-wakatime", event = 'VimEnter'},
   {"tpope/vim-eunuch"},
   {"ap/vim-css-color"},
   {"mattn/emmet-vim", opt = true, ft={"tsx","js","jsx","svelte","html"}},
@@ -83,4 +82,3 @@ O.plugin.dashboard.custom_header = {
   '██║  ██║██╔══╝  ╚██╗ ██╔╝    ╚██╗ ██╔╝██║██║╚██╔╝██║',
   '██████╔╝███████╗ ╚████╔╝      ╚████╔╝ ██║██║ ╚═╝ ██║',
   '╚═════╝ ╚══════╝  ╚═══╝        ╚═══╝  ╚═╝╚═╝     ╚═╝',
-}
