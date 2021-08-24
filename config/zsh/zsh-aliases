@@ -32,14 +32,10 @@ alias vsc="code-insiders ."
 alias code="code-insiders"
 
 # NVIM
-alias vi="lvim"
-alias vim="lvim"
-alias nvim="lvim"
+alias vi="nvim"
+alias vim="nvim"
 
-#TMUX
-alias tmux="tmux -f ~/.config/tmux/tmux.conf"
-
-alias zsh-update-plugins="find "$ZDOTDIR/plugins" -type d -exec test -e '{}/.git' ';' -print0 | xargs -I {} -0 git -C {} pull -q"
+alias zsh-update-plugins="find "$ZDOTDIR/plugins" -type d -exec test -e '{}/.git' ';' -print0 | xargs -I {} -0 sh -c 'echo updating repo: {}; git -C {} pull'"
 
 
 #LIFELINK

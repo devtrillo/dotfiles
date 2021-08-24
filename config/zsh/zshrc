@@ -1,3 +1,5 @@
+export HISTFILE=~/.zsh_history
+
 source "$ZDOTDIR/zsh-functions"
 setopt autocd extendedglob nomatch menucomplete
 setopt interactive_comments
@@ -21,4 +23,10 @@ zsh_add_completion "esc/conda-zsh-completion"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 eval "$(zoxide init zsh)"
+
+autoload bashcompinit && bashcompinit
+autoload -Uz compinit && compinit
+
+complete -C '/usr/local/bin/aws_completer' aws
+
 
