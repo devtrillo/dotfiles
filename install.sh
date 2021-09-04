@@ -91,7 +91,15 @@ setup_homebrew() {
 setup_ubuntu(){
   sudo apt update
   sudo apt full-upgrade -y
-  sudo apt install git git-flow fzf zsh tmux neovim wget curl tree ripgrep universal-ctags silversearcher-ag fd-find -y 
+  sudo apt install git git-flow zsh tmux wget curl tree  -y
+  
+  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+  ~/.fzf/install
+  
+  title "Installing neovim"
+  sudo add-apt-repository ppa:neovim-ppa/unstable  -y
+  sudo apt update
+  sudo apt-get install neovim
 
 }
 
@@ -109,11 +117,11 @@ function setup_shell() {
   fi
 
   if [[ "$(uname)" == "Darwin" ]]; then
-    echo "export XDG_CONFIG_HOME=$HOME/.config" >> ~/.zprofile
-    echo "export XDG_DATA_HOME=$HOME/.local/share" >> ~/.zprofile
-    echo "export XDG_CACHE_HOME=$HOME/.cache" >> ~/.zprofile
-    echo "" >> ~/.zprofile
-    echo "export ZDOTDIR=$HOME/.config/zsh" >> ~/.zprofile
+    echo "export XDG_CONFIG_HOME=$HOME/.config" >> ~/.zshrc
+    echo "export XDG_DATA_HOME=$HOME/.local/share" >> ~/.zshrc
+    echo "export XDG_CACHE_HOME=$HOME/.cache" >> ~/.zshrc
+    echo "" >> ~/.zshrc
+    echo "source $HOME/.config/zsh" >> ~/.zshrc
   fi
 
   mkdir -p ~/.config/zsh
