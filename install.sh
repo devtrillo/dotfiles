@@ -116,13 +116,13 @@ function setup_shell() {
     mv $ZSHFILE $ZSHFILE.backup
   fi
 
-  if [[ "$(uname)" == "Darwin" ]]; then
+
     echo "export XDG_CONFIG_HOME=$HOME/.config" >> ~/.zshrc
     echo "export XDG_DATA_HOME=$HOME/.local/share" >> ~/.zshrc
     echo "export XDG_CACHE_HOME=$HOME/.cache" >> ~/.zshrc
     echo "" >> ~/.zshrc
     echo "source $HOME/.config/zsh" >> ~/.zshrc
-  fi
+
 
   mkdir -p ~/.config/zsh
 
