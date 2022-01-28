@@ -819,6 +819,7 @@ function firstDelimiterNewReleases($w, $query, $db, $update_in_progress) {
  * @param mixed $update_in_progress
  */
 function firstDelimiterCurrentTrack($w, $query, $db, $update_in_progress) {
+    $begin_time = computeTime();
     $words = explode('▹', $query);
     $input = $words[1];
 
@@ -833,7 +834,6 @@ function firstDelimiterCurrentTrack($w, $query, $db, $update_in_progress) {
     $always_display_lyrics_in_browser = getSetting($w,'always_display_lyrics_in_browser');
 
     $results = getCurrentTrackinfo($w, $output_application);
-
     if (is_array($results) && count($results) > 0) {
         $isEpisode = false;
         $href = explode(':', $results[4]);
@@ -917,7 +917,7 @@ function firstDelimiterCurrentTrack($w, $query, $db, $update_in_progress) {
                     $clipboard_current_track_track_text  = str_replace('{artist_name}', escapeQuery($results[1]), $clipboard_current_track_track_text);
                     $clipboard_current_track_track_text  = str_replace('{url}', $shared_url, $clipboard_current_track_track_text);
                     $liked = 'emoji_not_liked';
-                    if(isTrackInYourMusic($w,$results[4])) {
+                    if(isTrackInYourMusic($w,$results[4],$db)) {
                         $liked = 'emoji_liked';
                     }
                     $w->result(null, serialize(array($results[4] /*track_uri*/, ''
@@ -996,7 +996,7 @@ function firstDelimiterCurrentTrack($w, $query, $db, $update_in_progress) {
                     $clipboard_current_track_track_text  = str_replace('{artist_name}', escapeQuery($results[1]), $clipboard_current_track_track_text);
                     $clipboard_current_track_track_text  = str_replace('{url}', $shared_url, $clipboard_current_track_track_text);
                     $liked = 'emoji_not_liked';
-                    if(isTrackInYourMusic($w,$results[4])) {
+                    if(isTrackInYourMusic($w,$results[4],$db)) {
                         $liked = 'emoji_liked';
                     }
                     $w->result(null, serialize(array($results[4] /*track_uri*/, ''
@@ -1052,12 +1052,14 @@ function firstDelimiterCurrentTrack($w, $query, $db, $update_in_progress) {
                         if ($context_type == 'playlist') {
                             $playlist_uri = $playback_info
                                 ->context->uri;
-                            $context = 'playlist ' . getPlaylistName($w, $playlist_uri) . ' ';
+                            $playlist_name = getPlaylistName($w, $playlist_uri);
+                            $context = 'playlist ' . $playlist_name . ' ';
                         }
                         else if ($context_type == 'album') {
                             $album_uri = $playback_info
                                 ->context->uri;
-                            $context = 'album ' . getAlbumName($w, $album_uri) . ' ';
+                            $album_name = getAlbumName($w, $album_uri);
+                            $context = 'album ' . $album_name . ' ';
                         }
                         else if ($context_type == 'episode') {
                             $episode_uri = $playback_info
@@ -1080,6 +1082,36 @@ function firstDelimiterCurrentTrack($w, $query, $db, $update_in_progress) {
 
                     if ($device_name != '') {
                         $w->result(null, 'help', 'Playing ' . $context . 'on ' . $device_type . ' ' . $device_name, array('Progress: ' . floatToCircles($progress_ms / $results[5]) . ' Shuffle is <' . $shuffle_state . '> ' . $repeat_state, 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/connect.png', 'no', null, '');
+                        if ($context_type == 'playlist') {
+                            $added = 'privately';
+                            $privacy_status = 'private';
+                            if ($is_public_playlists) {
+                                $added = 'publicly';
+                                $privacy_status = 'public';
+                            }
+                            $w->result(null, serialize(array(
+                                ''
+                                /*track_uri*/, ''
+                                /* album_uri */, ''
+                                /* artist_uri */, $playlist_uri
+                                /* playlist_uri */, ''
+                                /* spotify_command */, ''
+                                /* query */, ''
+                                /* other_settings*/, 'follow_playlist'
+                                /* other_action */, ''
+                                /* artist_name */, ''
+                                /* track_name */, ''
+                                /* album_name */, ''
+                                /* track_artwork_path */, ''
+                                /* artist_artwork_path */, ''
+                                /* album_artwork_path */, $playlist_name
+                                /* playlist_name */, '', /* playlist_artwork_path */
+                            )), 'Follow ' . $added . ' playlist ' . $playlist_name, 'This will add the playlist (marked as ' . $privacy_status . ') to your library', './images/follow.png', 'yes', null, '');
+                            $w->result(null, '', 'Add playlist ' . $playlist_name . ' to...', array('This will add the playlist to Your Music or a playlist you will choose in next step', 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/add.png', 'no', null, 'Add▹' . $playlist_uri . '∙' . base64_encode($playlist_name) . '▹');
+                        }
+                        if ($context_type == 'album') {
+                            $w->result(null, '', 'Add album ' . escapeQuery($album_name) . ' to...', array('This will add the album to Your Music or a playlist you will choose in next step', 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/add.png', 'no', null, 'Add▹' . $album_uri . '∙' . escapeQuery($album_name) . '▹');
+                        }
                     }
                 }
                 catch(SpotifyWebAPI\SpotifyWebAPIException $e) {
@@ -1163,8 +1195,13 @@ function firstDelimiterCurrentTrack($w, $query, $db, $update_in_progress) {
         }
 
         if (countCharacters($input) < 2 || strpos(strtolower('play album'), strtolower($input)) !== false) {
-
-            $album_uri = getAlbumUriFromTrack($w, $results[4]);
+            
+            if($results[7] != '') {
+                // with CONNECT, we have it already
+                $album_uri = $results[7];
+            } else {
+                $album_uri = getAlbumUriFromTrack($w, $results[4]);
+            }
 
             $shared_url = '';
             if ($album_uri != false) {
@@ -1361,6 +1398,10 @@ function firstDelimiterCurrentTrack($w, $query, $db, $update_in_progress) {
     else {
         $w->result(null, 'help', 'There is no track currently playing', array('Launch a track and come back here', 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/warning.png', 'no', null, '');
     }
+
+    $end_time = computeTime();
+    $total_temp = ($end_time-$begin_time);
+    $w->result(null, 'debug', "Processed in " . $total_temp*1000 . ' ms', '', './images/info.png', 'no', null, '');
 }
 
 /**
@@ -1504,7 +1545,7 @@ function firstDelimiterSpotifyConnect($w, $query, $db, $update_in_progress) {
                 exit;
             }
             else {
-                if ($e->getCode() == 404) {
+                if ($e->getCode() == 404 || $e->getCode() == 403) {
                     $retry = false;
                     $w->result(null, 'help', 'Exception occurred', array('' . $e->getMessage(), 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/warning.png', 'no', null, '');
                     echo $w->tojson();
@@ -1657,7 +1698,7 @@ function firstDelimiterSpotifyConnectPreferredDevice($w, $query, $db, $update_in
                 exit;
             }
             else {
-                if ($e->getCode() == 404) {
+                if ($e->getCode() == 404 || $e->getCode() == 403) {
                     $retry = false;
                     $w->result(null, 'help', 'Exception occurred', array('' . $e->getMessage(), 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/warning.png', 'no', null, '');
                     echo $w->tojson();
@@ -1788,7 +1829,7 @@ function firstDelimiterYourMusic($w, $query, $db, $update_in_progress) {
                 /* other_settings*/, ''
                 /* other_action */, $track[7] /* artist_name */, $track[5] /* track_name */, $track[6] /* album_name */, $track[9] /* track_artwork_path */, $track[10] /* artist_artwork_path */, $track[11] /* album_artwork_path */, ''
                 /* playlist_name */, '', /* playlist_artwork_path */
-                )), $track[7] . ' '.getenv('emoji_separator').' ' . $track[5], $arrayresult = array($track[16] . ' '.getenv('emoji_separator').' ' . $subtitle . getPlaylistsForTrack($db, $track[2]), 'alt' => 'Play album ' . $track[6] . ' in Spotify', 'cmd' => 'Play artist ' . $track[7] . ' in Spotify', 'fn' => 'Add track ' . $track[5] . ' to ...', 'shift' => 'Add album ' . $track[6] . ' to ...', 'ctrl' => 'Search artist ' . $track[7] . ' online',), $track[9], 'yes', array('copy' => $track[7] . ' '.getenv('emoji_separator').' ' . $track[5], 'largetype' => $track[7] . ' '.getenv('emoji_separator').' ' . $track[5],), '');
+                )), $track[7] . ' '.getenv('emoji_separator').' ' . $track[5], array($track[16] . ' '.getenv('emoji_separator').' ' . $subtitle . getPlaylistsForTrack($db, $track[2]), 'alt' => 'Play album ' . $track[6] . ' in Spotify', 'cmd' => 'Play artist ' . $track[7] . ' in Spotify', 'fn' => 'Add track ' . $track[5] . ' to ...', 'shift' => 'Add album ' . $track[6] . ' to ...', 'ctrl' => 'Search artist ' . $track[7] . ' online',), $track[9], 'yes', array('copy' => $track[7] . ' '.getenv('emoji_separator').' ' . $track[5], 'largetype' => $track[7] . ' '.getenv('emoji_separator').' ' . $track[5],), '');
             }
         }
 

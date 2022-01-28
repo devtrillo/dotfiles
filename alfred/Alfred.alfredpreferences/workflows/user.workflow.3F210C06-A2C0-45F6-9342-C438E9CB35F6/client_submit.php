@@ -22,7 +22,6 @@ $session = new SpotifyWebAPI\Session($_GET["id"], $_GET["secret"], 'http://local
 
 $scopes = array(
     'user-library-read',
-    'user-read-email',
     'user-read-private',
     'user-library-modify',
     'user-follow-modify',
@@ -62,5 +61,4 @@ updateSetting($w,'oauth_client_secret',$_GET["secret"]);
 $response["status"] = "success";
 $response["message"] = "Your Client ID and Client Secret are correct! Make sure to do next step now !";
 echo json_encode($response);
-exec("kill -9 $(ps -efx | grep \"php -S localhost:15298\"  | grep -v grep | awk '{print $2}')");
 exit();

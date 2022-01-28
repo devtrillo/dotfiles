@@ -17,7 +17,6 @@ brew "gradle"
 brew "grep"
 brew "lazygit"
 brew "luajit", args: ["HEAD"]
-brew "mas"
 brew "neofetch"
 brew "tree-sitter", args: ["HEAD"]
 brew "neovim", args: ["HEAD"]
@@ -26,16 +25,13 @@ brew "pyvim"
 brew "ranger"
 brew "ripgrep"
 brew "stow"
-brew "telegram-cli"
 brew "tmux"
 brew "tree"
 brew "wget"
 brew "yarn"
 brew "zsh"
-cask "adoptopenjdk8"
 cask "alfred"
 cask "amethyst"
-cask "bettertouchtool"
 cask "brave-browser"
 cask "discord"
 cask "figma"
@@ -46,20 +42,10 @@ cask "font-fira-code"
 cask "font-jetbrains-mono"
 cask "google-chrome"
 cask "grammarly"
-cask "hyper"
 cask "joplin"
 cask "keybase"
-cask "krisp"
 cask "ngrok"
-cask "slack"
 cask "spotify"
 cask "telegram-desktop"
 cask "whatsapp"
 cask "zoom"
-mas "GarageBand", id: 682658836
-mas "iMovie", id: 408981434
-mas "Keynote", id: 409183694
-mas "Numbers", id: 409203825
-mas "Pages", id: 409201541
-mas "Spark", id: 1176895641
-mas "Xcode", id: 497799835

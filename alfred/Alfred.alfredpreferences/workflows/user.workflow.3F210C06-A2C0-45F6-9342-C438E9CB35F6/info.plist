@@ -298,7 +298,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>EB1ED46F-71D7-49D1-B7BB-DA1ECF2F665F</string>
+				<string>06E3A89C-5DF9-468B-8682-A233B381ABFA</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -369,6 +369,16 @@
 				<integer>8388608</integer>
 				<key>modifiersubtext</key>
 				<string>Add track to Alfred playlist</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>2EE3E9B0-C1AD-4B1B-830B-DBB6B6D90C0C</string>
+				<key>modifiers</key>
+				<integer>9437184</integer>
+				<key>modifiersubtext</key>
+				<string>Remove from playlist...</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -550,6 +560,8 @@
 				<false/>
 			</dict>
 		</array>
+		<key>29902759-070E-471F-950B-26489BC9DBA5</key>
+		<array/>
 		<key>2A349C40-E727-4733-8792-2F49BDEE3ADD</key>
 		<array>
 			<dict>
@@ -1295,6 +1307,32 @@
 				<false/>
 			</dict>
 		</array>
+		<key>612F1361-C29D-4AB8-A3BF-D0920BD7846E</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>29902759-070E-471F-950B-26489BC9DBA5</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>614AF93D-7DC9-4B4C-BD07-E3887CB6BB3B</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>715E30A7-032C-43B9-8D23-8245DC7B3668</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>620CF52F-BCFD-4957-BC4F-1E9853125AF5</key>
 		<array>
 			<dict>
@@ -1520,7 +1558,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>EB1ED46F-71D7-49D1-B7BB-DA1ECF2F665F</string>
+				<string>06E3A89C-5DF9-468B-8682-A233B381ABFA</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -2462,7 +2500,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>EB1ED46F-71D7-49D1-B7BB-DA1ECF2F665F</string>
+				<string>06E3A89C-5DF9-468B-8682-A233B381ABFA</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -2566,7 +2604,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>EB1ED46F-71D7-49D1-B7BB-DA1ECF2F665F</string>
+				<string>06E3A89C-5DF9-468B-8682-A233B381ABFA</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -3824,15 +3862,19 @@
 				<key>concurrently</key>
 				<true/>
 				<key>escaping</key>
-				<integer>38</integer>
+				<integer>100</integer>
 				<key>script</key>
-				<string>php -f ./src/action.php -- "{query}" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = $argv[1];
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -3926,13 +3968,17 @@
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>php -f ./src/action.php -- "{query}" "ALBUM" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = $argv[1];
+main($query,"ALBUM","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -3990,9 +4036,12 @@
 				<key>runningsubtext</key>
 				<string>Wait for it...</string>
 				<key>script</key>
-				<string>php -n -f ./src/main.php -- "{query}"</string>
+				<string>&lt;?php
+  require './src/main.php';
+  main($argv);
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>subtext</key>
@@ -4000,7 +4049,7 @@
 				<key>title</key>
 				<string>Spotify Mini Player</string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>withspace</key>
 				<true/>
 			</dict>
@@ -4019,13 +4068,17 @@
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>php -f ./src/action.php -- "{query}" "ARTIST_OR_PLAYLIST_PRIVACY" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = $argv[1];
+main($query,"ARTIST_OR_PLAYLIST_PRIVACY","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -4077,13 +4130,17 @@
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>php -f ./src/action.php -- "{query}" "ALBUM_OR_PLAYLIST" "ADDTOPLAYLIST"</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = $argv[1];
+main($query,"ALBUM_OR_PLAYLIST","ADDTOPLAYLIST");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -4172,13 +4229,17 @@
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>php -f ./src/action.php -- "{query}" "TRACK" "ADDTOPLAYLIST"</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = $argv[1];
+main($query,"TRACK","ADDTOPLAYLIST");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -4251,6 +4312,33 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>concurrently</key>
+				<true/>
+				<key>escaping</key>
+				<integer>100</integer>
+				<key>script</key>
+				<string>&lt;?php
+require './src/action.php';
+$query = $argv[1];
+main($query,"TRACK","REMOVEFROMPLAYLIST");
+?&gt;</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>1</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>2EE3E9B0-C1AD-4B1B-830B-DBB6B6D90C0C</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>triggerid</key>
 				<string>show_current_track</string>
 			</dict>
@@ -4267,16 +4355,19 @@
 				<key>concurrently</key>
 				<true/>
 				<key>escaping</key>
-				<integer>38</integer>
+				<integer>100</integer>
 				<key>script</key>
-				<string>php -f ./src/action.php -- "{query}" "ONLINE" ""
-</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = $argv[1];
+main($query,"ONLINE","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -4373,15 +4464,19 @@
 				<key>concurrently</key>
 				<true/>
 				<key>escaping</key>
-				<integer>38</integer>
+				<integer>100</integer>
 				<key>script</key>
-				<string>php -f ./src/action.php -- "{query}" "ADDTOQUEUE" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = $argv[1];
+main($query,"ADDTOQUEUE","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -4470,13 +4565,17 @@
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>php -f ./src/action.php -- "{query}" "PREVIEW" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = $argv[1];
+main($query,"PREVIEW","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -4545,6 +4644,44 @@
 			<string>8A63B1A6-0F0E-481A-9312-C75557A9DA71</string>
 			<key>version</key>
 			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>PATH=$PATH:/opt/homebrew/bin/:/usr/local/bin/
+
+php -S 127.0.0.1:15298</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>29902759-070E-471F-950B-26489BC9DBA5</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>triggerid</key>
+				<string>start_php_server</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.external</string>
+			<key>uid</key>
+			<string>612F1361-C29D-4AB8-A3BF-D0920BD7846E</string>
+			<key>version</key>
+			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -4910,9 +5047,12 @@
 				<key>runningsubtext</key>
 				<string>Wait for it...</string>
 				<key>script</key>
-				<string>php -f ./src/debug.php -- "{query}"</string>
+				<string>&lt;?php
+  require './src/debug.php';
+  main($argv);
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>subtext</key>
@@ -4920,7 +5060,7 @@
 				<key>title</key>
 				<string>Debug tools for Spotify Mini Player</string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>withspace</key>
 				<true/>
 			</dict>
@@ -5101,14 +5241,17 @@
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "volume_up" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "volume_up" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -5173,16 +5316,19 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>concurrently</key>
 				<false/>
 				<key>escaping</key>
-				<integer>38</integer>
+				<integer>100</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "volume_down" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "volume_down" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -5275,17 +5421,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "random" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""
-</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "random" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -5386,16 +5532,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "add_current_track" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "add_current_track" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -5538,14 +5685,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "pause" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "pause" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -5617,15 +5767,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "play" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "{query}" ""
-</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "play" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -5815,14 +5967,17 @@ echo -n $query</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "shuffle" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "shuffle" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -5931,14 +6086,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "previous" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "previous" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -6039,14 +6197,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "next" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "next" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -6118,14 +6279,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "current" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "{query}" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "current" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -6221,6 +6385,33 @@ php -f ./src/action.php -- "$query" "{query}" ""</string>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>38</integer>
+				<key>script</key>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "lyrics" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>1</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>06E3A89C-5DF9-468B-8682-A233B381ABFA</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>argumenttype</key>
 				<integer>2</integer>
 				<key>keyword</key>
@@ -6238,32 +6429,6 @@ php -f ./src/action.php -- "$query" "{query}" ""</string>
 			<string>AC236315-8CDE-41E3-A9BA-BB59D292FE14</string>
 			<key>version</key>
 			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>38</integer>
-				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "lyrics" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
-				<key>scriptargtype</key>
-				<integer>0</integer>
-				<key>scriptfile</key>
-				<string></string>
-				<key>type</key>
-				<integer>0</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>EB1ED46F-71D7-49D1-B7BB-DA1ECF2F665F</string>
-			<key>version</key>
-			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -6357,16 +6522,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "current_artist_radio" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "current_artist_radio" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -6467,16 +6633,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "current_track_radio" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "current_track_radio" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -6556,16 +6723,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "reset_settings" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "reset_settings" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -6637,16 +6805,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>127</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "kill_update" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "kill_update" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -6684,16 +6853,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "refresh_library_external" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "refresh_library_external" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -6723,16 +6893,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "refresh_library" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "refresh_library" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -6804,16 +6975,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "play_current_artist" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "play_current_artist" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -6948,16 +7120,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "follow_current_artist" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "follow_current_artist" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -7024,16 +7197,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "unfollow_current_artist" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "unfollow_current_artist" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -7155,16 +7329,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "play_current_album" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "play_current_album" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -7265,16 +7440,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "play_alfred_playlist" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "play_alfred_playlist" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -7428,16 +7604,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "add_current_track_to" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "{query}" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "add_current_track_to" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -7538,16 +7715,17 @@ php -f ./src/action.php -- "$query" "{query}" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "lookup_current_artist" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "lookup_current_artist" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -7832,16 +8010,17 @@ end tell</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "show_alfred_playlist" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "show_alfred_playlist" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -7963,16 +8142,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "remove_current_track_from" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "remove_current_track_from" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -8031,17 +8211,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "random_album" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""
-</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "random_album" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -8163,14 +8343,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "mute" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "mute" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -8292,15 +8475,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "playpause" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "TRACK" ""
-</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "playpause" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -8380,14 +8565,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "volmax" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "volmax" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -8509,14 +8697,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "volmid" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "volmid" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -8617,14 +8808,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "repeating" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "repeating" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -8704,14 +8898,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "repeating" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "ARTIST_OR_PLAYLIST_PRIVACY" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "repeating" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"ARTIST_OR_PLAYLIST_PRIVACY","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -8812,14 +9009,17 @@ php -f ./src/action.php -- "$query" "ARTIST_OR_PLAYLIST_PRIVACY" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "share" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "share" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -8870,14 +9070,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "web_search" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "web_search" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -8957,14 +9160,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "web_search_artist_track" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "web_search_artist_track" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -9084,14 +9290,17 @@ echo "$tmp[1] $tmp[0]";
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "web_search_artist_track" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "web_search_artist_track" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -9237,14 +9446,17 @@ echo "$tmp[1] $tmp[0]";
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "web_search_artist_track" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "web_search_artist_track" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -9366,14 +9578,17 @@ echo "$tmp[1]";
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "web_search_artist" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "web_search_artist" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -9483,14 +9698,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "web_search_artist" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "web_search_artist" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -9585,14 +9803,17 @@ echo "$tmp[1]";
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "web_search_artist" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "web_search_artist" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -9701,14 +9922,17 @@ echo "$tmp[1]";
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "change_theme_color_for_real" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "change_theme_color_for_real" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -9778,14 +10002,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "change_search_order_for_real" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "change_search_order_for_real" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -9820,9 +10047,12 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>runningsubtext</key>
 				<string>Wait for it...</string>
 				<key>script</key>
-				<string>php -f ./src/search_order.php -- "{query}"</string>
+				<string>&lt;?php
+  require './src/search_order.php';
+  main($argv);
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>subtext</key>
@@ -9830,7 +10060,7 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>title</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>withspace</key>
 				<true/>
 			</dict>
@@ -9887,9 +10117,12 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>runningsubtext</key>
 				<string>Wait for it...</string>
 				<key>script</key>
-				<string>php -f ./src/search_order.php -- "{query}"</string>
+				<string>&lt;?php
+  require './src/search_order.php';
+  main($argv);
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>subtext</key>
@@ -9897,7 +10130,7 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>title</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>withspace</key>
 				<true/>
 			</dict>
@@ -9934,9 +10167,12 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>runningsubtext</key>
 				<string></string>
 				<key>script</key>
-				<string>php -f ./src/search_order.php -- "{query}"</string>
+				<string>&lt;?php
+  require './src/search_order.php';
+  main($argv);
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>subtext</key>
@@ -9944,7 +10180,7 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>title</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>withspace</key>
 				<true/>
 			</dict>
@@ -10011,9 +10247,12 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>runningsubtext</key>
 				<string>Wait for it...</string>
 				<key>script</key>
-				<string>php -f ./src/search_order.php -- "{query}"</string>
+				<string>&lt;?php
+  require './src/search_order.php';
+  main($argv);
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>subtext</key>
@@ -10021,7 +10260,7 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>title</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>withspace</key>
 				<true/>
 			</dict>
@@ -10092,9 +10331,12 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>runningsubtext</key>
 				<string>Wait for it...</string>
 				<key>script</key>
-				<string>php -f ./src/search_order.php -- "{query}"</string>
+				<string>&lt;?php
+  require './src/search_order.php';
+  main($argv);
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>subtext</key>
@@ -10102,7 +10344,7 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>title</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>withspace</key>
 				<true/>
 			</dict>
@@ -10168,14 +10410,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "copy_current_track_url_to_clipboard" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "{query}" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "copy_current_track_url_to_clipboard" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -10210,9 +10455,12 @@ php -f ./src/action.php -- "$query" "{query}" ""</string>
 				<key>runningsubtext</key>
 				<string>Wait for it...</string>
 				<key>script</key>
-				<string>php -f ./src/search_order.php -- "{query}"</string>
+				<string>&lt;?php
+  require './src/search_order.php';
+  main($argv);
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>subtext</key>
@@ -10220,7 +10468,7 @@ php -f ./src/action.php -- "$query" "{query}" ""</string>
 				<key>title</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>withspace</key>
 				<true/>
 			</dict>
@@ -10273,16 +10521,17 @@ php -f ./src/action.php -- "$query" "{query}" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "show_in_spotify" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "show_in_spotify" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -10543,16 +10792,17 @@ do shell script deviceselectedXML</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "decrypt" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "decrypt" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -10645,16 +10895,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "play_liked_songs" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "play_liked_songs" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -10721,16 +10972,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "remove_current_track" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "remove_current_track" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -10873,14 +11125,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "set_volume" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "{query}" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "set_volume" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -10918,14 +11173,17 @@ php -f ./src/action.php -- "$query" "{query}" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "enable_podcasts_settings" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "{query}" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "enable_podcasts_settings" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -10942,14 +11200,17 @@ php -f ./src/action.php -- "$query" "{query}" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "enable_artworks" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "{query}" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "enable_artworks" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -11103,14 +11364,17 @@ php -f ./src/action.php -- "$query" "{query}" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "disable_artworks" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "{query}" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "disable_artworks" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -11127,14 +11391,17 @@ php -f ./src/action.php -- "$query" "{query}" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "disable_podcasts_settings" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-php -f ./src/action.php -- "$query" "{query}" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "disable_podcasts_settings" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -11172,16 +11439,17 @@ php -f ./src/action.php -- "$query" "{query}" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "add_current_track_to_alfred_playlist" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "add_current_track_to_alfred_playlist" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -11235,6 +11503,10 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<false/>
 				<key>focusedappvariablename</key>
 				<string></string>
+				<key>hotkey</key>
+				<integer>0</integer>
+				<key>hotmod</key>
+				<integer>0</integer>
 				<key>leftcursor</key>
 				<false/>
 				<key>modsmode</key>
@@ -11278,16 +11550,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "add_current_track_to_your_music" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "add_current_track_to_your_music" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -11341,6 +11614,10 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<false/>
 				<key>focusedappvariablename</key>
 				<string></string>
+				<key>hotkey</key>
+				<integer>0</integer>
+				<key>hotmod</key>
+				<integer>0</integer>
 				<key>leftcursor</key>
 				<false/>
 				<key>modsmode</key>
@@ -11384,16 +11661,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "remove_current_track_from_alfred_playlist" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "remove_current_track_from_alfred_playlist" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -11447,6 +11725,10 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<false/>
 				<key>focusedappvariablename</key>
 				<string></string>
+				<key>hotkey</key>
+				<integer>0</integer>
+				<key>hotmod</key>
+				<integer>0</integer>
 				<key>leftcursor</key>
 				<false/>
 				<key>modsmode</key>
@@ -11490,16 +11772,17 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<key>escaping</key>
 				<integer>38</integer>
 				<key>script</key>
-				<string>query=$(php -r '$foo = serialize(array("", "", "", "", "", "", "", "remove_current_track_from_your_music" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));echo $foo;')
-
-
-php -f ./src/action.php -- "$query" "TRACK" ""</string>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "remove_current_track_from_your_music" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>1</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -11553,6 +11836,10 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 				<false/>
 				<key>focusedappvariablename</key>
 				<string></string>
+				<key>hotkey</key>
+				<integer>0</integer>
+				<key>hotmod</key>
+				<integer>0</integer>
 				<key>leftcursor</key>
 				<false/>
 				<key>modsmode</key>
@@ -11564,6 +11851,54 @@ php -f ./src/action.php -- "$query" "TRACK" ""</string>
 			<string>alfred.workflow.trigger.hotkey</string>
 			<key>uid</key>
 			<string>426A99EF-E404-49D0-9C21-6DF70721C780</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>keyword</key>
+				<string>{var:c_fix_permissions}</string>
+				<key>subtext</key>
+				<string>Use this if you get issues with notifications or fzf</string>
+				<key>text</key>
+				<string>Fix Permissions</string>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>614AF93D-7DC9-4B4C-BD07-E3887CB6BB3B</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>38</integer>
+				<key>script</key>
+				<string>&lt;?php
+require './src/action.php';
+$query = serialize(array("", "", "", "", "", "", "", "fix_permissions" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
+main($query,"TRACK","");
+?&gt;</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>1</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>715E30A7-032C-43B9-8D23-8245DC7B3668</string>
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
@@ -11651,6 +11986,13 @@ https://github.com/vdesabou/alfred-spotify-mini-player</string>
 			<integer>330</integer>
 			<key>ypos</key>
 			<integer>800</integer>
+		</dict>
+		<key>06E3A89C-5DF9-468B-8682-A233B381ABFA</key>
+		<dict>
+			<key>xpos</key>
+			<integer>820</integer>
+			<key>ypos</key>
+			<integer>5020</integer>
 		</dict>
 		<key>0749257A-D830-483B-9EF5-580E33C10BB8</key>
 		<dict>
@@ -11962,6 +12304,17 @@ https://github.com/vdesabou/alfred-spotify-mini-player</string>
 			<key>ypos</key>
 			<integer>5350</integer>
 		</dict>
+		<key>29902759-070E-471F-950B-26489BC9DBA5</key>
+		<dict>
+			<key>colorindex</key>
+			<integer>12</integer>
+			<key>note</key>
+			<string>PHP SERVER</string>
+			<key>xpos</key>
+			<integer>855</integer>
+			<key>ypos</key>
+			<integer>1125</integer>
+		</dict>
 		<key>2A349C40-E727-4733-8792-2F49BDEE3ADD</key>
 		<dict>
 			<key>xpos</key>
@@ -12010,6 +12363,15 @@ https://github.com/vdesabou/alfred-spotify-mini-player</string>
 			<integer>460</integer>
 			<key>ypos</key>
 			<integer>1200</integer>
+		</dict>
+		<key>2EE3E9B0-C1AD-4B1B-830B-DBB6B6D90C0C</key>
+		<dict>
+			<key>note</key>
+			<string>remove from playlist</string>
+			<key>xpos</key>
+			<integer>895</integer>
+			<key>ypos</key>
+			<integer>645</integer>
 		</dict>
 		<key>2F1F6369-46C0-483B-816F-3796168AE060</key>
 		<dict>
@@ -12453,6 +12815,20 @@ https://github.com/vdesabou/alfred-spotify-mini-player</string>
 			<key>ypos</key>
 			<integer>3820</integer>
 		</dict>
+		<key>612F1361-C29D-4AB8-A3BF-D0920BD7846E</key>
+		<dict>
+			<key>xpos</key>
+			<integer>660</integer>
+			<key>ypos</key>
+			<integer>1125</integer>
+		</dict>
+		<key>614AF93D-7DC9-4B4C-BD07-E3887CB6BB3B</key>
+		<dict>
+			<key>xpos</key>
+			<integer>650</integer>
+			<key>ypos</key>
+			<integer>16370</integer>
+		</dict>
 		<key>620CF52F-BCFD-4957-BC4F-1E9853125AF5</key>
 		<dict>
 			<key>xpos</key>
@@ -12634,6 +13010,13 @@ https://github.com/vdesabou/alfred-spotify-mini-player</string>
 			<key>ypos</key>
 			<integer>6345</integer>
 		</dict>
+		<key>715E30A7-032C-43B9-8D23-8245DC7B3668</key>
+		<dict>
+			<key>xpos</key>
+			<integer>910</integer>
+			<key>ypos</key>
+			<integer>16375</integer>
+		</dict>
 		<key>71AACE30-7E8D-4D3C-8BD1-F98FEE578AEC</key>
 		<dict>
 			<key>xpos</key>
@@ -12719,6 +13102,8 @@ https://github.com/vdesabou/alfred-spotify-mini-player</string>
 		</dict>
 		<key>7918E8F7-20AE-445E-9AEA-E2E54CDE967D</key>
 		<dict>
+			<key>note</key>
+			<string>add to playlist</string>
 			<key>xpos</key>
 			<integer>630</integer>
 			<key>ypos</key>
@@ -13870,13 +14255,6 @@ Example: https://open.spotify.com/track/6hxgHNJjadmCHAJPXw6AYL</string>
 			<key>ypos</key>
 			<integer>6805</integer>
 		</dict>
-		<key>EB1ED46F-71D7-49D1-B7BB-DA1ECF2F665F</key>
-		<dict>
-			<key>xpos</key>
-			<integer>840</integer>
-			<key>ypos</key>
-			<integer>5060</integer>
-		</dict>
 		<key>EBD3FE58-A201-4C3D-A2DD-7CD9A6D50A2E</key>
 		<dict>
 			<key>xpos</key>
@@ -14068,7 +14446,7 @@ Example: https://open.spotify.com/track/6hxgHNJjadmCHAJPXw6AYL</string>
 		<key>__artwork_folder_size</key>
 		<string></string>
 		<key>__automatic_refresh_library_interval</key>
-		<string></string>
+		<string>0</string>
 		<key>__country_code</key>
 		<string>MX</string>
 		<key>__debug</key>
@@ -14086,7 +14464,7 @@ Example: https://open.spotify.com/track/6hxgHNJjadmCHAJPXw6AYL</string>
 		<key>__is_public_playlists</key>
 		<string>0</string>
 		<key>__last_check_update_time</key>
-		<string>1626711145</string>
+		<string>1642721498</string>
 		<key>__max_results</key>
 		<string>50</string>
 		<key>__mopidy_port</key>
@@ -14106,9 +14484,9 @@ Example: https://open.spotify.com/track/6hxgHNJjadmCHAJPXw6AYL</string>
 		<key>__oauth_refresh_token</key>
 		<string>AQAln-WkX0aqVDX6lllasjl-yNyzUkDRiWPWBvZzY5xuY7wdst3n87Qq0DWOU46lVruVrGzJDh2HKmzbTFGP2nMwgDgT9wxoM3rKZ8RLUjCZlTHJMNVGw11jgXkHpgVNh_U</string>
 		<key>__output_application</key>
-		<string>CONNECT</string>
+		<string>APPLESCRIPT</string>
 		<key>__podcasts_enabled</key>
-		<string></string>
+		<string>1</string>
 		<key>__preferred_spotify_connect_device</key>
 		<string></string>
 		<key>__preferred_spotify_connect_device_pushcut_webhook</key>
@@ -14124,7 +14502,7 @@ Example: https://open.spotify.com/track/6hxgHNJjadmCHAJPXw6AYL</string>
 		<key>__theme_color</key>
 		<string>green</string>
 		<key>__use_artworks</key>
-		<string>1</string>
+		<string>0</string>
 		<key>__use_facebook</key>
 		<string>0</string>
 		<key>__use_growl</key>
@@ -14134,7 +14512,7 @@ Example: https://open.spotify.com/track/6hxgHNJjadmCHAJPXw6AYL</string>
 		<key>__volume_percent</key>
 		<string>20</string>
 		<key>__workflow_version</key>
-		<string>10.8</string>
+		<string>11.8</string>
 		<key>add_all_tracks_from_album_when_adding_to_yourmusic</key>
 		<string>0</string>
 		<key>add_created_radio_playlist_to_library</key>
@@ -14157,6 +14535,8 @@ Example: https://open.spotify.com/track/6hxgHNJjadmCHAJPXw6AYL</string>
 		<string>artist_radio</string>
 		<key>c_current</key>
 		<string>current</string>
+		<key>c_fix_permissions</key>
+		<string>fix_permissions</string>
 		<key>c_follow_artist</key>
 		<string>follow_artist</string>
 		<key>c_lookup_artist_online</key>
@@ -14381,7 +14761,7 @@ Example: https://open.spotify.com/track/6hxgHNJjadmCHAJPXw6AYL</string>
 		<string>__fuzzy_search</string>
 	</array>
 	<key>version</key>
-	<string>10.16</string>
+	<string>11.8</string>
 	<key>webaddress</key>
 	<string>https://alfred-spotify-mini-player.com</string>
 </dict>

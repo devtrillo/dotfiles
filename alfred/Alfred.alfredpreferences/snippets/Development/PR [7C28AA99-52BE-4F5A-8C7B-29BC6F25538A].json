@@ -1,0 +1,8 @@
+{
+  "alfredsnippet" : {
+    "snippet" : "<!-- PR title format: `<Feat|Bug|Test|Doc|Chore|Junk> - <tracker-number> - <Short description>` -->\n#### What does this PR do?\n<!-- Briefly synthesize the feature, fix, or chore. -->\n#### Where should the reviewer start?\n<!-- Point out where the reviewer should start to review the code additions or subtractions. -->\n#### How should this be manually tested?\n<!-- List the steps to reproduce, corroborate, or tests to run. Write this section clear enough so that external developers can also follow it and test the feature or fix. -->\n#### Any background context you want to provide?\n<!-- Add any information regarding the PR that the reviewers should know, if necessary. -->\n#### What are the relevant tickets?\n<!-- Link to issues, related PRs, Pivotal, etc. -->\n#### Screenshots\n<!-- Add before and after screenshots or recording of the feature, if available. -->\n#### Questions\n<!-- List questions or concerns directed to the reviewers, if necessary. -->\n#### Notes about Environment Variables\n<!-- Mention the modifications made to the environment variables. -->\n#### Checklist\n<!-- Verify that you have done all of the following and mark them as done. -->\n- [ ] I added the necessary documentation, if appropriate.\n- [ ] I added tests to prove that my fix is effective or my feature works.\n- [ ] I reviewed existing Pull Requests before submitting mine.\nWhen merging the PR use this template [Finishes #1234567] | [Fixes #1234567]",
+    "uid" : "7C28AA99-52BE-4F5A-8C7B-29BC6F25538A",
+    "name" : "PR",
+    "keyword" : "!PR"
+  }
+}

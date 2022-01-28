@@ -252,11 +252,8 @@ case "$1" in
     setup_neovim 
     ;;
   macos)
-    setup_shell
-    setup_neovim
     setup_macos
     setup_terminfo
-    setup_homebrew
     setup_git
     ;;
   *)

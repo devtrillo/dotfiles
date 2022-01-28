@@ -16,6 +16,7 @@ class Workflows
     private $path;
     private $home;
     private $results;
+    private $api;
     /**
      * Description:
      * Class constructor function. Intializes all class variables. Accepts one optional parameter
@@ -35,7 +36,6 @@ class Workflows
             $this->bundle = $bundleid;
         else:
             if (file_exists('info.plist')):
-                $this->path();
                 $this->bundle = $this->get('bundleid', 'info.plist');
             endif;
         endif;
@@ -50,6 +50,16 @@ class Workflows
             exec("mkdir -p '" . $this->data . "'");
         endif;
         $this->results = array();
+    }
+
+    function getApi()
+    {
+        return $this->api;
+    }
+
+    function setApi($api)
+    {
+        $this->api = $api;
     }
 
     /**
@@ -134,7 +144,7 @@ class Workflows
     function path()
     {
         if (is_null($this->path)):
-            $this->path = getenv('PWD');
+            $this->path = exec('pwd');
         endif;
         return $this->path;
     }

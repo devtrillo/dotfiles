@@ -5,6 +5,43 @@ require_once './src/createLibrary.php';
 require_once './src/refreshLibrary.php';
 require './vendor/autoload.php';
 
+/**
+ * fixPermissions function.
+ *
+ */
+function fixPermissions($w)
+{
+    $theme_color = getSetting($w, 'theme_color');
+
+    // check for quarantine and remove it if required
+    exec('/usr/bin/xattr ./fzf', $response);
+    foreach ($response as $line) {
+        if (strpos($line, 'com.apple.quarantine') !== false) {
+            logMsg($w, "Info(fix_permissions) for fzf");
+            exec('/usr/bin/xattr -d com.apple.quarantine ./fzf', $response);
+            break;
+        }
+    }
+
+    // check for quarantine and remove it if required
+    exec('/usr/bin/xattr ./terminal-notifier.app', $response);
+    foreach ($response as $line) {
+        if (strpos($line, 'com.apple.quarantine') !== false) {
+            logMsg($w, "Info(fix_permissions) for terminal-notifier");
+            exec('/usr/bin/xattr -d com.apple.quarantine ./terminal-notifier.app', $response);
+            break;
+        }
+    }
+
+    exec('/usr/bin/xattr "' . './App/' . $theme_color . '/Spotify Mini Player.app' . '"', $response);
+    foreach ($response as $line) {
+        if (strpos($line, 'com.apple.quarantine') !== false) {
+            logMsg($w, "Info(fix_permissions) for Spotify Mini Player");
+            exec('/usr/bin/xattr -d com.apple.quarantine "' . './App/' . $theme_color . '/Spotify Mini Player.app' . '"', $response);
+            break;
+        }
+    }
+}
 
 /**
  * getExternalSettings function.
@@ -80,22 +117,45 @@ function setVolume($w, $volume)
  *
  * @param mixed $w
  */
-function isTrackInYourMusic($w, $track_uri)
+function isTrackInYourMusic($w, $track_uri, $db)
 {
-    $tracks = [
-        $track_uri,
-    ];
-    try {
-        $api = getSpotifyWebAPI($w);
-        $response = $api->myTracksContains($tracks);
-        return $response[0];
-    } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
-        return false;
+    if($db != null) {
+        $nb = 0;
+        $isTrackInYourMusic = 'select count(distinct uri) from tracks where yourmusic=1 and uri=:track_uri';
+        try {
+            $stmt = $db->prepare($isTrackInYourMusic);
+            $stmt->bindValue(':track_uri', ''. $track_uri.'');
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+            $tmp = $results[0];
+            $nb = $tmp[0];
+        } catch (PDOException $e) {
+            handleDbIssuePdoXml($e);
+            return false;
+        }
+
+        if ($nb > 0) {
+            return true;
+        }
+    } else {
+        $tracks = [
+            $track_uri,
+        ];
+        try {
+            $api = getSpotifyWebAPI($w);
+            $response = $api->myTracksContains($tracks);
+            return $response[0];
+        } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
+            return false;
+        }
     }
+    
+
+    return false;
 }
 
 /**
- * isUserPremiumSubscriber function.
+ * updateCounters function.
  *
  * @param mixed $w
  * @param mixed $db
@@ -283,7 +343,7 @@ function createAndPlayLikedSongsPlaylist($w)
             catch(SpotifyWebAPI\SpotifyWebAPIException $e) {
                 logMsg($w,'Error(createAndPlayLikedSongsPlaylist): retry ' . $nb_retry . ' (exception ' . jTraceEx($e) . ')');
 
-                if ($e->getCode() == 404) {
+                if ($e->getCode() == 404 || $e->getCode() == 403) {
                     // skip
                     break;
                 }
@@ -395,7 +455,7 @@ function getCurrentTrackinfo($w, $output_application)
         // get info on current song
         exec('./src/track_info.ksh 2>&1', $retArr, $retVal);
         if ($retVal != 0) {
-            // displayNotificationWithArtwork($w, 'AppleScript execution failed!', './images/warning.png', 'Error!');
+            logMsg($w, "Error(getCurrentTrackinfo): AppleScript execution failed!");
             return;
         }
         if (substr_count($retArr[count($retArr) - 1], '▹') > 0) {
@@ -407,7 +467,7 @@ function getCurrentTrackinfo($w, $output_application)
     }
 
     if(!isset($results[4])) {
-        // displayNotificationWithArtwork($w, 'Cannot get current track', './images/warning.png', 'Error!');
+        logMsg($w, "Error(getCurrentTrackinfo): Cannot get current track!");
         return;
     }
     $tmp = explode(':', $results[4]);
@@ -949,7 +1009,7 @@ function getEpisode($w, $episode_uri)
             $retry = false;
         } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
             logMsg($w,'Error(setRepeatStateSpotifyConnect): retry '.$nb_retry.' (exception '.jTraceEx($e).')');
-            if ($e->getCode() == 404) {
+            if ($e->getCode() == 404 || $e->getCode() == 403) {
                 // skip
                 break;
             } else if (strpos(strtolower($e->getMessage()), 'ssl') !== false) {
@@ -1013,7 +1073,7 @@ function getEpisode($w, $episode_uri)
             return false;
         } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
             logMsg($w,'Error(isRepeatStateSpotifyConnectActive): retry '.$nb_retry.' (exception '.jTraceEx($e).')');
-            if ($e->getCode() == 404) {
+            if ($e->getCode() == 404 || $e->getCode() == 403) {
                 // skip
                 break;
             } else if (strpos(strtolower($e->getMessage()), 'ssl') !== false) {
@@ -1062,7 +1122,7 @@ function getEpisode($w, $episode_uri)
             $retry = false;
         } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
             logMsg($w,'Error(setShuffleStateSpotifyConnect): retry '.$nb_retry.' (exception '.jTraceEx($e).')');
-            if ($e->getCode() == 404) {
+            if ($e->getCode() == 404 || $e->getCode() == 403) {
                 // skip
                 break;
             } else if (strpos(strtolower($e->getMessage()), 'ssl') !== false) {
@@ -1118,7 +1178,7 @@ function getEpisode($w, $episode_uri)
             return false;
         } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
             logMsg($w,'Error(getVolumeSpotifyConnect): retry '.$nb_retry.' (exception '.jTraceEx($e).')');
-            if ($e->getCode() == 404) {
+            if ($e->getCode() == 404 || $e->getCode() == 403) {
                 // skip
                 break;
             } else if (strpos(strtolower($e->getMessage()), 'ssl') !== false) {
@@ -1167,7 +1227,7 @@ function getEpisode($w, $episode_uri)
             $retry = false;
         } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
             logMsg($w,'Error(changeVolumeSpotifyConnect): retry '.$nb_retry.' (exception '.jTraceEx($e).')');
-            if ($e->getCode() == 404) {
+            if ($e->getCode() == 404 || $e->getCode() == 403) {
                 // skip
                 break;
             } else if (strpos(strtolower($e->getMessage()), 'ssl') !== false) {
@@ -1238,7 +1298,7 @@ function getEpisode($w, $episode_uri)
             }
         } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
             logMsg($w,'Error(playTrackSpotifyConnect): track_uri '.$track_uri.' retry '.$nb_retry.' (exception '.jTraceEx($e).')');
-            if ($e->getCode() == 404) {
+            if ($e->getCode() == 404 || $e->getCode() == 403) {
                 // skip
                 break;
             } else if (strpos(strtolower($e->getMessage()), 'ssl') !== false) {
@@ -1285,7 +1345,7 @@ function getEpisode($w, $episode_uri)
             $retry = false;
         } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
             logMsg($w,'Error(nextTrackSpotifyConnect): retry '.$nb_retry.' (exception '.jTraceEx($e).')');
-            if ($e->getCode() == 404) {
+            if ($e->getCode() == 404 || $e->getCode() == 403) {
                 // skip
                 break;
             } else if (strpos(strtolower($e->getMessage()), 'ssl') !== false) {
@@ -1332,7 +1392,7 @@ function addToQueueSpotifyConnect($w, $trackId, $device_id)
            $retry = false;
        } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
            logMsg($w,'Error(addToQueueSpotifyConnect): retry '.$nb_retry.' (exception '.jTraceEx($e).')');
-           if ($e->getCode() == 404) {
+           if ($e->getCode() == 404 || $e->getCode() == 403) {
                // skip
                break;
            } else if (strpos(strtolower($e->getMessage()), 'ssl') !== false) {
@@ -1381,7 +1441,7 @@ function seekToBeginning($w)
            $retry = false;
        } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
            logMsg($w,'Error(seekToBeginning): retry '.$nb_retry.' (exception '.jTraceEx($e).')');
-           if ($e->getCode() == 404) {
+           if ($e->getCode() == 404 || $e->getCode() == 403) {
                // skip
                break;
            } else if (strpos(strtolower($e->getMessage()), 'ssl') !== false) {
@@ -1428,7 +1488,7 @@ function seekToBeginning($w)
             $retry = false;
         } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
             logMsg($w,'Error(previousTrackSpotifyConnect): retry '.$nb_retry.' (exception '.jTraceEx($e).')');
-            if ($e->getCode() == 404) {
+            if ($e->getCode() == 404 || $e->getCode() == 403) {
                 // skip
                 break;
             } else if (strpos(strtolower($e->getMessage()), 'ssl') !== false) {
@@ -1493,7 +1553,7 @@ function seekToBeginning($w)
             }
         } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
             logMsg($w,'Error(playpauseSpotifyConnect): retry '.$nb_retry.' (exception '.jTraceEx($e).')');
-            if ($e->getCode() == 404) {
+            if ($e->getCode() == 404 || $e->getCode() == 403) {
                 // skip
                 break;
             } else if (strpos(strtolower($e->getMessage()), 'ssl') !== false) {
@@ -1559,7 +1619,7 @@ function seekToBeginning($w)
             }
         } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
             logMsg($w,'Error(playSpotifyConnect): retry '.$nb_retry.' (exception '.jTraceEx($e).')');
-            if ($e->getCode() == 404) {
+            if ($e->getCode() == 404 || $e->getCode() == 403) {
                 // skip
                 break;
             } else if (strpos(strtolower($e->getMessage()), 'ssl') !== false) {
@@ -1606,7 +1666,7 @@ function seekToBeginning($w)
             $retry = false;
         } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
             logMsg($w,'Error(pauseSpotifyConnect): retry '.$nb_retry.' (exception '.jTraceEx($e).')');
-            if ($e->getCode() == 404) {
+            if ($e->getCode() == 404 || $e->getCode() == 403) {
                 // skip
                 break;
             } else if (strpos(strtolower($e->getMessage()), 'ssl') !== false) {
@@ -1725,7 +1785,7 @@ function seekToBeginning($w)
                     ), './images/warning.png', 'yes', null, '');
             } else {
                 logMsg($w,'Error(getSpotifyConnectCurrentDeviceId): retry '.$nb_retry.' (exception '.jTraceEx($e).')');
-                if ($e->getCode() == 404) {
+                if ($e->getCode() == 404 || $e->getCode() == 403) {
                     // skip
                     break;
                 } else if (strpos(strtolower($e->getMessage()), 'ssl') !== false) {
@@ -1776,7 +1836,7 @@ function seekToBeginning($w)
             $retry = false;
         } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
             logMsg($w,'Error(changeUserDevice): retry '.$nb_retry.' (exception '.jTraceEx($e).')');
-            if ($e->getCode() == 404) {
+            if ($e->getCode() == 404 || $e->getCode() == 403) {
                 // skip
                 break;
             } else if (strpos(strtolower($e->getMessage()), 'ssl') !== false) {
@@ -1873,7 +1933,7 @@ function isShuffleActive($print_output)
                 $retry = false;
             } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
                 logMsg($w,'Error(isShuffleActive): retry '.$nb_retry.' (exception '.jTraceEx($e).')');
-                if ($e->getCode() == 404) {
+                if ($e->getCode() == 404 || $e->getCode() == 403) {
                         // skip
                         break;
                     } else if ($e->getCode() == 500 || $e->getCode() == 502 || $e->getCode() == 503 || $e->getCode() == 202 || $e->getCode() == 400 || $e->getCode() == 504) {
@@ -2113,6 +2173,11 @@ function listUsers($w)
  */
 function getSpotifyWebAPI($w)
 {
+    $api = $w->getApi();
+    if(!is_null($api))
+    {
+        return $api;
+    }
     $oauth_client_id = getSetting($w,'oauth_client_id');
     $oauth_client_secret = getSetting($w,'oauth_client_secret');
     $oauth_access_token = getSetting($w,'oauth_access_token');
@@ -2148,6 +2213,7 @@ function getSpotifyWebAPI($w)
     if ($ret == false) {
         throw new SpotifyWebAPI\SpotifyWebAPIException('Cannot set oauth_refresh_token', 100);
     }
+    $w->setApi($api);
     return $api;
 }
 
@@ -2615,7 +2681,13 @@ function createDebugFile($w)
         $output = $output.'Mopidy version:'.invokeMopidyMethod($w, 'core.get_version', array(), false);
     }
     $output = $output."\n";
-
+    if (isUserPremiumSubscriber($w)) {
+        $output = $output . 'PREMIUM';
+        $output = $output . "\n";
+    } else {
+        $output = $output . 'NOT PREMIUM';
+        $output = $output . "\n";
+    }
 
     $response = shell_exec('/usr/bin/xattr "'.'./App/'.$theme_color.'/Spotify Mini Player.app'.'"');
     $output = $output."xattr Spotify Mini Player.app returned: \n";
@@ -2675,9 +2747,7 @@ function encryptString($w, $string)
     // Encrypt using the public key
     openssl_public_encrypt($string, $encrypted, $public_key);
 
-    $encrypted_hex = bin2hex($encrypted);
-
-    return $encrypted_hex;
+    return bin2hex($encrypted);
 }
 
 function decryptString($w, $encrypted)
@@ -2762,6 +2832,7 @@ function getCurrentTrackInfoWithMopidy($w, $displayError = true)
     $track_name = '';
     $artist_name = '';
     $album_name = '';
+    $album_uri = '';
     $track_uri = '';
     $length = 0;
     $retry = true;
@@ -2785,6 +2856,8 @@ function getCurrentTrackInfoWithMopidy($w, $displayError = true)
                 $artist_name = $current_track_info->item->artists[0]->name;
             if(isset($current_track_info->item->album))
                 $album_name = $current_track_info->item->album->name;
+            if (isset($current_track_info->item->album))
+                $album_uri = $current_track_info->item->album->uri;
             $currently_playing_type = $current_track_info->currently_playing_type;
 
             if($currently_playing_type == 'episode') {
@@ -2811,9 +2884,9 @@ function getCurrentTrackInfoWithMopidy($w, $displayError = true)
             if(isset($current_track_info->item->popularity))
                 $popularity = $current_track_info->item->popularity;
 
-            return ''.$track_name.'▹'.$artist_name.'▹'.$album_name.'▹'.$state.'▹'.$track_uri.'▹'.$length.'▹'.$popularity;
+            return ''.$track_name.'▹'.$artist_name.'▹'.$album_name.'▹'.$state.'▹'.$track_uri.'▹'.$length.'▹'. $popularity . '▹' . $album_uri;
         } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
-            if ($e->getCode() == 404) {
+            if ($e->getCode() == 404 || $e->getCode() == 403) {
                 // skip
                 break;
             } else if (strpos(strtolower($e->getMessage()), 'ssl') !== false) {
@@ -4243,7 +4316,8 @@ function addTracksToPlaylist($w, $tracks, $playlist_uri, $playlist_name, $allow_
  */
 function removeTrackFromPlaylist($w, $track_uri, $playlist_uri, $playlist_name, $refreshLibrary = true)
 {
-
+    $output_application = getSetting($w, 'output_application');
+    
     try {
         $api = getSpotifyWebAPI($w);
         $tmp = explode(':', $playlist_uri);
@@ -4265,6 +4339,21 @@ function removeTrackFromPlaylist($w, $track_uri, $playlist_uri, $playlist_name, 
         return false;
     }
 
+    // https://github.com/vdesabou/alfred-spotify-mini-player/issues/522
+    // Automatically play next track when removing track from playlist
+    if ($output_application == 'MOPIDY') {
+        invokeMopidyMethod($w, 'core.playback.next', array());
+    } else if ($output_application == 'APPLESCRIPT') {
+        exec("osascript -e 'tell application \"Spotify\" to next track'");
+    } else {
+        $device_id = getSpotifyConnectCurrentDeviceId($w);
+        if ($device_id != '') {
+            nextTrackSpotifyConnect($w, $device_id);
+        } else {
+            displayNotificationWithArtwork($w, 'No Spotify Connect device is available', './images/warning.png', 'Error!');
+        }
+    }
+
     if ($refreshLibrary) {
         if(getenv('automatically_refresh_library') == 1) {
             refreshLibrary($w);
@@ -4283,11 +4372,7 @@ function removeTrackFromPlaylist($w, $track_uri, $playlist_uri, $playlist_name, 
  */
 function removeTrackFromYourMusic($w, $track_uri, $refreshLibrary = true)
 {
-
-
-
-
-    $userid = getSetting($w,'userid');
+    $output_application = getSetting($w, 'output_application');
 
     try {
         $api = getSpotifyWebAPI($w);
@@ -4305,6 +4390,21 @@ function removeTrackFromYourMusic($w, $track_uri, $refreshLibrary = true)
         }
     }
 
+    // https://github.com/vdesabou/alfred-spotify-mini-player/issues/522
+    // Automatically play next track when removing track from playlist
+    if ($output_application == 'MOPIDY') {
+        invokeMopidyMethod($w, 'core.playback.next', array());
+    } else if ($output_application == 'APPLESCRIPT') {
+        exec("osascript -e 'tell application \"Spotify\" to next track'");
+    } else {
+        $device_id = getSpotifyConnectCurrentDeviceId($w);
+        if ($device_id != '') {
+            nextTrackSpotifyConnect($w, $device_id);
+        } else {
+            displayNotificationWithArtwork($w, 'No Spotify Connect device is available', './images/warning.png', 'Error!');
+        }
+    }
+    
     return true;
 }
 
@@ -4378,7 +4478,7 @@ function getRandomAlbum($w)
                 PDO::ATTR_PERSISTENT => true,
             ));
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $getTracks = 'select album_uri,album_name,artist_name from tracks where yourmusic=1 order by random() limit 1';
+        $getTracks = 'select album_uri,album_name,artist_name from tracks where yourmusic_album=1 order by random() limit 1';
         $stmt = $db->prepare($getTracks);
         $stmt->execute();
         $track = $stmt->fetch();
@@ -5336,8 +5436,6 @@ function getTheShowEpisodes($w, $show_uri, $country_code, $actionMode = false)
  */
 function getNumberOfEpisodesForShow($w, $show_uri, $country_code)
 {
-    $episodes = array();
-
     $retry = true;
     $nb_retry = 0;
     while ($retry) {
@@ -5355,7 +5453,7 @@ function getNumberOfEpisodesForShow($w, $show_uri, $country_code)
         catch(SpotifyWebAPI\SpotifyWebAPIException $e) {
             logMsg($w,'Error(getNumberOfEpisodesForShow): retry ' . $nb_retry . ' (exception ' . jTraceEx($e) . ')');
 
-            if ($e->getCode() == 404) {
+            if ($e->getCode() == 404 || $e->getCode() == 403) {
                 // skip
                 break;
             }
@@ -5984,7 +6082,7 @@ function displayNotificationForCurrentTrack($w)
                     $popularity = floatToStars($results[6]/100);
                 }
                 $liked = 'emoji_not_liked';
-                if(isTrackInYourMusic($w,$results[4])) {
+                if(isTrackInYourMusic($w,$results[4],null)) {
                     $liked = 'emoji_liked';
                 }
 
@@ -6824,7 +6922,7 @@ function getArtistArtwork($w, $artist_uri, $artist_name, $fetchIfNotPresent = fa
     if (!$useArtworks) {
         return './images/artists.png';
     }
-    $parsedArtist = urlencode(escapeQuery($artist_name));
+    $parsedArtist = truncateStr(urlencode(escapeQuery($artist_name)),250);
 
     if (!file_exists($w->data().'/artwork')):
         exec("mkdir '".$w->data()."/artwork'");
@@ -6961,7 +7059,7 @@ function getArtworkURL($w, $type, $id, $highRes = false)
                 }
 
 
-                if ($e->getCode() == 404) {
+                if ($e->getCode() == 404 || $e->getCode() == 403) {
                     // skip
                     break;
                 } else if (strpos(strtolower($e->getMessage()), 'ssl') !== false) {
@@ -7025,7 +7123,7 @@ function getArtworkURL($w, $type, $id, $highRes = false)
                     logMsg($w,'Error(getArtworkURL album): (exception '.jTraceEx($e).')');
                 }
 
-                if ($e->getCode() == 404) {
+                if ($e->getCode() == 404 || $e->getCode() == 403) {
                     // skip
                     break;
                 } else if (strpos(strtolower($e->getMessage()), 'ssl') !== false) {
@@ -7111,7 +7209,7 @@ function getPlaylistArtworkURL($w, $playlist_uri)
                 logMsg($w,'Error(getPlaylistArtworkURL): (exception '.jTraceEx($e).')');
             }
 
-            if ($e->getCode() == 404) {
+            if ($e->getCode() == 404 || $e->getCode() == 403) {
                 // skip
                 break;
             } else if (strpos(strtolower($e->getMessage()), 'ssl') !== false) {
@@ -7182,7 +7280,7 @@ function getShowArtworkURL($w, $show_uri)
                 logMsg($w,'Error(getShowArtworkURL): (exception '.jTraceEx($e).')');
             }
 
-            if ($e->getCode() == 404) {
+            if ($e->getCode() == 404 || $e->getCode() == 403) {
                 // skip
                 break;
             } else if (strpos(strtolower($e->getMessage()), 'ssl') !== false) {
@@ -7261,7 +7359,7 @@ function getEpisodeArtworkURL($w, $episode_uri)
                 logMsg($w,'Error(getEpisodeArtworkURL): (exception '.jTraceEx($e).')');
             }
 
-            if ($e->getCode() == 404) {
+            if ($e->getCode() == 404 || $e->getCode() == 403) {
                 // skip
                 break;
             } else if (strpos(strtolower($e->getMessage()), 'ssl') !== false) {
@@ -7332,7 +7430,7 @@ function getArtistArtworkURL($w, $artist_id)
                 logMsg($w,'Error(getArtistArtworkURL): (exception '.jTraceEx($e).')');
             }
 
-            if ($e->getCode() == 404) {
+            if ($e->getCode() == 404 || $e->getCode() == 403) {
                 // skip
                 break;
             } else if (strpos(strtolower($e->getMessage()), 'ssl') !== false) {
@@ -7470,17 +7568,9 @@ function handleDbIssuePdoEcho($dbhandle, $w)
 function handleSpotifyWebAPIException($w, $e)
 {
     if (file_exists($w->data().'/update_library_in_progress')) {
-        deleteTheFile($w,$w->data().'/update_library_in_progress');
-    }
-
-    // remove the new library (it failed)
-    if (file_exists($w->data().'/library_new.db')) {
-        deleteTheFile($w,$w->data().'/library_new.db');
-    }
-
-    // set back old library
-    if (file_exists($w->data().'/library_old.db')) {
-        rename($w->data().'/library_old.db', $w->data().'/library.db');
+        // ignore during refreshLibrary
+        // see https://github.com/vdesabou/alfred-spotify-mini-player/issues/515
+        return;
     }
 
     displayNotificationWithArtwork($w, 'Web API Exception: '.$e->getCode().' - '.$e->getMessage().' use spot_mini_debug command', './images/warning.png', 'Error!');
@@ -7861,7 +7951,7 @@ function checkForUpdate($w, $last_check_update_time, $download = false)
             // update workflow_version
             updateSetting($w, 'workflow_version', ''.$local_version);
             stathat_ez_count('AlfredSpotifyMiniPlayer', 'workflow_installations', 1);
-
+            fixPermissions($w);
             // open SpotifyMiniPlayer.app for notifications
             exec('open "'.'./App/'.$theme_color.'/Spotify Mini Player.app'.'"',$response);
         }
@@ -8039,7 +8129,7 @@ function killUpdate($w)
     deleteTheFile($w,$w->data().'/create_library');
     deleteTheFile($w,$w->data().'/download_artworks_in_progress');
 
-    exec("kill -9 $(ps -efx | grep \"php\" | egrep \"update_|refresh_library|php -S localhost:15298|ADDTOPLAYLIST|UPDATE_|DOWNLOAD_ARTWORKS\" | grep -v grep | awk '{print $2}')");
+    exec("kill -9 $(ps -efx | grep \"php\" | egrep \"update_|refresh_library|php -S 127.0.0.1:15298|ADDTOPLAYLIST|REMOVEFROMPLAYLIST|UPDATE_|DOWNLOAD_ARTWORKS\" | grep -v grep | awk '{print $2}')");
 
     displayNotificationWithArtwork($w, 'Update library was killed', './images/kill.png', 'Kill Update Library ');
 }
@@ -8393,9 +8483,6 @@ function do_async_post_request($url, $params)
 
         fwrite($fp, $out);
         fclose($fp);
-    } else {
-        $w = new Workflows('com.vdesabou.spotify.mini.player');
-        logMsg($w,'Error(do_async_post_request): Problem when updating stat with stathat');
     }
 }
 
