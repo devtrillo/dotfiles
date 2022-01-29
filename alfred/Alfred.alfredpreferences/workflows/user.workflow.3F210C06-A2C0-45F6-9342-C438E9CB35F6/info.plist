@@ -14464,7 +14464,7 @@ Example: https://open.spotify.com/track/6hxgHNJjadmCHAJPXw6AYL</string>
 		<key>__is_public_playlists</key>
 		<string>0</string>
 		<key>__last_check_update_time</key>
-		<string>1642721498</string>
+		<string>1643412748</string>
 		<key>__max_results</key>
 		<string>50</string>
 		<key>__mopidy_port</key>
@@ -14486,7 +14486,7 @@ Example: https://open.spotify.com/track/6hxgHNJjadmCHAJPXw6AYL</string>
 		<key>__output_application</key>
 		<string>APPLESCRIPT</string>
 		<key>__podcasts_enabled</key>
-		<string>1</string>
+		<string>0</string>
 		<key>__preferred_spotify_connect_device</key>
 		<string></string>
 		<key>__preferred_spotify_connect_device_pushcut_webhook</key>
@@ -14502,7 +14502,7 @@ Example: https://open.spotify.com/track/6hxgHNJjadmCHAJPXw6AYL</string>
 		<key>__theme_color</key>
 		<string>green</string>
 		<key>__use_artworks</key>
-		<string>0</string>
+		<string>1</string>
 		<key>__use_facebook</key>
 		<string>0</string>
 		<key>__use_growl</key>
