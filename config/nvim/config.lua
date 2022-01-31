@@ -59,7 +59,6 @@ lvim.builtin.notify.active = true
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.show_icons.git = 0
-
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
   "bash",
@@ -102,20 +101,13 @@ lvim.builtin.treesitter.highlight.enabled = true
 -- end
 
 -- -- set a formatter, this will override the language server formatting capabilities (if it exists)
--- local formatters = require "lvim.lsp.null-ls.formatters"
--- formatters.setup {
---   { command = "black", filetypes = { "python" } },
---   { command = "isort", filetypes = { "python" } },
---   {
---     -- each formatter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
---     command = "prettier",
---     ---@usage arguments to pass to the formatter
---     -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
---     extra_args = { "--print-with", "100" },
---     ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
---     filetypes = { "typescript", "typescriptreact" },
---   },
--- }
+local formatters = require "lvim.lsp.null-ls.formatters"
+formatters.setup {
+  {
+    command = "prettier",
+    filetypes = { "typescript", "typescriptreact" ,"javascript", "javascriptreact"},
+  },
+}
 
 -- -- set additional linters
 -- local linters = require "lvim.lsp.null-ls.linters"
@@ -139,24 +131,16 @@ lvim.builtin.treesitter.highlight.enabled = true
 lvim.plugins = {
     {"folke/tokyonight.nvim"},
     {"folke/trouble.nvim", cmd = "TroubleToggle"},
+    -- {"github/copilot.vim"},
     -- {"morhetz/gruvbox"},
     {"tpope/vim-surround"},
     {"wakatime/vim-wakatime", event = "VimEnter"},
-    {"github/copilot.vim"},
+    {"lewis6991/spellsitter.nvim",
+      config = function()
+        require('spellsitter').setup{enable=true}
+      end
+    },
 }
-
--- Autocommands (https://neovim.io/doc/user/autocmd.html)
-lvim.autocommands.custom_groups = {
-  { "BufEnter,FocusGained,InsertLeave,WinEnter", "*", "if &nu && mode() != \"i\" | set rnu   | endif"},
-  { "BufEnter,FocusGained,InsertLeave,WinEnter", "*", "set wrap linebreak nolist showbreak=-->>"},
-  { "BufLeave,FocusLost,InsertEnter,WinLeave", "*", "if &nu | set nornu | endif"},
-  { "BufLeave,FocusLost,InsertEnter,WinLeave", "*", "set nowrap"},
-  { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
-  { "InsertEnter", "*", ":normal zz"},
-}
-
-
-lvim.builtin.dashboard.footer = "devtrillo.com"
 lvim.builtin.dashboard.custom_header = {
     "                                                    ",
     "                                                    ",
@@ -170,10 +154,20 @@ lvim.builtin.dashboard.custom_header = {
     "                                                    "
 }
 lvim.transparent_window = true
+-- Autocommands (https://neovim.io/doc/user/autocmd.html)
+lvim.autocommands.custom_groups = {
+  { "BufEnter,FocusGained,InsertLeave,WinEnter", "*", "if &nu && mode() != \"i\" | set rnu   | endif"},
+  { "BufEnter,FocusGained,InsertLeave,WinEnter", "*", "set wrap linebreak nolist showbreak=-->>"},
+  { "BufLeave,FocusLost,InsertEnter,WinLeave", "*", "if &nu | set nornu | endif"},
+  { "BufLeave,FocusLost,InsertEnter,WinLeave", "*", "set nowrap"},
+  { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
+  { "InsertEnter", "*", ":normal zz"},
+}
+
 
 
 local function set_background(content)
-    vim.api.nvim_command( "silent !osascript ~/Documents/Personal/dotfiles/bin/utils/bgImgIterm.scpt '" ..content.. "'")
+    vim.api.nvim_command( "silent !osascript ~/Documents/dotfiles/bin/utils/bgImgIterm.scpt '" ..content.. "'")
 end
 
 local function select_background(prompt_bufnr, map)
@@ -200,7 +194,8 @@ local function image_selector(prompt, cwd)
         require("telescope.builtin").find_files({
             prompt_title = prompt,
             cwd = cwd,
-
+            previewer = false,
+            shorten_path = false,
             attach_mappings = function(prompt_bufnr, map)
                 select_background(prompt_bufnr, map)
                 return true
@@ -209,7 +204,6 @@ local function image_selector(prompt, cwd)
     end
 end
 
-local background_selector = image_selector("< Backgrounds > ", "~/Documents/Personal/dotfiles/Images")
-
+local background_selector = image_selector("< Backgrounds > ", "~/Documents/dotfiles/Images")
 
 lvim.builtin.which_key.mappings["x"] = { background_selector, "Backgrounds" }
