@@ -1,21 +1,9 @@
---[[
-lvim is the global options object
-
-Linters should be
-filled in as strings with either
-a global executable or a path to
-an executable
-]]
--- THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
-
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save = true
 lvim.colorscheme = "tokyonight"
 
--- keymappings [view all the defaults by pressing <leader>Lk]
 lvim.leader = "space"
--- add your own keymapping
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 -- unmap a default keymapping
 -- lvim.keys.normal_mode["<C-Up>"] = false
@@ -23,7 +11,7 @@ lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 -- lvim.keys.normal_mode["<C-q>"] = ":q<cr>"
 
 -- Change Telescope navigation to use j and k for navigation and n and p for history in both input and normal mode.
--- we use protected-mode (pcall) just in case the plugin wasn't loaded yet.
+-- we use protected-mode (pcall) justn case the plugin wasn't loaded yet.
 -- local _, actions = pcall(require, "telescope.actions")
 -- lvim.builtin.telescope.defaults.mappings = {
 --   -- for input mode
@@ -41,15 +29,16 @@ lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 -- }
 
 -- Use which-key to add extra bindings with the leader-key prefix
-lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
+lvim.builtin.which_key.mappings["P"] = {"<cmd>Telescope projects<CR>", "Projects"}
 lvim.builtin.which_key.mappings["t"] = {
-  name = "+Trouble",
-  r = { "<cmd>Trouble lsp_references<cr>", "References" },
-  f = { "<cmd>Trouble lsp_definitions<cr>", "Definitions" },
-  d = { "<cmd>Trouble lsp_document_diagnostics<cr>", "Diagnostics" },
-  q = { "<cmd>Trouble quickfix<cr>", "QuickFix" },
-  l = { "<cmd>Trouble loclist<cr>", "LocationList" },
-  w = { "<cmd>Trouble lsp_workspace_diagnostics<cr>", "Diagnostics" },
+    name = "+Trouble",
+    r = {"<cmd>Trouble lsp_references<cr>", "References"},
+    t = {"<cmd>TroubleToggle<cr>", "References"},
+    f = {"<cmd>Trouble lsp_definitions<cr>", "Definitions"},
+    d = {"<cmd>Trouble lsp_document_diagnostics<cr>", "Diagnostics"},
+    q = {"<cmd>Trouble quickfix<cr>", "QuickFix"},
+    l = {"<cmd>Trouble loclist<cr>", "LocationList"},
+    w = {"<cmd>Trouble lsp_workspace_diagnostics<cr>", "Diagnostics"}
 }
 
 -- TODO: User Config for predefined plugins
@@ -61,20 +50,19 @@ lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.show_icons.git = 0
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
-  "bash",
-  "c",
-  "javascript",
-  "json",
-  "lua",
-  "python",
-  "typescript",
-  "css",
-  "rust",
-  "java",
-  "yaml",
+    "bash",
+    "javascript",
+    "json",
+    "lua",
+    "python",
+    "typescript",
+    "css",
+    "rust",
+    "java",
+    "yaml"
 }
 
-lvim.builtin.treesitter.ignore_install = { "haskell" }
+lvim.builtin.treesitter.ignore_install = {"haskell"}
 lvim.builtin.treesitter.highlight.enabled = true
 
 -- generic LSP settings
@@ -103,10 +91,13 @@ lvim.builtin.treesitter.highlight.enabled = true
 -- -- set a formatter, this will override the language server formatting capabilities (if it exists)
 local formatters = require "lvim.lsp.null-ls.formatters"
 formatters.setup {
-  {
-    command = "prettier",
-    filetypes = { "typescript", "typescriptreact" ,"javascript", "javascriptreact"},
-  },
+    {
+        command = "prettier",
+        filetypes = {"typescript", "typescriptreact", "javascript", "javascriptreact", "html", "css"}
+    },
+    -- {
+    --     command = "codespell",
+    -- },
 }
 
 -- -- set additional linters
@@ -120,11 +111,6 @@ formatters.setup {
 --     -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
 --     extra_args = { "--severity", "warning" },
 --   },
---   {
---     command = "codespell",
---     ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
---     filetypes = { "javascript", "python" },
---   },
 -- }
 
 -- Additional Plugins
@@ -132,14 +118,28 @@ lvim.plugins = {
     {"folke/tokyonight.nvim"},
     {"folke/trouble.nvim", cmd = "TroubleToggle"},
     -- {"github/copilot.vim"},
-    -- {"morhetz/gruvbox"},
+    {"morhetz/gruvbox"},
     {"tpope/vim-surround"},
     {"wakatime/vim-wakatime", event = "VimEnter"},
-    {"lewis6991/spellsitter.nvim",
-      config = function()
-        require('spellsitter').setup{enable=true}
-      end
+    {
+        "lewis6991/spellsitter.nvim",
+        config = function()
+            require("spellsitter").setup {enable = true}
+        end
     },
+    {
+      'vimwiki/vimwiki',
+      config = function()
+          vim.g.vimwiki_list = {
+              {
+                  path = '~/Documents/Personal/dotfiles/vimwiki',
+                  syntax = 'markdown',
+                  ext = '.md',
+              }
+          }
+      end
+  }
+
 }
 lvim.builtin.dashboard.custom_header = {
     "                                                    ",
@@ -156,54 +156,75 @@ lvim.builtin.dashboard.custom_header = {
 lvim.transparent_window = true
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
 lvim.autocommands.custom_groups = {
-  { "BufEnter,FocusGained,InsertLeave,WinEnter", "*", "if &nu && mode() != \"i\" | set rnu   | endif"},
-  { "BufEnter,FocusGained,InsertLeave,WinEnter", "*", "set wrap linebreak nolist showbreak=-->>"},
-  { "BufLeave,FocusLost,InsertEnter,WinLeave", "*", "if &nu | set nornu | endif"},
-  { "BufLeave,FocusLost,InsertEnter,WinLeave", "*", "set nowrap"},
-  { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
-  { "InsertEnter", "*", ":normal zz"},
+    {"BufEnter,FocusGained,InsertLeave,WinEnter", "*", 'if &nu && mode() != "i" | set rnu   | endif'},
+    {"BufEnter,FocusGained,InsertLeave,WinEnter", "*", "set wrap linebreak nolist showbreak=-->>"},
+    {"BufLeave,FocusLost,InsertEnter,WinLeave", "*", "if &nu | set nornu | endif"},
+    {"BufLeave,FocusLost,InsertEnter,WinLeave", "*", "set nowrap"}
+    -- { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
+    -- { "InsertEnter", "*", ":normal zz"},
 }
 
-
-
 local function set_background(content)
-    vim.api.nvim_command( "silent !osascript ~/Documents/dotfiles/bin/utils/bgImgIterm.scpt '" ..content.. "'")
+    vim.api.nvim_command(
+        "silent !osascript ~/Documents/Personal/dotfiles/bin/utils/bgImgIterm.scpt '" .. content .. "'"
+    )
 end
 
 local function select_background(prompt_bufnr, map)
     local function set_the_background(close)
-        local content =
-        require('telescope.actions.state').get_selected_entry(prompt_bufnr)
+        local content = require("telescope.actions.state").get_selected_entry(prompt_bufnr)
         set_background(content.cwd .. "/" .. content.value)
         if close then
-            require('telescope.actions').close(prompt_bufnr)
+            require("telescope.actions").close(prompt_bufnr)
         end
     end
 
-    map('i', '<C-p>', function()
-        set_the_background()
-    end)
+    map(
+        "i",
+        "<C-p>",
+        function()
+            set_the_background()
+        end
+    )
 
-    map('i', '<CR>', function()
-        set_the_background(true)
-    end)
+    map(
+        "i",
+        "<CR>",
+        function()
+            set_the_background(true)
+        end
+    )
 end
 
 local function image_selector(prompt, cwd)
     return function()
-        require("telescope.builtin").find_files({
-            prompt_title = prompt,
-            cwd = cwd,
-            previewer = false,
-            shorten_path = false,
-            attach_mappings = function(prompt_bufnr, map)
-                select_background(prompt_bufnr, map)
-                return true
-            end
-        })
+        require("telescope.builtin").find_files(
+            {
+                prompt_title = prompt,
+                cwd = cwd,
+                previewer = false,
+                shorten_path = false,
+                attach_mappings = function(prompt_bufnr, map)
+                    select_background(prompt_bufnr, map)
+                    return true
+                end
+            }
+        )
     end
 end
 
-local background_selector = image_selector("< Backgrounds > ", "~/Documents/dotfiles/Images")
+local background_selector = image_selector("< Backgrounds > ", "~/Documents/Personal/dotfiles/Images")
+local search_dotfiles = function()
+    require("telescope.builtin").find_files({
+        prompt_title = "< VimRC >",
+        cwd = "~/Documents/Personal/dotfiles",
+    })
+end
 
-lvim.builtin.which_key.mappings["x"] = { background_selector, "Backgrounds" }
+lvim.builtin.which_key.mappings["x"] = {
+    name = "+Custom",
+    x = {background_selector, "Background"},
+    d = {search_dotfiles, "DotFiles"},
+    z = {"<cmd>Telescope colorscheme<cr>", "Theme"},
+    t = {"<cmd>ToggleTerm<cr>", "Theme"},
+}
