@@ -1,3 +1,6 @@
+vim.g.tokyonight_style = "night"
+vim.g.tokyonight_transparent = true
+
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save = true
@@ -126,19 +129,7 @@ lvim.plugins = {
         config = function()
             require("spellsitter").setup {enable = true}
         end
-    },
-    {
-      'vimwiki/vimwiki',
-      config = function()
-          vim.g.vimwiki_list = {
-              {
-                  path = '~/Documents/Personal/dotfiles/vimwiki',
-                  syntax = 'markdown',
-                  ext = '.md',
-              }
-          }
-      end
-  }
+    }
 
 }
 lvim.builtin.dashboard.custom_header = {
