@@ -45,3 +45,4 @@ title() {
     echo -e "${COLOR_PURPLE}$1${COLOR_NONE}"
     echo -e "${COLOR_GRAY}==============================${COLOR_NONE}"
 }
+

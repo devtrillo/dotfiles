@@ -6,7 +6,7 @@ alias g="git"
 alias lg="lazygit"
 alias gi="g init"
 alias ga="g add"
-alias gclean="g branch | grep -v \"master\" | xargs git branch -D"
+alias gclean="git remote prune origin && for branch in $(git branch -vv | grep ': gone]' | awk '{print $1}'); do git branch -D $branch; done"
 alias gs="g status"
 alias lgc="ll commit"
 alias gc="g commit"
@@ -25,7 +25,6 @@ alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
 
 # confirm before overwriting something
-alias cp="cp -i"
 alias mv='mv -i'
 alias rm='rm -i'
 
@@ -48,7 +47,7 @@ alias zsh-update-plugins="find "$ZDOTDIR/plugins" -type d -exec test -e '{}/.git
 #LIFELINK
 alias mfa='~/lifelink/ops/mfa.sh'
 alias startAll='cd ~/lifelink/getstarted/; ./startAll.sh'
-alias ll='~/Documents/Personal/devtrillo-cli/dist/cli.js'
+alias ll='~/lifelink/cli/dist/cli.js'
 
 #SPOTIFY
 alias s="spotify"
@@ -59,9 +58,9 @@ alias ai="octave --gui"
 export SDKMAN_DIR="/Users/devtrillo/.sdkman"
 [[ -s "/Users/devtrillo/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/devtrillo/.sdkman/bin/sdkman-init.sh"
 
-# tabtab source for serverless package
-# uninstall by removing these lines or running `tabtab uninstall serverless`
-[[ -f /Users/devtrillo/.npm/_cacache/tmp/git-clone-3d1e9ad2/node_modules/tabtab/.completions/serverless.zsh ]] && . /Users/devtrillo/.npm/_cacache/tmp/git-clone-3d1e9ad2/node_modules/tabtab/.completions/serverless.zsh
-# tabtab source for sls package
-# uninstall by removing these lines or running `tabtab uninstall sls`
-[[ -f /Users/devtrillo/.npm/_cacache/tmp/git-clone-3d1e9ad2/node_modules/tabtab/.completions/sls.zsh ]] && . /Users/devtrillo/.npm/_cacache/tmp/git-clone-3d1e9ad2/node_modules/tabtab/.completions/sls.zsh
+
+alias luamake=/Users/estebantrillo/.config/nvim/lua-language-server/3rd/luamake/luamake
+alias history="history 1"
+alias gh-pr-vail="gh pr create -a "@me" -B develop -r AMorua,Dazuam"
+alias gh-pr-sea="gh pr create -a @me -B develop --reviewer Nushio,bjjenson,andresmauricio,AlvaroCapde,Sahagun-Jorge"
+

@@ -6,6 +6,7 @@ export NVM_LAZY_LOAD=true
 export NVM_AUTO_USE=true
 
 export NVIM_TUI_ENABLE_TRUE_COLOR=1
+export ZK_NOTEBOOK_DIR="$HOME/Documents/Personal/dotfiles/notes"
 
 if command -v rg > /dev/null 2>&1; then
   export FZF_DEFAULT_COMMAND='rg --files'
@@ -21,4 +22,8 @@ export PATH="$HOME/.local/bin:$PATH"
 export PATH="$(yarn global bin):$PATH"
 export PATH="$HOME/.jetbrains:$PATH"
 export PATH="/usr/local/bin:$PATH"
+export PATH="$HOME/.amplify/bin:$PATH"
+export PATH="/opt/homebrew/opt/node@16/bin:$PATH"
+export PNPM_HOME="/Users/estebantrillo/.local/share/pnpm"
+export PATH="$PNPM_HOME:$PATH"
 
