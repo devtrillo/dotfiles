@@ -1,7 +1,0 @@
-#!/bin/sh
-
-if [ "$#" -ne 1 ]; then
-    echo "Illegal number of parameters"
-fi
-git pull
-git checkout -b CM2-$1
