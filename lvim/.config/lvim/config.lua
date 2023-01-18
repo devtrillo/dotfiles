@@ -3,8 +3,8 @@ reload("devtrillo")
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save = true
-lvim.colorscheme = "tokyonight"
-lvim.log.level = "warn"
+lvim.colorscheme = "tokyonight-storm"
+lvim.transparent_window = true
 -- to disable icons and use a minimalist setup, uncomment the following
 lvim.use_icons = true
 
@@ -137,22 +137,52 @@ linters.setup {
 }
 
 lvim.plugins = {
+    { "ellisonleao/gruvbox.nvim" },
+    { "navarasu/onedark.nvim", },
     { "folke/trouble.nvim", cmd = "TroubleToggle" },
-    { "tpope/vim-surround" },
-    { "mickael-menu/zk-nvim", config = function()
-        require("zk").setup({
-            picker = "telescope"
-        })
-    end },
+    { "tpope/vim-surround", event = "VeryLazy" },
+    -- Zettlekasten
+    -- {
+    --     "mickael-menu/zk-nvim",
+    --     event = "VeryLazy",
+    --     config = function()
+    --         require("zk").setup({
+    --             picker = "telescope"
+    --         })
+    --     end
+    -- },
+    --
+    {
+        "epwalsh/obsidian.nvim",
+        event = "VeryLazy",
+        opts = {
+            dir = "/Users/estebantrillo/Library/Mobile Documents/com~apple~CloudDocs/my-vault",
+            notes_subdir = "zettlekasten",
+            daily_notes = {
+                folder = "dailies",
+            },
+            completion = {
+                nvim_cmp = true,
+            }
+        }
+    },
     { "wakatime/vim-wakatime", event = "VimEnter" },
+    { "norcalli/nvim-colorizer.lua",
+        event = "VimEnter",
+        config = function()
+            require("colorizer").setup()
+        end
+    },
     {
         "lewis6991/spellsitter.nvim",
+        event = "VeryLazy",
         config = function()
             require("spellsitter").setup { enable = true }
         end
     },
     {
         "github/copilot.vim",
+        event = "VeryLazy",
         config = function()
             -- copilot assume mapped
             vim.g.copilot_assume_mapped = true
@@ -169,11 +199,11 @@ lvim.plugins = {
     {
         'dsznajder/vscode-es7-javascript-react-snippets',
         ft = { 'tsx', 'jsx', 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
-        run = 'yarn install --frozen-lockfile && yarn compile'
+        build = 'yarn install --frozen-lockfile && yarn compile'
     },
-    { 'mbbill/undotree' },
-    { 'tpope/vim-fugitive' },
-    { "folke/zen-mode.nvim" },
+    { 'mbbill/undotree', event = "VeryLazy" },
+    { 'tpope/vim-fugitive', event = "VeryLazy" },
+    { "folke/zen-mode.nvim", event = "VeryLazy" },
     {
         "folke/noice.nvim",
         config = function()
@@ -182,7 +212,7 @@ lvim.plugins = {
                 background_colour = "#1e222a",
             })
         end,
-        requires = {
+        dependencies = {
             "MunifTanjim/nui.nvim",
             "rcarriga/nvim-notify",
         }
@@ -213,4 +243,12 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
-lvim.transparent_window = true
+
+
+vim.api.nvim_create_autocmd("BufWritePost", {
+    group = devTrilloGroup,
+    pattern = vim.fn.expand('~') .. "/my-vault/*.md",
+    callback = function()
+        vim.api.nvim_exec([[silent !git add . && git commit -m "chore: update notes" && git push]], false)
+    end
+})

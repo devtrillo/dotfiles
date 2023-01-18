@@ -62,5 +62,5 @@ export SDKMAN_DIR="/Users/devtrillo/.sdkman"
 alias luamake=/Users/estebantrillo/.config/nvim/lua-language-server/3rd/luamake/luamake
 alias history="history 1"
 alias gh-pr-vail="gh pr create -a "@me" -B develop -r AMorua,Dazuam"
-alias gh-pr-sea="gh pr create -a @me -B develop --reviewer Nushio,bjjenson,andresmauricio,AlvaroCapde,Sahagun-Jorge"
+alias gh-pr-sea="gh pr create -a @me -B develop --reviewer Nushio,bjjenson,AlvaroCapde,Sahagun-Jorge"
 

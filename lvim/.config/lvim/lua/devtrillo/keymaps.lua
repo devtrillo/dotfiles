@@ -10,7 +10,7 @@ lvim.builtin.which_key.mappings["z"] = {
     name = "+Zettlekasten",
     z = { "<cmd>ZenMode<CR>", "Zen Mode" },
     i = { "<cmd>TroubleToggle <cr>", "References" },
-    n = { "<cmd>TroubleToggle <cr>", "References" },
+    n = { "<cmd>ZkNew<cr>", "References" },
     c = { "<cmd>TroubleToggle <cr>", "References" },
 }
 lvim.builtin.which_key.mappings["t"] = {
@@ -29,4 +29,11 @@ lvim.builtin.which_key.mappings["g"] = {
     P = { "<cmd>!git pull<cr>", "Pull latest changes" },
     p = { "<cmd>!gp<cr>", "Push/Publish changes" },
     g = { "<cmd>lua require 'lvim.core.terminal'.lazygit_toggle()<cr>", "Lazygit" },
+}
+
+lvim.builtin.which_key.mappings["o"] = {
+    name = "+Obsidian",
+    f = { "<cmd>ObsidianQuickSwitch<CR>", "Search Note" },
+    t = { "<cmd>ObsidianToday<CR>", "Today" },
+
 }
