@@ -1,4 +1,0 @@
-source $ZDOTDIR/zshrc
-
-
-

@@ -4,7 +4,9 @@
 #     git clone https://github.com/spaceship-prompt/spaceship-prompt.git $ZDOTDIR/plugins/spaceship-prompt --depth=1
 # fi
 
-zsh_add_plugin "spaceship-prompt/spaceship-prompt"
+# # we need to source it this way because the plugin is not using naming convention
+# source $ZDOTDIR/plugins/spaceship-prompt/spaceship.zsh
+#
+#
+plug "zap-zsh/zap-prompt"
 
-# we need to source it this way because the plugin is not using naming convention
-source $ZDOTDIR/plugins/spaceship-prompt/spaceship.zsh
