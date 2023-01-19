@@ -1,1 +1,8 @@
 .DS_Store
+lazygit/.config/lazygit/state.yml
+config/tmux/plugins
+config/tmux/plugins
+tmux/.config/tmux/plugins
+zsh/.config/zsh/plugins
+zsh/.config/zsh/.zcompdump
+zsh/.config/zsh/.zsh_history

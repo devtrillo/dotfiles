@@ -33,23 +33,6 @@ success() {
   echo -e "${COLOR_GREEN}$1${COLOR_NONE}"
 }
 
-setup_tmux(){
-  mkdir -p "$HOME/.tmux/plugins"
-  if [ ! -d "$HOME/.tmux/plugins/tmp" ];then
-    git clone --depth=1 https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-  fi
-
-  TMUX_FILE=$HOME/.config/tmux/tmux.conf
-  if [ -f "$TMUX_FILE" ]; then
-    info "$TMUX_FILE exists, creating a backup"
-    cp $TMUX_FILE $TMUX_FILE.backup
-  fi
-  ln -sfv $DOTFILES/config/tmux/tmux.conf $TMUX_FILE
-  if ! { [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; } then
-    tmux source-file $TMUX_FILE
-  fi
-
-}
 setup_git() {
   title "Setting up Git"
 
@@ -88,84 +71,9 @@ setup_homebrew() {
   fi
 
 }
-setup_ubuntu(){
-  sudo apt update
-  sudo apt full-upgrade -y
-  sudo apt install git git-flow zsh tmux wget curl tree  -y
-  
-  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-  ~/.fzf/install
-  
-  title "Installing neovim"
-  sudo add-apt-repository ppa:neovim-ppa/unstable  -y
-  sudo apt update
-  sudo apt-get install neovim
-
-}
-
-function setup_shell() {
-  title "Configuring shell"
-
-  curl -sS https://webinstall.dev/zoxide | bash
 
 
-  [ ! -d "$HOME/.zshrc" ]
-  ZSHFILE=$HOME/.zshrc
-  if [ -f "$ZSHFILE" ]; then
-    info "$ZSHFILE exists, creating a backup"
-    mv $ZSHFILE $ZSHFILE.backup
-  fi
 
-
-    echo "export XDG_CONFIG_HOME=$HOME/.config" >> ~/.zshrc
-    echo "export XDG_DATA_HOME=$HOME/.local/share" >> ~/.zshrc
-    echo "export XDG_CACHE_HOME=$HOME/.cache" >> ~/.zshrc
-    echo "" >> ~/.zshrc
-    echo "source $HOME/.config/zsh" >> ~/.zshrc
-
-
-  mkdir -p ~/.config/zsh
-
-  
- for file in $(find -H "$DOTFILES/config/zsh" -maxdepth 4 -name '*'); do
-    relative=$DOTFILES/config/zsh
-    numbers="${#relative}"
-    ln -sfv $file "$HOME/.config/zsh${file:$numbers}"
-  done
-
-
-}
-
-function setup_neovim(){
-  title "Setting up neovim"
-  if [ -d "$HOME/.config/nvim" ]; then
-    info "There is a neovim config, creating backup to $HOME/backup-neovim"
-    rm -rf $HOME/backup-neovim 
-    mv -f $HOME/.config/nvim $HOME/backup-neovim
-  fi
-
-  if [ ! $(command -v nvim) ]; then
-    error "NeoVim is not installed"
-    error "Please run install.sh homebrew to install it"
-    return
-  fi
-
-  bash <(curl -s https://raw.githubusercontent.com/ChristianChiarulli/lunarvim/master/utils/installer/install.sh)
-
-  info "Linking config files"
-  ln -sfv $DOTFILES/config/wakatime.cfg.symlink $HOME/.wakatime.cfg
-  ln -sfv $DOTFILES/config/nvim/lv-config.lua $HOME/.config/nvim/lv-config.lua
-}
-
-function setup_terminfo() {
-  title "Configuring terminfo"
-
-  info "adding tmux.terminfo"
-  tic -x "$DOTFILES/resources/tmux.terminfo"
-
-  info "adding xterm-256color-italic.terminfo"
-  tic -x "$DOTFILES/resources/xterm-256color-italic.terminfo"
-}
 
 setup_macos() {
   title "Configuring macOS"
