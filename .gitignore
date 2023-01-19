@@ -1,2 +1,5 @@
 .DS_Store
 lazygit/.config/lazygit/state.yml
+config/tmux/plugins
+config/tmux/plugins
+tmux/.config/tmux/plugins
