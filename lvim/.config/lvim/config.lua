@@ -141,22 +141,11 @@ lvim.plugins = {
     { "navarasu/onedark.nvim", },
     { "folke/trouble.nvim", cmd = "TroubleToggle" },
     { "tpope/vim-surround", event = "VeryLazy" },
-    -- Zettlekasten
-    -- {
-    --     "mickael-menu/zk-nvim",
-    --     event = "VeryLazy",
-    --     config = function()
-    --         require("zk").setup({
-    --             picker = "telescope"
-    --         })
-    --     end
-    -- },
-    --
     {
         "epwalsh/obsidian.nvim",
         event = "VeryLazy",
         opts = {
-            dir = "/Users/estebantrillo/Library/Mobile Documents/com~apple~CloudDocs/my-vault",
+            dir = "/Users/estebantrillo/Library/Mobile Documents/iCloud~md~obsidian/Documents/my-vault",
             notes_subdir = "zettlekasten",
             daily_notes = {
                 folder = "dailies",
@@ -193,7 +182,7 @@ lvim.plugins = {
         "hrsh7th/cmp-copilot",
         config = function()
             lvim.builtin.cmp.formatting.source_names["copilot"] = "( )"
-            table.insert(lvim.builtin.cmp.sources, { name = "copilot" })
+            table.insert(lvim.builtin.cmp.sources, 2, { name = "copilot" })
         end
     },
     {
@@ -206,6 +195,7 @@ lvim.plugins = {
     { "folke/zen-mode.nvim", event = "VeryLazy" },
     {
         "folke/noice.nvim",
+        event = "VeryLazy",
         config = function()
             require("noice").setup({})
             require("notify").setup({
