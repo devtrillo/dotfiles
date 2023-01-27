@@ -2,6 +2,7 @@ lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 lvim.keys.normal_mode["<C-l>"] = ":BufferLineCycleNext<CR>"
 lvim.keys.normal_mode["<C-h>"] = ":BufferLineCyclePrev<CR>"
 lvim.keys.normal_mode["<C-j>"] = ":BufferKill<CR>"
+lvim.keys.normal_mode["<C-/>"] = ":ToggleTerm<CR>"
 
 lvim.builtin.which_key.mappings["W"] = { "<cmd>noautocmd w<cr>", "Save without formatting" }
 lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
@@ -21,9 +22,4 @@ lvim.builtin.which_key.mappings["o"] = {
 	name = "+Obsidian",
 	f = { "<cmd>ObsidianQuickSwitch<CR>", "Search Note" },
 	t = { "<cmd>ObsidianToday<CR>", "Today" },
-}
-
-lvim.builtin.which_key.mappings["z"] = {
-	name = "+Zen",
-	z = { "<cmd>ZenMode<cr>", "Toggle ZenMode" },
 }
