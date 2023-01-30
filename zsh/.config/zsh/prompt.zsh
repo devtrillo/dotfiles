@@ -8,5 +8,9 @@
 # source $ZDOTDIR/plugins/spaceship-prompt/spaceship.zsh
 #
 #
-plug "zap-zsh/zap-prompt"
+# plug "zap-zsh/zap-prompt"
 
+plug "romkatv/powerlevel10k"
+
+
+[[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh

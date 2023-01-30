@@ -1,5 +1,3 @@
-# LS
-alias la="ls -la"
 
 # GIT
 alias g="git"
@@ -33,10 +31,6 @@ alias vsc="code ."
 #LIFELINK
 alias mfa='~/lifelink/ops/mfa.sh'
 alias startAll='cd ~/lifelink/getstarted/; ./startAll.sh'
-
-export SDKMAN_DIR="/Users/devtrillo/.sdkman"
-[[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
-
 
 alias gh-pr-vail="gh pr create -a "@me" -B develop -r AMorua,Dazuam"
 alias gh-pr-sea="gh pr create -a @me -B develop --reviewer Nushio,bjjenson,AlvaroCapde,Sahagun-Jorge"
