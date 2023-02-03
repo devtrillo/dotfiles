@@ -3,6 +3,7 @@ export ZK_NOTEBOOK_DIR="$HOME/Documents/my-vault/zettlekasten"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export PNPM_HOME="$PATH:$HOME/.local/share/pnpm"
 
+
 export PATH="$PATH:$(yarn global bin)"
 export PATH="$PATH:$HOME/.amplify/bin"
 export PATH="$PATH:$HOME/.jetbrains"

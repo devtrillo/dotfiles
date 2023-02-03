@@ -3,7 +3,6 @@
 -- Add any additional keymaps hereby
 --
 --
-local lvim = {}
 vim.keymap.set("n", "<C-/>", "<cmd>:ToggleTerm<CR>", { desc = "ToggleTerm" })
 vim.keymap.set("n", "<C-s>", "<cmd>:w<CR>", { desc = "Save file" })
 

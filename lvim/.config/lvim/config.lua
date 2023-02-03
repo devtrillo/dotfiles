@@ -106,6 +106,13 @@ lvim.plugins = {
 		config = true,
 	},
 	{
+		"ggandor/leap.nvim",
+		event = "VeryLazy",
+		dependencies = {
+			"tpope/vim-repeat",
+		},
+	},
+	{
 		"lewis6991/spellsitter.nvim",
 		event = "VeryLazy",
 		opts = { enable = true },
@@ -125,6 +132,16 @@ lvim.plugins = {
 			lvim.builtin.cmp.formatting.source_names["copilot"] = "( )"
 			table.insert(lvim.builtin.cmp.sources, 2, { name = "copilot" })
 		end,
+	},
+	{
+		"epwalsh/obsidian.nvim",
+		event = "VeryLazy",
+		opts = {
+			dir = "/Users/trillo/Library/Mobile Documents/iCloud~md~obsidian/Documents/my-vault",
+			completion = {
+				nvim_cmp = true,
+			},
+		},
 	},
 	{
 		"dsznajder/vscode-es7-javascript-react-snippets",
