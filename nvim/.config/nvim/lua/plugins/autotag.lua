@@ -1,7 +1,7 @@
 return {
   {
     'windwp/nvim-ts-autotag',
-    opts = {}
+    opts = {},
     ft={
       'html', 
       'javascript',
