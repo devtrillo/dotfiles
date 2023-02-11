@@ -2,6 +2,7 @@ return {
   {
     "folke/noice.nvim",
     lazy = false,
+    cond = false,
     priority = 0,
     opts = {
       views = {
@@ -67,5 +68,5 @@ return {
         },
       },
     },
-  },
+  }
 }
