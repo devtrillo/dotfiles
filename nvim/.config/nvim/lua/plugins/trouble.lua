@@ -4,10 +4,13 @@ return{
     cmd = { "TroubleToggle", "Trouble" },
     opts = { use_diagnostic_signs = true },
     keys = {
-      { "<leader>tt", "<cmd>TroubleToggle document_diagnostics<cr>", desc = "Document Diagnostics (Trouble)" },
-      { "<leader>tT", "<cmd>TroubleToggle workspace_diagnostics<cr>", desc = "Workspace Diagnostics (Trouble)" },
-      { "<leader>lL", "<cmd>TroubleToggle loclist<cr>", desc = "Location List (Trouble)" },
-      { "<leader>lQ", "<cmd>TroubleToggle quickfix<cr>", desc = "Quickfix List (Trouble)" },
+      {"<leader>tt", "<cmd>TroubleToggle <cr>", "References" },
+      {"<leader>tr", "<cmd>Trouble lsp_references<cr>", "References" },
+      {"<leader>tf", "<cmd>Trouble lsp_definitions<cr>", "Definitions" },
+      {"<leader>td", "<cmd>Trouble document_diagnostics<cr>", "Diagnostics" },
+      {"<leader>tq", "<cmd>Trouble quickfix<cr>", "QuickFix" },
+      {"<leader>tl", "<cmd>Trouble loclist<cr>", "LocationList" },
+      {"<leader>tw", "<cmd>Trouble workspace_diagnostics<cr>", "Workspace Diagnostics" },
     },
   },
 }
