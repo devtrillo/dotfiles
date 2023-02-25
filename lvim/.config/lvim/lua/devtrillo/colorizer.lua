@@ -1,10 +1,8 @@
 local ok, colorizer = pcall(require, "colorizer")
 if not ok then
-	vim.notify("Colorizer not installed")
 	return
 end
 
-vim.notify("Setting up colorizer")
 colorizer.setup({
 	filetypes = {
 		"typescript",
