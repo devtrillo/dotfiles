@@ -24,8 +24,8 @@
   #TERM: alacritty
 
 window:
-  decorations: full
-  startup_mode: Fullscreen
+  decorations: none
+  # startup_mode: Fullscreen
 # Font configuration
 font:
   normal:

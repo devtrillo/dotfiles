@@ -1,7 +1,9 @@
 #!/bin/zsh
 
+# check if this command has 
 if ! tmux has-session -t lifelink; then
   cd ~/lifelink
+  # Launch all of the services
   tmux new -s lifelink -d
   tmux splitw -c ~/lifelink/kramer -l 10 
   tmux splitw -c ~/lifelink/pantry -l 10 
@@ -29,4 +31,8 @@ if ! tmux has-session -t lifelink; then
   tmux select-layout -t lifelink:1 tiled
 fi
 
-tmux attach -t lifelink
+if tmux ls | grep attached; then
+  tmux switch-client -t lifelink
+else
+  tmux attach -t lifelink
+fi

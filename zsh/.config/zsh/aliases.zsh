@@ -32,7 +32,7 @@ alias vsc="code ."
 alias mfa='~/lifelink/ops/mfa.sh'
 alias startAll='cd ~/lifelink/getstarted/; ./startAll.sh'
 
-alias gh-pr-vail="gh pr create -a "@me" -B develop -r AMorua,Dazuam"
+alias gh-pr-vail="gh pr create -a @me -B develop -r AMorua,Dazuam"
 alias gh-pr-platform="gh pr create -a "@me" -B master -r azimmer,bryan-lifelink,justinwiley,lifelinkpaul,monkeysaa,shoshanaedelman"
 alias gh-pr-sea="gh pr create -a @me -B develop --reviewer Nushio,bjjenson,AlvaroCapde,Sahagun-Jorge"
 
