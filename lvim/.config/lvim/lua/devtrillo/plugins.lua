@@ -32,32 +32,32 @@ lvim.plugins = {
 		event = "VeryLazy",
 		opts = { enable = true },
 	},
-	-- {
-	-- 	"github/copilot.vim",
-	-- 	event = "VeryLazy",
-	-- 	config = function()
-	-- 		-- copilot assume mapped
-	-- 		vim.g.copilot_assume_mapped = true
-	-- 		vim.g.copilot_no_tab_map = true
-	-- 	end,
-	-- },
-	-- {
-	-- 	"hrsh7th/cmp-copilot",
-	-- 	config = function()
-	-- 		lvim.builtin.cmp.formatting.source_names["copilot"] = "( )"
-	-- 		table.insert(lvim.builtin.cmp.sources, 2, { name = "copilot" })
-	-- 	end,
-	-- },
 	{
-		"epwalsh/obsidian.nvim",
+		"github/copilot.vim",
 		event = "VeryLazy",
-		opts = {
-			dir = "/Users/trillo/Library/Mobile Documents/iCloud~md~obsidian/Documents/my-vault",
-			completion = {
-				nvim_cmp = true,
-			},
-		},
+		config = function()
+			-- copilot assume mapped
+			vim.g.copilot_assume_mapped = true
+			vim.g.copilot_no_tab_map = true
+		end,
 	},
+	{
+		"hrsh7th/cmp-copilot",
+		config = function()
+			lvim.builtin.cmp.formatting.source_names["copilot"] = "( )"
+			table.insert(lvim.builtin.cmp.sources, 2, { name = "copilot" })
+		end,
+	},
+	-- {
+	-- 	"epwalsh/obsidian.nvim",
+	-- 	event = "VeryLazy",
+	-- 	opts = {
+	-- 		dir = "/Users/trillo/Library/Mobile Documents/iCloud~md~obsidian/Documents/my-vault",
+	-- 		completion = {
+	-- 			nvim_cmp = true,
+	-- 		},
+	-- 	},
+	-- },
 
 	-- active indent guide and indent text objects
 	{

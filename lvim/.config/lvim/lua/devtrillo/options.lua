@@ -29,7 +29,7 @@ lvim.format_on_save = {
 }
 
 lvim.colorscheme = "catppuccin-mocha"
-lvim.transparent_window = false
+lvim.transparent_window = true
 
 lvim.leader = "space"
 lvim.builtin.alpha.active = true
