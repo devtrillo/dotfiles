@@ -11,4 +11,4 @@ vim.keymap.set("n", "<C-h>", ":BufferLineCyclePrev<CR>", { desc = "Go to the pre
 vim.keymap.set("n", "<C-j>", ":BufferKill<CR>", { desc = "kill the current buffer" })
 vim.keymap.set("n", "<leader>P", ":Telescope Projects<CR>", { desc = "Open the projects" })
 
-vim.keymap.set("n", "<leader>tt", ":TroubleToggle", { desc = "Trouble toggle" })
+vim.keymap.set("n", "<leader>tt", ":TroubleToggle<CR>", { desc = "Trouble toggle" })
