@@ -13,6 +13,7 @@ plug "$HOME/.config/zsh/options.zsh"
 plug "$HOME/.config/zsh/aliases.zsh"
 plug "$HOME/.config/zsh/exports.zsh"
 plug "$HOME/.config/zsh/prompt.zsh"
+plug "$HOME/.config/zsh/pyenv.zsh"
 
 plug "zsh-users/zsh-autosuggestions"
 plug "hlissner/zsh-autopair"
@@ -26,10 +27,11 @@ plug "wintermi/zsh-brew"
 plug "zap-zsh/nvm"
 
 
-
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "/Users/trillo/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/trillo/.sdkman/bin/sdkman-init.sh"
 
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
+
+
