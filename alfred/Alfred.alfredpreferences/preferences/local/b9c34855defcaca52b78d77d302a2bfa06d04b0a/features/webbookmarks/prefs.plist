@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>chromeProfile</key>
-	<string>Profile 3</string>
+	<string>Default</string>
 	<key>indexChrome</key>
 	<true/>
 	<key>indexSafari</key>

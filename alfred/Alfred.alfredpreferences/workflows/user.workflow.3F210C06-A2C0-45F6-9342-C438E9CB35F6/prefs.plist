@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>__country_code</key>
+	<string>MX</string>
+	<key>__display_name</key>
+	<string>Esteban Trillo</string>
+	<key>__last_check_update_time</key>
+	<string>1684849155</string>
+	<key>__now_playing_notifications</key>
+	<string>0</string>
+	<key>__oauth_access_token</key>
+	<string>BQCgWmLViBbaj2fj6Off3hVU4XF_1yybIHFG3jFGbIcYGKBNDdKfYm-celPJDXcrpx19pKbiTjfpJAsuLRLftrC-91mPwWtlrJ7h8zqWyIltyuWIGx1Mk2imWuYJtwJj03WmJuOGLB2By5A5HuLe3UyaTcnx_VD0CUBr8BGDSjl6NaC9k_ejzYMyISNzwWyHpsr26euZssw_egKTKQZA2u0GnqVD2p_9bt-SOR_SKoAWmc_JWKBL94_NhGC1HSImwQKj6yumjjrm7kM8KiaOV-OP640NYyEBKjRambCxiMbxFjVXzdI1vJ9Q</string>
+	<key>__oauth_client_id</key>
+	<string>a02faad34e644f2c9c375570d89719ce</string>
+	<key>__oauth_client_secret</key>
+	<string>ed66239eb9454ff9906b97982bc5014d</string>
+	<key>__oauth_refresh_token</key>
+	<string>AQB2jrRYb6XMo-HVcr2uA1rv2jUvQ4ci63RlMJZcEdt9-3gIRvW6FsLkM4sP9lTgl3YdqIfUDYG_RAgOfxs-Fle_L85KClPnZ3qo5f0cxx3td_EdTqDTFCjqyWmZaPSsl68</string>
+	<key>__userid</key>
+	<string>12120232407</string>
+	<key>__workflow_version</key>
+	<string>12.6</string>
+</dict>
+</plist>
