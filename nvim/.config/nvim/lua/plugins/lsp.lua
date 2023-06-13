@@ -1,17 +1,4 @@
 return {
-	{
-		"zbirenbaum/copilot.lua",
-		cmd = "Copilot",
-		build = ":Copilot auth",
-		opts = {
-			suggestion = { enabled = false },
-			panel = { enabled = false },
-			filetypes = {
-				markdown = true,
-				help = true,
-			},
-		},
-	},
 	{ "jose-elias-alvarez/null-ls.nvim", event = "VeryLazy" },
 	{
 		"folke/trouble.nvim",
@@ -39,10 +26,22 @@ return {
 	-- Autocompletion
 	{
 		"hrsh7th/nvim-cmp",
-		event = "InsertEnter",
+		event = { "InsertEnter", "CmdlineEnter" },
 		dependencies = {
 			{ "L3MON4D3/LuaSnip" },
-			{ "copilot.lua" },
+			{
+				"zbirenbaum/copilot.lua",
+				cmd = "Copilot",
+				build = ":Copilot auth",
+				opts = {
+					suggestion = { enabled = false },
+					panel = { enabled = false },
+					filetypes = {
+						markdown = true,
+						help = true,
+					},
+				},
+			},
 		},
 		config = function()
 			-- Here is where you configure the autocompletion settings.

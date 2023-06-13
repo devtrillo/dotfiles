@@ -1,36 +1,9 @@
 local icons = require("devtrillo.icons")
 
 return {
-	{
-		"lewis6991/gitsigns.nvim",
-		config = function()
-			require("gitsigns").setup()
-			require("scrollbar.handlers.gitsigns").setup()
-		end,
-	},
+
+	{ "windwp/nvim-autopairs", config = true },
 	{ "petertriho/nvim-scrollbar", event = "VeryLazy", config = true },
-	{ "wakatime/vim-wakatime", event = "VeryLazy" },
-	{ "mbbill/undotree", event = "VeryLazy" },
-	{ "tpope/vim-fugitive", event = "VeryLazy" },
-	{
-		"echasnovski/mini.indentscope",
-		version = false, -- wait till new 0.7.0 release to put it back on semver
-		event = { "BufReadPre", "BufNewFile" },
-		opts = {
-			-- symbol = "▏",
-			symbol = "│",
-			options = { try_as_border = true },
-		},
-		config = function(_, opts)
-			vim.api.nvim_create_autocmd("FileType", {
-				pattern = { "help", "alpha", "dashboard", "neo-tree", "Trouble", "lazy", "mason" },
-				callback = function()
-					vim.b.miniindentscope_disable = true
-				end,
-			})
-			require("mini.indentscope").setup(opts)
-		end,
-	},
 	{
 		"folke/zen-mode.nvim",
 		event = "VeryLazy",
@@ -40,7 +13,6 @@ return {
 	},
 	{
 		"folke/noice.nvim",
-		event = "VeryLazy",
 		opts = {
 			lsp = {
 				signature = {
@@ -60,7 +32,7 @@ return {
 		"rcarriga/nvim-notify",
 		keys = {
 			{
-				"<leader>un",
+				"<leader>nd",
 				function()
 					require("notify").dismiss({ silent = true, pending = true })
 				end,
@@ -78,8 +50,8 @@ return {
 		},
 	},
 	{
-
 		"echasnovski/mini.animate",
+		lazy = true,
 		event = "VeryLazy",
 		opts = function()
 			-- don't use animate when scrolling with the mouse
@@ -111,56 +83,5 @@ return {
 				},
 			}
 		end,
-	},
-	{
-		"folke/which-key.nvim",
-		event = "VeryLazy",
-		init = function()
-			vim.o.timeout = true
-			vim.o.timeoutlen = 1
-		end,
-		opts = {
-			-- your configuration comes here
-			-- or leave it empty to use the default settings
-			-- refer to the configuration section below
-		},
-	},
-	{
-		"goolord/alpha-nvim",
-		event = "VimEnter",
-		config = function()
-			local alpha = require("alpha")
-			local dashboard = require("alpha.themes.dashboard")
-			dashboard.section.header.val = {
-				[[                               __                ]],
-				[[  ___     ___    ___   __  __ /\_\    ___ ___    ]],
-				[[ / _ `\  / __`\ / __`\/\ \/\ \\/\ \  / __` __`\  ]],
-				[[/\ \/\ \/\  __//\ \_\ \ \ \_/ |\ \ \/\ \/\ \/\ \ ]],
-				[[\ \_\ \_\ \____\ \____/\ \___/  \ \_\ \_\ \_\ \_\]],
-				[[ \/_/\/_/\/____/\/___/  \/__/    \/_/\/_/\/_/\/_/]],
-			}
-			dashboard.section.buttons.val = {
-				dashboard.button("e", icons.kind.File .. " New file", ":ene <BAR> startinsert <CR>"),
-				dashboard.button("f", icons.ui.Search .. " Search File", ":Telescope find_files <CR>"),
-				dashboard.button("t", icons.ui.Search .. " Search Text", ":Telescope grep_string <CR>"),
-				dashboard.button("q", icons.ui.Fire .. " Quit NVIM", ":qa<CR>"),
-			}
-			local handle = io.popen("fortune")
-			if handle ~= nil then
-				local fortune = handle:read("*a")
-				handle:close()
-				dashboard.section.footer.val = fortune
-			else
-				dashboard.section.buttons = {
-					[[The ultimate editor]],
-				}
-			end
-			dashboard.config.opts.noautocmd = true
-
-			vim.cmd([[autocmd User AlphaReady echo 'ready']])
-
-			alpha.setup(dashboard.config)
-		end,
-		dependencies = { { "nvim-tree/nvim-web-devicons" } },
 	},
 }

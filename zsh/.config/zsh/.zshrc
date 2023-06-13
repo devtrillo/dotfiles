@@ -25,7 +25,7 @@ plug "zap-zsh/exa"
 plug "zsh-users/zsh-syntax-highlighting"
 plug "wintermi/zsh-brew"
 plug "zap-zsh/nvm"
-
+plug "MichaelAquilina/zsh-you-should-use"
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
