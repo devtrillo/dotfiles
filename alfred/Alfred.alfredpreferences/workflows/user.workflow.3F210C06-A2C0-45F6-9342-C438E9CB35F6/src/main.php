@@ -16,7 +16,6 @@ function main($argv) {
     $alfred_playlist_uri = getSetting($w, 'alfred_playlist_uri');
     $alfred_playlist_name = getSetting($w, 'alfred_playlist_name');
     $country_code = getSetting($w, 'country_code');
-    $last_check_update_time = getSetting($w, 'last_check_update_time');
     $userid = getSetting($w, 'userid');
     $debug = getSetting($w, 'debug');
     if($debug) {
@@ -153,9 +152,6 @@ function main($argv) {
         return;
     }
 
-    // Check for workflow update
-    checkForUpdate($w, $last_check_update_time, false);
-
     // thanks to http://www.alfredforum.com/topic/1788-prevent-flash-of-no-result
     mb_internal_encoding('UTF-8');
 
@@ -268,8 +264,6 @@ function main($argv) {
                     firstDelimiterLyrics($w, $query, $db, $update_in_progress);
                 } elseif ($kind == 'Settings') {
                     firstDelimiterSettings($w, $query, $db, $update_in_progress);
-                } elseif ($kind == 'Check for update...') {
-                    firstDelimiterCheckForUpdate($w, $query, $db, $update_in_progress);
                 } elseif ($kind == 'Play Queue') {
                     firstDelimiterPlayQueue($w, $query, $db, $update_in_progress);
                 } elseif ($kind == 'Browse') {

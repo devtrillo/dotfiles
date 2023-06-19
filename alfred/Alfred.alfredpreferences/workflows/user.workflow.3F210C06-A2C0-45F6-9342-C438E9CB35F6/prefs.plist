@@ -6,8 +6,6 @@
 	<string>MX</string>
 	<key>__display_name</key>
 	<string>Esteban Trillo</string>
-	<key>__last_check_update_time</key>
-	<string>1684849155</string>
 	<key>__now_playing_notifications</key>
 	<string>0</string>
 	<key>__oauth_access_token</key>
@@ -18,6 +16,12 @@
 	<string>ed66239eb9454ff9906b97982bc5014d</string>
 	<key>__oauth_refresh_token</key>
 	<string>AQB2jrRYb6XMo-HVcr2uA1rv2jUvQ4ci63RlMJZcEdt9-3gIRvW6FsLkM4sP9lTgl3YdqIfUDYG_RAgOfxs-Fle_L85KClPnZ3qo5f0cxx3td_EdTqDTFCjqyWmZaPSsl68</string>
+	<key>__podcasts_enabled</key>
+	<string>0</string>
+	<key>__theme_color</key>
+	<string>black</string>
+	<key>__use_artworks</key>
+	<string>0</string>
 	<key>__userid</key>
 	<string>12120232407</string>
 	<key>__workflow_version</key>

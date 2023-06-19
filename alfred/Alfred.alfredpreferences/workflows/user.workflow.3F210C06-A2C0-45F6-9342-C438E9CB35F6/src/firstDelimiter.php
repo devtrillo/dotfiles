@@ -1298,30 +1298,6 @@ function firstDelimiterCurrentTrack($w, $query, $db, $update_in_progress) {
             }
         }
 
-        if (countCharacters($input) < 2 || strpos(strtolower('share'), strtolower($input)) !== false) {
-
-            $osx_version = exec('sw_vers -productVersion');
-            if (version_compare($osx_version, '10,14', '<')) {
-                $w->result(null, serialize(array(''
-                /*track_uri*/, ''
-                /* album_uri */, ''
-                /* artist_uri */, ''
-                /* playlist_uri */, ''
-                /* spotify_command */, ''
-                /* query */, ''
-                /* other_settings*/, 'share'
-                /* other_action */, ''
-                /* artist_name */, ''
-                /* track_name */, ''
-                /* album_name */, ''
-                /* track_artwork_path */, ''
-                /* artist_artwork_path */, ''
-                /* album_artwork_path */, ''
-                /* playlist_name */, '', /* playlist_artwork_path */
-                )), 'Share current track using Mac OS X Sharing ', array('This will open the Mac OS X Sharing for the current track', 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/share.png', 'yes', null, '');
-            }
-        }
-
         if (countCharacters($input) < 2 || strpos(strtolower('web search'), strtolower($input)) !== false) {
             $w->result(null, serialize(array(''
             /*track_uri*/, ''
@@ -1868,7 +1844,6 @@ function firstDelimiterLyrics($w, $query, $db, $update_in_progress) {
         $track_name = $words[2];
 
         list($lyrics_url, $lyrics) = getLyrics($w, $artist_name, $track_name);
-        stathat_ez_count('AlfredSpotifyMiniPlayer', 'lyrics', 1);
 
         if ($lyrics_url != false) {
             $w->result(null, serialize(array(''
@@ -1920,7 +1895,6 @@ function firstDelimiterSettings($w, $query, $db, $update_in_progress) {
     $radio_number_tracks = getSetting($w,'radio_number_tracks');
     $now_playing_notifications = getSetting($w,'now_playing_notifications');
     $max_results = getSetting($w,'max_results');
-    $last_check_update_time = getSetting($w,'last_check_update_time');
     $userid = getSetting($w,'userid');
     $is_public_playlists = getSetting($w,'is_public_playlists');
     $quick_mode = getSetting($w,'quick_mode');
@@ -2182,8 +2156,6 @@ function firstDelimiterSettings($w, $query, $db, $update_in_progress) {
     /* playlist_name */, '', /* playlist_artwork_path */
     )), 'Change search order results', array('Choose order of search results between playlist, artist, track, album, show and episode', 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/search.png', 'yes', null, '');
 
-    $w->result(null, '', 'Check for workflow update', array('Last checked: ' . beautifyTime(time() - $last_check_update_time, true) . ' ago (note this is automatically done otherwise once per day)', 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/check_update.png', 'no', null, 'Check for update...' . '▹');
-
     $w->result(null, serialize(array(''
     /*track_uri*/, ''
     /* album_uri */, ''
@@ -2219,50 +2191,6 @@ function firstDelimiterSettings($w, $query, $db, $update_in_progress) {
         /* album_artwork_path */, ''
         /* playlist_name */, '', /* playlist_artwork_path */
     )), 'Check also "Configure Workflow..." in workflow window in Alfred Preferences', '', './images/settings.png', 'no', null, '');
-}
-
-/**
- * firstDelimiterCheckForUpdate function.
- *
- * @param mixed $w
- * @param mixed $query
-
- * @param mixed $db
- * @param mixed $update_in_progress
- */
-function firstDelimiterCheckForUpdate($w, $query, $db, $update_in_progress) {
-    $check_results = checkForUpdate($w, 0);
-    if ($check_results != null && is_array($check_results)) {
-        if($check_results[0] != '') {
-            $w->result(null, '', 'New version ' . $check_results[0] . ' is available !', array('', 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/info.png', 'no', null, '');
-            $w->result(null, serialize(array(''
-            /*track_uri*/, ''
-            /* album_uri */, ''
-            /* artist_uri */, ''
-            /* playlist_uri */, ''
-            /* spotify_command */, ''
-            /* query */, 'Open▹' . $check_results[1] /* other_settings*/, ''
-            /* other_action */, ''
-            /* artist_name */, ''
-            /* track_name */, ''
-            /* album_name */, ''
-            /* track_artwork_path */, ''
-            /* artist_artwork_path */, ''
-            /* album_artwork_path */, ''
-            /* playlist_name */, '', /* playlist_artwork_path */
-            )), 'Click to open and install the new version', 'This will open the new version of the Spotify Mini Player workflow', './images/alfred-workflow-icon.png', 'yes', null, '');
-        }
-    }
-    elseif ($check_results == null) {
-        $w->result(null, '', 'No update available', array('You are good to go!', 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/info.png', 'no', null, '');
-    }
-    else {
-        $w->result(null, '', 'Error happened : ' . $check_results, array('The check for workflow update could not be done', 'alt' => '', 'cmd' => '', 'shift' => '', 'fn' => '', 'ctrl' => '',), './images/warning.png', 'no', null, '');
-        echo $w->tojson();
-        exit;
-    }
-    echo $w->tojson();
-    exit;
 }
 
 /**
