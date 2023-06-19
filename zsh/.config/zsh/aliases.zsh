@@ -2,13 +2,13 @@
 # GIT
 alias g="git"
 alias lg="lazygit"
-alias ga="g add"
+alias ga="git add"
 alias gclean="git remote prune origin && for branch in $(git branch -vv | grep ': gone]' | awk '{print $1}');do git branch -D $branch; done"
-alias gs="g status"
+alias gs="git status"
 alias lgc="ll commit"
-alias gc="g commit"
-alias gp="g push -u origin HEAD"
-alias gP="g pull"
+alias gc="git commit"
+alias gp="git push -u origin HEAD"
+alias gP="git pull"
 
 # Colorize grep output (good for log files)
 alias grep='grep --color=auto'
