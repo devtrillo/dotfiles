@@ -24,10 +24,12 @@
   #TERM: alacritty
 
 window:
-  decorations: none
+  # decorations: none
+  decorations: buttonless
   # startup_mode: Fullscreen
 # Font configuration
 font:
+  size: 12
   normal:
     family: firacode Nerd Font 
     style: Regular
