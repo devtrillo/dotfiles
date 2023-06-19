@@ -3,11 +3,13 @@ return {
   {
     "nvim-neo-tree/neo-tree.nvim",
     cmd = "Neotree",
+    dependencies ={
+    },
     keys = {
       {
         "<leader>fe",
         function()
-          require("neo-tree.command").execute({ toggle = true, dir = require("lazyvim.util").get_root() })
+          require("neo-tree.command").execute({ toggle = true, dir = require("devtrillo.util").get_root() })
         end,
         desc = "Explorer NeoTree (root dir)",
       },
@@ -43,7 +45,11 @@ return {
       },
       window = {
         mappings = {
-          ["<space>"] = "none",
+       ["<space>"] = "none",
+       ["P"] = function(state)
+        local node = state.tree:get_node()
+        require("neo-tree.ui.renderer").focus_node(state, node:get_parent_id())
+       end
         },
       },
       default_component_configs = {
