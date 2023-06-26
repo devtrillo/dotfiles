@@ -10,7 +10,8 @@
 #
 # plug "zap-zsh/zap-prompt"
 
-plug "romkatv/powerlevel10k"
-[[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
+# plug "romkatv/powerlevel10k"
+# [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
 
-
+export STARSHIP_CONFIG=$ZDOTDIR/starship.toml
+plug "wintermi/zsh-starship"

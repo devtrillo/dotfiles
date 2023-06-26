@@ -21,5 +21,10 @@ export PATH="$PATH:$HOME/Library/Python/3.9/lib/python/site-packages"
 export PATH="$PATH:$HOME/Library/Python/3.9"
 export PATH="$PATH:$HOME/Library/Python/3.9"
 export PATH="$PATH:$HOME/.cargo/bin"
+# export PATH="$PATH:$HOME/lifelink/e2e-tests/node_modules/.bin"
+export PATH="$PATH:$HOME/lifelink/ops/node_modules/.bin"
 export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
 eval "$(zoxide init zsh)"
+
+
+
