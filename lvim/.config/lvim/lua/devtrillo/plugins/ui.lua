@@ -64,7 +64,7 @@ table.insert(lvim.plugins, {
 table.insert(lvim.plugins, {
   'wfxr/minimap.vim',
   build = "cargo install --locked code-minimap",
-  cmd = { "Minimap", "MinimapClose", "MinimapToggle", "MinimapRefresh", "MinimapUpdateHighlight" },
+  -- cmd = { "Minimap", "MinimapClose", "MinimapToggle", "MinimapRefresh", "MinimapUpdateHighlight" },
   event = "BufRead",
   config = function()
     vim.cmd("let g:minimap_width = 10")
@@ -72,6 +72,15 @@ table.insert(lvim.plugins, {
     vim.cmd("let g:minimap_auto_start_win_enter = 1")
   end,
 })
+lvim.builtin.which_key.mappings["m"] = {
+  name = "Minimap",
+  r = { "<cmd>Trouble lsp_references<cr>", "References" },
+  f = { "<cmd>Trouble lsp_definitions<cr>", "Definitions" },
+  d = { "<cmd>Trouble lsp_document_diagnostics<cr>", "Diagnostics" },
+  q = { "<cmd>Trouble quickfix<cr>", "QuickFix" },
+  l = { "<cmd>Trouble loclist<cr>", "LocationList" },
+  w = { "<cmd>Trouble lsp_workspace_diagnostics<cr>", "Diagnostics" },
+}
 
 table.insert(lvim.plugins, { "mrjones2014/nvim-ts-rainbow" })
 
