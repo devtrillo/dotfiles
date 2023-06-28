@@ -13,3 +13,4 @@ ssh/.ssh/known_hosts
 ssh/.ssh/known_hosts.old
 lvim/.config/lvim/lazy-lock.json
 .idea
+lvim/.config/lvim/session
