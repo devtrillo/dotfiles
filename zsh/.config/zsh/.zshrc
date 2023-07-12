@@ -29,7 +29,6 @@ plug "zap-zsh/exa"
 plug "zsh-users/zsh-syntax-highlighting"
 plug "wintermi/zsh-brew"
 plug "zap-zsh/nvm"
-plug "MichaelAquilina/zsh-you-should-use"
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
@@ -38,4 +37,11 @@ export SDKMAN_DIR="$HOME/.sdkman"
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
 
-eval "$(zoxide init zsh)"
+
+function expand-alias(){
+zle _expand_alias
+zle self-insert
+}
+
+zle -N expand-alias
+bindkey -M main ' ' expand-alias
