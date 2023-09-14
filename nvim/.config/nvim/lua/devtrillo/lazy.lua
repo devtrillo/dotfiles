@@ -9,30 +9,17 @@ end
 vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 
 require("lazy").setup({
-  spec = {
-    { import = "plugins" },
-  },
-  defaults = {
-    lazy = false,
-    version = false, -- always use the latest git commit
-  },
-  colorscheme = function ()
-    require("tokyonight").load()
-  end,
-  checker = { enabled = true }, -- automatically check for plugin updates
-  performance = {
-    rtp = {
-      -- disable some rtp plugins
-      disabled_plugins = {
-        "gzip",
-        -- "matchit",
-        -- "matchparen",
-        -- "netrwPlugin",
-        "tarPlugin",
-        "tohtml",
-        "tutor",
-        "zipPlugin",
-      },
-    },
-  },
+	{ import = "devtrillo.plugins" },
+	{ import = "devtrillo.plugins.lsp" },
+}, {
+	install = {
+		colorscheme = { "tokyonight-storm" },
+	},
+	checker = {
+		enabled = true,
+		notify = false,
+	},
+	change_detection = {
+		notify = false,
+	},
 })
