@@ -28,4 +28,13 @@ return {
 			end,
 		},
 	},
+	config = function(_, opts)
+		local bufferline = require("bufferline")
+		bufferline.setup(opts)
+		local map = vim.keymap.set
+		map("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
+		map("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
+		map("n", "<S-j>", "<cmd>bdelete<cr>", { desc = "Close buffer" })
+		map("n", "<leader>`", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
+	end,
 }
