@@ -1,7 +1,7 @@
 return {
 	{
 		"ggandor/lightspeed.nvim",
-		event = "VeryLazy",
+		event = { "BufReadPre", "BufNewFile" },
 		dependencies = { "tpope/vim-repeat" },
 		config = {},
 	},

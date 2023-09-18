@@ -10,6 +10,7 @@ return {
 		"onsails/lspkind.nvim", -- vs-code like pictograms
 		{
 			"zbirenbaum/copilot-cmp",
+			event = "InsertEnter",
 			dependencies = { "zbirenbaum/copilot.lua" },
 			config = function()
 				vim.defer_fn(function()

@@ -38,6 +38,7 @@ return {
 		config = function()
 			local telescope = require("telescope")
 			telescope.load_extension("recent_files")
+
 			require("telescope").load_extension("projects")
 			telescope.setup({
 
@@ -111,8 +112,7 @@ return {
 						case_mode = "smart_case", -- or "ignore_case" or "respect_case"
 					},
 				},
-			}
-)
+			})
 		end,
 	},
 }
