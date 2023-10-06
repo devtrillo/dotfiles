@@ -1,4 +1,4 @@
-local theme = "onedark"
+local theme = "lunar"
 return {
 	{
 		"folke/tokyonight.nvim",

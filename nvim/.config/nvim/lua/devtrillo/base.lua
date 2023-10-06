@@ -24,4 +24,12 @@ opt.wrap = false
 opt.showmode = false
 opt.splitbelow = true
 opt.splitright = true
+opt.cursorline = true
+
 vim.g.markdown_recommended_style = 0
+
+vim.filetype.add({
+	extension = {
+		mdx = "mdx",
+	},
+})
