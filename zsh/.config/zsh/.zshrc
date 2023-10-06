@@ -13,11 +13,6 @@ export NVM_DIR="$HOME/.config/nvm"
 
 HISTFILE=~/.zsh_history
 
-plug "$HOME/.config/zsh/options.zsh"
-plug "$HOME/.config/zsh/aliases.zsh"
-plug "$HOME/.config/zsh/exports.zsh"
-plug "$HOME/.config/zsh/prompt.zsh"
-plug "$HOME/.config/zsh/pyenv.zsh"
 
 plug "zsh-users/zsh-autosuggestions"
 plug "hlissner/zsh-autopair"
@@ -38,6 +33,13 @@ export SDKMAN_DIR="$HOME/.sdkman"
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
 
 
+plug "$HOME/.config/zsh/options.zsh"
+plug "$HOME/.config/zsh/aliases.zsh"
+plug "$HOME/.config/zsh/exports.zsh"
+plug "$HOME/.config/zsh/prompt.zsh"
+plug "$HOME/.config/zsh/pyenv.zsh"
+
+
 function expand-alias(){
 zle _expand_alias
 zle self-insert
@@ -45,3 +47,8 @@ zle self-insert
 
 zle -N expand-alias
 bindkey -M main ' ' expand-alias
+
+eval "$(op completion zsh)"; compdef _op op
+
+source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
+source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
