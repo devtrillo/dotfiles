@@ -3,6 +3,6 @@ if command -v rg > /dev/null 2>&1; then
 fi
 
 if command -v nvim > /dev/null 2>&1; then
-    export EDITOR='lvim'
+    export EDITOR='nvim'
 fi
 

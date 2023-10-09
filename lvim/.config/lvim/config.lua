@@ -11,6 +11,8 @@ lvim.keys.normal_mode["<C-j>"] = ":BufferKill<CR>"
 lvim.keys.normal_mode["<C-/>"] = ":ToggleTerm<CR>"
 
 lvim.builtin.which_key.mappings["<space>"] = { "<cmd>Telescope find_files<cr>", "Find files" }
+lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<cr>", "Find files" }
+lvim.builtin.which_key.mappings["f"] = { "<cmd>Telescope find_files<cr>", "Find files" }
 
 vim.opt.backup = false
 vim.opt.colorcolumn = "80"

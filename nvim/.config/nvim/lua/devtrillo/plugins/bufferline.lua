@@ -33,9 +33,14 @@ return {
 		local bufferline = require("bufferline")
 		bufferline.setup(opts)
 		local map = vim.keymap.set
-		map("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
-		map("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
-		map("n", "<S-j>", "<cmd>bdelete<cr>", { desc = "Close buffer" })
+
+		map("n", "˙", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
+		map("n", "¬", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
+		map("n", "∆", "<cmd>bdelete<cr>", { desc = "Close buffer" })
+
+		map("n", "<M-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
+		map("n", "<M-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
+		map("n", "<M-j>", "<cmd>bdelete<cr>", { desc = "Close buffer" })
 		map("n", "<leader>`", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
 	end,
 }

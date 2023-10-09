@@ -2,6 +2,20 @@ table.insert(lvim.plugins,
   { "tpope/vim-surround" }
 )
 
+table.insert(lvim.plugins, { "wakatime/vim-wakatime", event = "VeryLazy" })
+table.insert(lvim.plugins, {
+  "folke/zen-mode.nvim",
+  cmd = "ZenMode",
+  keys = {
+    { "<leader>zz", "<cmd>ZenMode<cr>", desc = "ZenMode" },
+  },
+  config = {
+    alacritty = {
+      enabled = true,
+      font = "20", -- font size
+    },
+  }
+})
 table.insert(lvim.plugins, {
   "folke/persistence.nvim",
   event = "BufReadPre", -- this will only start session saving when an actual file was opened

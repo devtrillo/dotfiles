@@ -22,5 +22,6 @@ lvim.builtin.which_key.mappings["t"] = {
   d = { "<cmd>Trouble lsp_document_diagnostics<cr>", "Diagnostics" },
   q = { "<cmd>Trouble quickfix<cr>", "QuickFix" },
   l = { "<cmd>Trouble loclist<cr>", "LocationList" },
+  t = { "<cmd>TroubleToggle<cr>", "LocationList" },
   w = { "<cmd>Trouble lsp_workspace_diagnostics<cr>", "Diagnostics" },
 }
