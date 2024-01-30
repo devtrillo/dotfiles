@@ -31,4 +31,4 @@ alias startAll='cd ~/lifelink/getstarted/; ./startAll.sh'
 alias gh-pr-vail="gh pr create -a @me -B develop -r AMorua,Dazuam"
 alias gh-pr-platform="gh pr create -a "@me" -B master -r azimmer,bryan-lifelink,justinwiley,lifelinkpaul,monkeysaa,shoshanaedelman"
 
-
+alias tmux-new="tmux new -s $(basename `pwd`)"

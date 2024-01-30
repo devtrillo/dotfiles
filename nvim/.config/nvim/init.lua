@@ -1,13 +1,33 @@
-vim.g.mapleader = " "
-require("devtrillo")
+require("devtrillo.options")
 
-local has = vim.fn.has
-local is_mac = has("macunix")
-local is_win = has("win32")
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
 
-if is_mac then
-	require("devtrillo.macos")
-end
-if is_win then
-	require("devtrillo.windows")
-end
+require("lazy").setup({
+  { import = "devtrillo.plugins" },
+  { import = "devtrillo.plugins.lsp" },
+}, {
+  install = {
+    colorscheme = { "solarized-osaka" },
+  },
+  checker = {
+    enabled = true,
+    notify = false,
+  },
+  change_detection = {
+    notify = false,
+  },
+})
+
+require("devtrillo.keymaps")
+require("devtrillo.autocommands")

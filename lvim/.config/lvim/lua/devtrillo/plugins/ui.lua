@@ -87,6 +87,12 @@ table.insert(lvim.plugins, { "mrjones2014/nvim-ts-rainbow" })
 table.insert(lvim.plugins, {
   "folke/noice.nvim",
   opts = {
+    routes = {
+      {
+        view = "notify",
+        filter = { event = "msg_showmode" },
+      },
+    },
     lsp = {
       signature = {
         enabled = false,
