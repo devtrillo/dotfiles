@@ -1,0 +1,17 @@
+import = [
+    "/Users/trillo/.config/alacritty/catppuccin-frappe.toml",
+    # "/Users/trillo/.config/alacritty/catppuccin-latte.toml",
+    # "/Users/trillo/.config/alacritty/catppuccin-macchiato.toml",
+    # "/Users/trillo/.config/alacritty/catppuccin-mocha.toml",
+    # "/Users/trillo/.config/alacritty/tokyo-night.toml",
+]
+
+[font]
+size = 12
+
+[font.normal]
+family = "firacode Nerd Font"
+style = "Regular"
+
+[window]
+decorations = "buttonless"
