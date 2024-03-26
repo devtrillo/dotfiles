@@ -1,21 +1,58 @@
+vim.g.theme = 'catppuccin'
+
 return {
   {
-    "craftzdog/solarized-osaka.nvim",
-    lazy = false,
+    'catppuccin/nvim',
+    name = 'catppuccin',
     priority = 1000,
-    enabled = false,
-    opts = {},
+    lazy = false,
+    enabled = vim.g.theme == 'catppuccin',
     config = function()
-      vim.cmd([[colorscheme solarized-osaka]])
+      vim.cmd [[colorscheme catppuccin-mocha]]
+    end,
+  },
+
+  {
+    'folke/tokyonight.nvim',
+    enabled = vim.g.theme == 'tokyonight',
+    priority = 1000,
+    init = function()
+      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.hi 'Comment gui=none'
     end,
   },
   {
-    "folke/tokyonight.nvim",
-    lazy = false, -- make sure we load this during startup if it is your main colorscheme
-    priority = 1000, -- make sure to load this before all the other start plugins
+    'navarasu/onedark.nvim',
+    lazy = false,
+    enabled = vim.g.theme == 'onedark',
+    priority = 1000,
+    opts = {
+      style = 'warmer',
+    },
     config = function()
-      -- load the colorscheme here
-      vim.cmd([[colorscheme tokyonight-moon]])
+      vim.cmd [[colorscheme onedark]]
     end,
+  },
+  {
+    'LunarVim/lunar.nvim',
+    lazy = false,
+    enabled = vim.g.theme == 'lunar',
+    priority = 1000,
+    opts = {},
+    config = function()
+      vim.cmd [[colorscheme lunar]]
+    end,
+  },
+  {
+    'ellisonleao/gruvbox.nvim',
+    name = 'gruvbox',
+    enabled = vim.g.theme == 'gruvbox',
+    priority = 1000,
+    config = function(_, opts)
+      require('gruvbox').setup(opts)
+      vim.o.background = 'dark'
+      vim.cmd 'colorscheme gruvbox'
+    end,
+    opts = {},
   },
 }

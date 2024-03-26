@@ -3,6 +3,7 @@ table.insert(lvim.plugins,
 )
 
 table.insert(lvim.plugins, { "wakatime/vim-wakatime", event = "VeryLazy" })
+table.insert(lvim.plugins, { "preservim/vim-pencil", event = "VeryLazy" })
 table.insert(lvim.plugins, {
   "folke/zen-mode.nvim",
   cmd = "ZenMode",
@@ -16,6 +17,18 @@ table.insert(lvim.plugins, {
     },
   }
 })
+
+
+
+table.insert(lvim.plugins, {
+  "folke/twilight.nvim",
+  opts = {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+  }
+})
+
 table.insert(lvim.plugins, {
   "folke/persistence.nvim",
   event = "BufReadPre", -- this will only start session saving when an actual file was opened

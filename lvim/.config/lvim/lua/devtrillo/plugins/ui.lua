@@ -1,4 +1,8 @@
 table.insert(lvim.plugins, {
+  "tiagovla/scope.nvim"
+})
+
+table.insert(lvim.plugins, {
   "RRethy/vim-illuminate",
   config = function()
     local illuminate = require("illuminate")

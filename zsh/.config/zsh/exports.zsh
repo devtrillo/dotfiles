@@ -27,6 +27,5 @@ export PATH="$PNPM_HOME:$PATH"
 # export PATH="$HOME/lifelink/ops/node_modules/.bin:$PATH"
 export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
 export PATH="$(yarn global bin):$PATH"
-
-
+export JAVA_HOME=$(/usr/libexec/java_home)
 

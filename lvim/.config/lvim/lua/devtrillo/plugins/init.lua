@@ -1,6 +1,8 @@
 reload('devtrillo.plugins.git')
+reload('devtrillo.plugins.markdown')
 reload('devtrillo.plugins.lsp')
 reload('devtrillo.plugins.misc')
 reload('devtrillo.plugins.navigation')
 reload('devtrillo.plugins.theme')
 reload('devtrillo.plugins.ui')
+reload('devtrillo.plugins.notes')
