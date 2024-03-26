@@ -11,18 +11,7 @@ local mehShortcuts = {
 hs.application.enableSpotlightForNameSearches(true)
 
 
-local workingFullScreen = false
-local KeypresFullscreen = "Q"
-local k = hs.hotkey.modal.new(HYPER, KeypresFullscreen)
-function k:entered()
-  hs.alert.show("Enabling Working Mode", 1.5)
-  workingFullScreen = true
-end
-
-function k:exited()
-  hs.alert.show("Disabling Working Mode", 1.5)
-  workingFullScreen = true
-end
+local workingFullScreen = true
 
 local function openApp(appName)
   hs.alert.closeAll()
