@@ -355,7 +355,12 @@ require('lazy').setup({
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        'stylua', -- Used to format Lua code
+        'prettier', -- prettier formatter
+        'stylua', -- lua formatter
+        'isort', -- python formatter
+        'black', -- python formatter
+        'pylint', -- python linter
+        'eslint_d', -- js linter
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -376,28 +381,40 @@ require('lazy').setup({
 
   { -- Autoformat
     'stevearc/conform.nvim',
+    event = { 'BufReadPre', 'BufNewFile' },
+    config = function(_, opts)
+      local conform = require 'conform'
+      conform.setup(opts)
+      vim.keymap.set({ 'n', 'v' }, '<leader>W', function()
+        conform.format {
+          lsp_fallback = true,
+          async = false,
+          timeout_ms = 1000,
+        }
+      end, { desc = 'Format file or range (in visual mode)' })
+    end,
     opts = {
       notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        return {
-          timeout_ms = 500,
-          lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
-        }
-      end,
+      format_on_save = {
+        lsp_fallback = true,
+        async = false,
+        timeout_ms = 1000,
+      },
       formatters_by_ft = {
+        javascript = { 'prettier' },
+        typescript = { 'prettier' },
+        javascriptreact = { 'prettier' },
+        typescriptreact = { 'prettier' },
+        svelte = { 'prettier' },
+        css = { 'prettier' },
+        html = { 'prettier' },
+        json = { 'prettier' },
+        yaml = { 'prettier' },
+        markdown = { 'prettier' },
+        graphql = { 'prettier' },
+        liquid = { 'prettier' },
         lua = { 'stylua' },
-        -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
-        --
-        -- You can use a sub-list to tell conform to run *until* a formatter
-        -- is found.
-        javascript = {
-          { 'prettier' },
-        },
+        python = { 'isort', 'black' },
       },
     },
   },
@@ -573,17 +590,6 @@ require('lazy').setup({
     end,
   },
 
-  -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
-  -- init.lua. If you want these files, they are in the repository, so you can just download them and
-  -- place them in the correct locations.
-
-  -- NOTE: Next step on your Neovim journey: Add/Configure additional plugins for Kickstart
-  --
-  --  Here are some example plugins that I've included in the Kickstart repository.
-  --  Uncomment any of the lines below to enable them (you will need to restart nvim).
-  --
-  -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.lint',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
