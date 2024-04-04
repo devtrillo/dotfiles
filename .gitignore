@@ -15,3 +15,4 @@ lvim/.config/lvim/lazy-lock.json
 .idea
 lvim/.config/lvim/session
 zsh/.config/zsh/.zcompcache
+ssh/.ssh/id_rsa

@@ -29,7 +29,7 @@ gui:
 disableStartupPopups: true
 notARepository: 'skip' # one of: 'prompt' | 'create' | 'skip'
 os:
-  editPreset: 'vscode'
+  editPreset: 'nvim'
 keybinding:
   universal:
     pushFiles: 'p'

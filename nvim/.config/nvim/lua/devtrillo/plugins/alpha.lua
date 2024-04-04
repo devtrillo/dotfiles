@@ -1,25 +1,36 @@
 return {
   {
-    'goolord/alpha-nvim',
+    'nvimdev/dashboard-nvim',
     event = 'VimEnter',
-    config = function()
-      local alpha = require 'alpha'
-      local dashboard = require 'alpha.themes.dashboard'
-
-      dashboard.section.header.val = { [[The ultimate editor]] }
-      dashboard.section.buttons.val = {
-        dashboard.button('e', 'New file', ':ene <BAR> startinsert <CR>'),
-        dashboard.button('f', 'Search File', ':Telescope find_files <CR>'),
-        dashboard.button('t', 'Search Text', ':Telescope grep_string <CR>'),
-        dashboard.button('l', 'Lazy', ':Lazy <CR>'),
-        dashboard.button('q', 'Quit NVIM', ':qa<CR>'),
-      }
-      dashboard.config.opts.noautocmd = true
-
-      vim.cmd [[autocmd User AlphaReady echo 'ready']]
-
-      alpha.setup(dashboard.config)
+    config = function(_, opts)
+      require('dashboard').setup(opts)
     end,
+    opts = {
+      theme = 'hyper',
+      config = {
+        footer = { 'Devtrillo nvim config' },
+        week_header = {
+          enable = true,
+        },
+        shortcut = {
+          { desc = '󰊳 Update', group = '@property', action = 'Lazy update', key = 'u' },
+          {
+            icon = ' ',
+            icon_hl = '@variable',
+            desc = 'Files',
+            group = 'Label',
+            action = 'Telescope find_files',
+            key = 'f',
+          },
+          {
+            desc = ' dotfiles',
+            group = 'Number',
+            action = 'lua require("telescope.builtin").find_files({ prompt_title = "Config",cwd="~/dotfiles" })',
+            key = 'd',
+          },
+        },
+      },
+    },
     dependencies = { { 'nvim-tree/nvim-web-devicons' } },
   },
 }

@@ -3,7 +3,7 @@ return {
     'folke/zen-mode.nvim',
     cmd = 'ZenMode',
     keys = {
-      { '<leader>zz', '<cmd>ZenMode | TwilightEnable<cr>', desc = 'zenmode' },
+      { '<leader>zz', '<cmd>ZenMode<cr>', desc = 'zenmode' },
     },
     config = {
       window = {
@@ -19,9 +19,7 @@ return {
         'folke/twilight.nvim',
         opts = {},
       },
-      {
-        'preservim/vim-pencil',
-      },
+      { 'preservim/vim-pencil' },
     },
   },
 }
