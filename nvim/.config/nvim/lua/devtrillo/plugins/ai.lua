@@ -1,6 +1,7 @@
 return {
   {
     'github/copilot.vim',
+    event = { 'BufReadPre', 'BufNewFile' },
     config = function()
       vim.keymap.set('i', '<C-r>', 'copilot#Accept("<CR>")', {
         expr = true,

@@ -1,4 +1,5 @@
 return {
+  { 'tpope/vim-surround' },
   {
     'stevearc/oil.nvim',
     opts = {
@@ -49,6 +50,4 @@ return {
       vim.keymap.del({ 'x', 'o' }, 'X')
     end,
   },
-
-  { 'tpope/vim-surround' },
 }

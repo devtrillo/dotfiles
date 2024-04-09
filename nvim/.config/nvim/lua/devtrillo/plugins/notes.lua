@@ -2,12 +2,12 @@ return {
   {
     'epwalsh/obsidian.nvim',
     version = '*', -- recommended, use latest release instead of latest commit
+    cmd = 'Obsidian',
     keys = {
-      { '<leader>os', '<cmd>ObsidianSearch<cr>', desc = 'Obsidian Search' },
+      { '<leader>os', '<cmd>ObsidianQuickSwitch<cr>', desc = 'Obsidian Search' },
       { '<leader>on', '<cmd>ObsidianNew<cr>', desc = 'Obsidian New' },
     },
     dependencies = {
-      -- Required.
       'nvim-lua/plenary.nvim',
     },
     opts = {

@@ -389,7 +389,7 @@ require('lazy').setup({
         conform.format {
           lsp_fallback = true,
           async = false,
-          timeout_ms = 1000,
+          timeout_ms = 5000,
         }
       end, { desc = 'Format file or range (in visual mode)' })
     end,
@@ -398,21 +398,21 @@ require('lazy').setup({
       format_on_save = {
         lsp_fallback = true,
         async = false,
-        timeout_ms = 1000,
+        timeout_ms = 5000,
       },
       formatters_by_ft = {
-        javascript = { 'prettier' },
-        typescript = { 'prettier' },
-        javascriptreact = { 'prettier' },
-        typescriptreact = { 'prettier' },
-        svelte = { 'prettier' },
-        css = { 'prettier' },
-        html = { 'prettier' },
-        json = { 'prettier' },
-        yaml = { 'prettier' },
-        markdown = { 'prettier' },
-        graphql = { 'prettier' },
-        liquid = { 'prettier' },
+        javascript = { { 'prettier_d', 'prettier' } },
+        typescript = { { 'prettier_d', 'prettier' } },
+        javascriptreact = { { 'prettier_d', 'prettier' } },
+        typescriptreact = { { 'prettier_d', 'prettier' } },
+        svelte = { { 'prettier_d', 'prettier' } },
+        css = { { 'prettier_d', 'prettier' } },
+        html = { { 'prettier_d', 'prettier' } },
+        json = { { 'prettier_d', 'prettier' } },
+        yaml = { { 'prettier_d', 'prettier' } },
+        markdown = { { 'prettier_d', 'prettier' } },
+        graphql = { { 'prettier_d', 'prettier' } },
+        liquid = { { 'prettier_d', 'prettier' } },
         lua = { 'stylua' },
         python = { 'isort', 'black' },
       },
@@ -489,6 +489,7 @@ require('lazy').setup({
           --  This will expand snippets if the LSP sent a snippet.
           ['<C-y>'] = cmp.mapping.confirm { select = true },
           ['<CR>'] = cmp.mapping.confirm { select = true },
+          ['<Tab>'] = cmp.mapping.confirm { select = true },
 
           -- Manually trigger a completion from nvim-cmp.
           --  Generally you don't need this, because nvim-cmp will display
@@ -532,31 +533,11 @@ require('lazy').setup({
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
     config = function()
-      -- Better Around/Inside textobjects
-      --
       -- Examples:
       --  - va)  - [V]isually select [A]round [)]paren
       --  - yinq - [Y]ank [I]nside [N]ext [']quote
       --  - ci'  - [C]hange [I]nside [']quote
       require('mini.ai').setup { n_lines = 500 }
-
-      -- Simple and easy statusline.
-      --  You could remove this setup call if you don't like it,
-      --  and try some other statusline plugin
-      local statusline = require 'mini.statusline'
-      -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
-
-      -- You can configure sections in the statusline by overriding their
-      -- default behavior. For example, here we set the section for
-      -- cursor location to LINE:COLUMN
-      ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
-
-      -- ... and there is more!
-      --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
   { -- Highlight, edit, and navigate code
@@ -589,8 +570,6 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
-
-  require 'kickstart.plugins.lint',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
