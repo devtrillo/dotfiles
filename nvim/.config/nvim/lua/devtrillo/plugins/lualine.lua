@@ -14,7 +14,9 @@ return {
         lualine_c = {
           'diagnostics', --[[ add your center compoentnts here in place of this comment ]]
         },
-        lualine_x = { { 'tabs', mode = 2 } },
+        lualine_x = {
+          { 'tabs', mode = 2 },
+        },
         lualine_y = { 'filetype', 'progress' },
         lualine_z = {
           { 'location', separator = { right = '' }, left_padding = 2 },
@@ -29,7 +31,29 @@ return {
         lualine_z = { 'location' },
       },
       tabline = {},
-      extensions = { 'oil', 'fzf', 'trouble' },
+      extensions = {
+
+        -- 'aerial',
+        -- 'chadtree',
+        -- 'ctrlspace',
+        -- 'fern',
+        -- 'fugitive',
+        'fzf',
+        'lazy',
+        'man',
+        'mason',
+        -- 'mundo',
+        'neo-tree',
+        -- 'nerdtree',
+        -- 'nvim-dap-ui',
+        -- 'nvim-tree',
+        'oil',
+        -- 'overseer',
+        'quickfix',
+        -- 'symbols-outline',
+        -- 'toggleterm',
+        'trouble',
+      },
     },
   },
 }
