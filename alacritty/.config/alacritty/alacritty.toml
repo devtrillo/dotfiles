@@ -15,3 +15,8 @@ style = "Regular"
 
 [window]
 decorations = "buttonless"
+
+opacity = 0.8
+blur = true 
+
+
