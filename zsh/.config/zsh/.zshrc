@@ -49,6 +49,7 @@ zle -N expand-alias
 bindkey -M main ' ' expand-alias
 
 eval "$(op completion zsh)"; compdef _op op
+eval "$(zoxide init zsh)"
 
 source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
 source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"

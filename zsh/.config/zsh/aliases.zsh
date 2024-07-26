@@ -8,7 +8,6 @@ alias gs="git status"
 alias gc="git commit"
 alias gp="git push -u origin HEAD"
 alias gP="git pull"
-
 # Colorize grep output (good for log files)
 alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
@@ -32,3 +31,6 @@ alias gh-pr-vail="gh pr create -a @me -B develop -r AMorua,Dazuam"
 alias gh-pr-platform="gh pr create -a "@me" -B master -r azimmer,bryan-lifelink,justinwiley,lifelinkpaul,monkeysaa,shoshanaedelman"
 
 alias tmux-new="tmux new -s $(basename `pwd`)"
+
+alias cd="z"
+alias cdi="zi"

@@ -16,3 +16,4 @@ lvim/.config/lvim/lazy-lock.json
 lvim/.config/lvim/session
 zsh/.config/zsh/.zcompcache
 ssh/.ssh/id_rsa
+zsh/.config/zsh/.zcompdump.*

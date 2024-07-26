@@ -145,16 +145,14 @@ function envVar(varName) {
 }
 
 function readFile(path) {
-  const data = $.NSFileManager.defaultManager.contentsAtPath(path)
-  const string = $.NSString.alloc.initWithDataEncoding(data, $.NSUTF8StringEncoding).js
-  return string
+  return $.NSString.stringWithContentsOfFileEncodingError(path, $.NSUTF8StringEncoding, undefined).js
 }
 
 function existCoffeeAnchor() {
   const task = $.NSTask.alloc.init
   const stdout = $.NSPipe.pipe
 
-  task.executableURL = $.NSURL.alloc.initFileURLWithPath("/usr/bin/pgrep")
+  task.executableURL = $.NSURL.fileURLWithPath("/usr/bin/pgrep")
   task.arguments = ["-f", "coffeecoffee_process_anchor"]
   task.standardOutput = stdout
   task.launchAndReturnError(false)
@@ -167,10 +165,10 @@ function existCoffeeAnchor() {
 function run(argv) {
   // Active
   if (existCoffeeAnchor()) {
-    const turnOffTime = readFile(`${envVar("alfred_workflow_cache")}/auto_turn_off_at.txt`).replace(/\n$/, "")
-    const subtitle = turnOffTime.length === 0 ?
+    const turnOffTime = readFile(`${envVar("alfred_workflow_cache")}/auto_turn_off_at.txt`)
+    const subtitle = turnOffTime === undefined ?
       "Let computer go to sleep as usual" :
-      `Set to keep awake until around ${turnOffTime}`
+      `Set to keep awake until around ${turnOffTime.replace(/\n$/, "")}`
 
     return sfItem({
       title: "Turn Off",
@@ -215,6 +213,8 @@ function run(argv) {
 				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
+				<key>skipuniversalaction</key>
+				<true/>
 				<key>subtext</key>
 				<string>Prevent your computer from going to sleep</string>
 				<key>title</key>
@@ -274,7 +274,7 @@ fi
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>5</integer>
+				<integer>11</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -393,7 +393,7 @@ Prevent macOS from sleeping via the `coffee` keyword. Optionally give a number w
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>2023.3</string>
+	<string>2024.1</string>
 	<key>webaddress</key>
 	<string>https://github.com/vitorgalvao/coffee-coffee-workflow/</string>
 </dict>

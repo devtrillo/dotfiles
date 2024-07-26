@@ -1,2 +1,2 @@
-require("devtrillo.options")
-require("devtrillo.keymap")
+require 'devtrillo.options'
+require 'devtrillo.keymap'

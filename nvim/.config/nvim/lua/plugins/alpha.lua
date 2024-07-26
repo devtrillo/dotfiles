@@ -25,7 +25,7 @@ return {
           {
             desc = ' dotfiles',
             group = 'Number',
-            action = 'lua require("telescope.builtin").find_files({ prompt_title = "Config",cwd="~/dotfiles" })',
+            action = 'lua require("telescope.builtin").find_files({ prompt_title = "Config",cwd="~/dotfiles/nvim" })',
             key = 'd',
           },
         },

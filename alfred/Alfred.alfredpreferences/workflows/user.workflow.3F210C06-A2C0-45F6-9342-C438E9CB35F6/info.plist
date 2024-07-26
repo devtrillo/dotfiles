@@ -5790,12 +5790,12 @@ main($query,"TRACK","");
 				<key>concurrently</key>
 				<false/>
 				<key>escaping</key>
-				<integer>38</integer>
+				<integer>100</integer>
 				<key>script</key>
 				<string>&lt;?php
 require './src/action.php';
 $query = serialize(array("", "", "", "", "", "", "", "play" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
-main($query,"TRACK","");
+main($query,$argv[1],"");
 ?&gt;</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
@@ -7668,7 +7668,7 @@ main($query,"TRACK","");
 				<string>&lt;?php
 require './src/action.php';
 $query = serialize(array("", "", "", "", "", "", "", "add_current_track_to" /* other_action */, "", "", "", "", "", "", "", "" , "", "", "", "", "", ""));
-main($query,"TRACK","");
+main($query,$argv[1],"");
 ?&gt;</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
@@ -17429,7 +17429,7 @@ Example: https://open.spotify.com/track/6hxgHNJjadmCHAJPXw6AYL</string>
 		</dict>
 	</array>
 	<key>version</key>
-	<string>13.0</string>
+	<string>13.3</string>
 	<key>webaddress</key>
 	<string>https://alfred-spotify-mini-player.com</string>
 </dict>
