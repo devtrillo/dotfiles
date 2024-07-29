@@ -9,10 +9,10 @@ config.font_size = 14
 config.enable_tab_bar = false
 config.window_decorations = "RESIZE"
 
-config.window_background_opacity = 0.8
+config.window_background_opacity = 0.95
 config.macos_window_background_blur = 20
 
-config.color_scheme = "Batman"
+config.color_scheme = "Tokyo Night"
 
 config.window_background_gradient = {
 	colors = { "#24283b", "#1a1b26" },
