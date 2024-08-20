@@ -53,3 +53,10 @@ eval "$(zoxide init zsh)"
 
 source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
 source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
+
+eval "$(gh completion -s zsh)"
+
+
+. "$HOME/.atuin/bin/env"
+
+eval "$(atuin init zsh)"

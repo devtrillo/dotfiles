@@ -16,10 +16,12 @@ $character"""
 [directory]
 style = "green"
 
+
+
 [character]
-success_symbol = "[❯](purple)"
-error_symbol = "[❯](red)"
-vimcmd_symbol = "[❮](green)"
+success_symbol = "[](bold green)"
+error_symbol = "[](bold red) "
+vimcmd_symbol = "[](green)"
 
 [git_branch]
 #symbol = '🌱 '
