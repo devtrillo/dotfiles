@@ -19,8 +19,8 @@ style = "green"
 
 
 [character]
-success_symbol = "[](bold green)"
-error_symbol = "[](bold red) "
+success_symbol = "[](#FF0000)"
+error_symbol = "[](#8A3324) "
 vimcmd_symbol = "[](green)"
 
 [git_branch]

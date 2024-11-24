@@ -17,3 +17,5 @@ lvim/.config/lvim/session
 zsh/.config/zsh/.zcompcache
 ssh/.ssh/id_rsa
 zsh/.config/zsh/.zcompdump.*
+ssh/.ssh/Hetzner
+ssh/.ssh/Hetzner.pub

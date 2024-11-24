@@ -12,6 +12,7 @@ alias gP="git pull"
 alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
+alias docker-compose='docker compose'
 
 #NVM
 alias save-nvm-version="node -v > .nvmrc"

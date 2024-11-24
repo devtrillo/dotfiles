@@ -1,4 +1,13 @@
 
+import = [
+    "/Users/trillo/.config/alacritty/catppuccin-frappe.toml",
+    # "/Users/trillo/.config/alacritty/catppuccin-latte.toml",
+    # "/Users/trillo/.config/alacritty/catppuccin-macchiato.toml",
+    # "/Users/trillo/.config/alacritty/catppuccin-mocha.toml",
+    # "/Users/trillo/.config/alacritty/tokyo-night.toml",
+]
+
+
 [font]
 size = 12
 
@@ -11,14 +20,4 @@ decorations = "buttonless"
 padding= {x=10, y=10}
 opacity = 0.75
 blur = true 
-
-[general]
-import = [
-    "/Users/trillo/.config/alacritty/catppuccin-frappe.toml",
-    # "/Users/trillo/.config/alacritty/catppuccin-latte.toml",
-    # "/Users/trillo/.config/alacritty/catppuccin-macchiato.toml",
-    # "/Users/trillo/.config/alacritty/catppuccin-mocha.toml",
-    # "/Users/trillo/.config/alacritty/tokyo-night.toml",
-]
-
 

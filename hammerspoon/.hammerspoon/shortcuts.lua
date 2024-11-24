@@ -5,19 +5,20 @@ local mehShortcuts = {
   { "C", "Visual Studio Code" },
   { "F", "Figma" },
   { "S", "Slack" },
-  { "T", "Alacritty" },
+  { "T", "Wezterm" },
 }
 
 hs.application.enableSpotlightForNameSearches(true)
-
 
 local workingFullScreen = true
 
 local function openApp(appName)
   hs.alert.closeAll()
-  hs.alert.show('Oppening application ' .. appName)
+  hs.alert.show("Oppening application " .. appName)
   hs.application.launchOrFocus(appName)
-  if (workingFullScreen == false) then return end
+  if workingFullScreen == false then
+    return
+  end
   local win = hs.window.focusedWindow()
   local f = win:frame()
   local screen = win:screen()
@@ -35,11 +36,10 @@ for _, shortcut in ipairs(mehShortcuts) do
   end)
 end
 
-
 for _, shortcut in ipairs(hyperShortcuts) do
   hs.hotkey.bind(HYPER, shortcut[1], function()
     hs.alert.closeAll()
-    hs.alert.show('Oppening application ' .. shortcut[2])
+    hs.alert.show("Oppening application " .. shortcut[2])
     hs.application.launchOrFocus(shortcut[2])
     local win = hs.window.focusedWindow()
     local f = win:frame()
