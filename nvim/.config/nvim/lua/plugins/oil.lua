@@ -1,5 +1,21 @@
 return {
-  { "nvim-neo-tree/neo-tree.nvim", enabled = false },
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    enabled = true,
+    opts = {
+      window = {
+        position = "right",
+      },
+      filesystem = {
+        follow_current_file = {
+          enabled = true,
+        },
+      },
+    },
+    keys = {
+      { "<leader>e", false },
+    },
+  },
   {
     "stevearc/oil.nvim",
     ---@module 'oil'

@@ -3,3 +3,5 @@
 -- Add any additional keymaps here
 --
 --
+--
+vim.keymap.set("n", "<leader>w", "<cmd>w<CR>", { desc = "Save file" })
