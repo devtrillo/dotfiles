@@ -1451,11 +1451,7 @@
 				<key>escaping</key>
 				<integer>127</integer>
 				<key>script</key>
-				<string>query="{query}";
-
-id=$(echo $query | cut -d "|" -f1)
-url=$(echo $query | cut -d "|" -f2)
-pkgstr=$(echo $query | cut -d "|" -f3)
+				<string>query="{query}"; id=$(echo $query | cut -d "|" -f1) url=$(echo $query | cut -d "|" -f2) pkgstr=$(echo $query | cut -d "|" -f3)
 
 open $url</string>
 				<key>scriptargtype</key>
@@ -1655,7 +1651,7 @@ open $url</string>
 				<key>queuemode</key>
 				<integer>1</integer>
 				<key>runningsubtext</key>
-				<string>Searcing for "{query}"</string>
+				<string>Searching for "{query}"</string>
 				<key>script</key>
 				<string>php ./bin/index.php brew {query}</string>
 				<key>scriptargtype</key>
@@ -1931,11 +1927,7 @@ open $url</string>
 				<key>escaping</key>
 				<integer>127</integer>
 				<key>script</key>
-				<string>query="{query}";
-
-id=$(echo $query | cut -d "|" -f1)
-url=$(echo $query | cut -d "|" -f2)
-pkgstr=$(echo $query | cut -d "|" -f3)
+				<string>query="{query}"; id=$(echo $query | cut -d "|" -f1) url=$(echo $query | cut -d "|" -f2) pkgstr=$(echo $query | cut -d "|" -f3)
 
 echo $id</string>
 				<key>scriptargtype</key>
@@ -2185,11 +2177,7 @@ echo $id</string>
 				<key>escaping</key>
 				<integer>127</integer>
 				<key>script</key>
-				<string>query="{query}";
-
-id=$(echo $query | cut -d "|" -f1)
-url=$(echo $query | cut -d "|" -f2)
-pkgstr=$(echo $query | cut -d "|" -f3)
+				<string>query="{query}"; id=$(echo $query | cut -d "|" -f1) url=$(echo $query | cut -d "|" -f2) pkgstr=$(echo $query | cut -d "|" -f3)
 
 echo $pkgstr</string>
 				<key>scriptargtype</key>
@@ -3020,7 +3008,7 @@ The Python Package Index is very slow due to a lack on API and pagination. A min
 	<key>userconfigurationconfig</key>
 	<array/>
 	<key>version</key>
-	<string>6.0.3</string>
+	<string>6.0.5</string>
 	<key>webaddress</key>
 	<string>https://github.com/willfarrell/alfred-pkgman-workflow</string>
 </dict>

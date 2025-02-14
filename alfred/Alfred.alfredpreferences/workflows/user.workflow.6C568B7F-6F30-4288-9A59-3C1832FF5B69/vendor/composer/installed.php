@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'willfarrell/alfred-pkgman-workflow',
-        'pretty_version' => '4.1.0',
-        'version' => '4.1.0.0',
-        'reference' => NULL,
+        'pretty_version' => '6.0.5',
+        'version' => '6.0.5.0',
+        'reference' => null,
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -83,9 +83,9 @@
             'dev_requirement' => false,
         ),
         'willfarrell/alfred-pkgman-workflow' => array(
-            'pretty_version' => '4.1.0',
-            'version' => '4.1.0.0',
-            'reference' => NULL,
+            'pretty_version' => '6.0.5',
+            'version' => '6.0.5.0',
+            'reference' => null,
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

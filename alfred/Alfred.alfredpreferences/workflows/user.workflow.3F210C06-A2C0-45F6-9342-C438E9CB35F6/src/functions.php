@@ -5270,6 +5270,8 @@ function getTheShowEpisodes($w, $show_uri, $country_code, $actionMode = false)
 {
     $episodes = array();
 
+    $max_results = getSetting($w, 'max_results');
+
     try {
         $api = getSpotifyWebAPI($w);
         $tmp = explode(':', $show_uri);
@@ -5288,7 +5290,7 @@ function getTheShowEpisodes($w, $show_uri, $country_code, $actionMode = false)
             }
 
             $offsetGetShowEpisodes += $limitGetShowEpisodes;
-        } while ($offsetGetShowEpisodes < $userShowEpisodes->total);
+        } while ($offsetGetShowEpisodes < $max_results);
     } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
         if ($actionMode == false) {
             $w2 = new Workflows('com.vdesabou.spotify.mini.player');
@@ -5906,12 +5908,12 @@ function displayNotificationForCurrentTrack($w)
             if (isset($results[0]) && $results[0] != '') {
 
                 $now_playing_episode_title = getenv('now_playing_episode_title');
-                $now_playing_episode_title  = str_replace('{duration}', beautifyTime($results[5] / 1000), $now_playing_episode_title);
+                $now_playing_episode_title  = str_replace('{duration}', beautifyTime((int)($results[5] / 1000)), $now_playing_episode_title);
                 $now_playing_episode_title  = str_replace('{episode_name}', escapeQuery($results[0]), $now_playing_episode_title);
                 $now_playing_episode_title  = str_replace('{show_name}', escapeQuery($results[2]), $now_playing_episode_title);
 
                 $now_playing_episode_text = getenv('now_playing_episode_text');
-                $now_playing_episode_text  = str_replace('{duration}', beautifyTime($results[5] / 1000), $now_playing_episode_text);
+                $now_playing_episode_text  = str_replace('{duration}', beautifyTime((int)($results[5] / 1000)), $now_playing_episode_text);
                 $now_playing_episode_text  = str_replace('{episode_name}', escapeQuery($results[0]), $now_playing_episode_text);
                 $now_playing_episode_text  = str_replace('{show_name}', escapeQuery($results[2]), $now_playing_episode_text);
 
@@ -5931,7 +5933,7 @@ function displayNotificationForCurrentTrack($w)
                 }
 
                 $now_playing_track_title = getenv('now_playing_track_title');
-                $now_playing_track_title  = str_replace('{duration}', beautifyTime($results[5] / 1000), $now_playing_track_title);
+                $now_playing_track_title  = str_replace('{duration}', beautifyTime((int)($results[5] / 1000)), $now_playing_track_title);
                 $now_playing_track_title  = str_replace('{track_name}', escapeQuery($results[0]), $now_playing_track_title);
                 $now_playing_track_title  = str_replace('{album_name}', escapeQuery($results[2]), $now_playing_track_title);
                 $now_playing_track_title  = str_replace('{artist_name}', escapeQuery($results[1]), $now_playing_track_title);
@@ -5939,7 +5941,7 @@ function displayNotificationForCurrentTrack($w)
                 $now_playing_track_title  = str_replace('{liked}', getenv($liked), $now_playing_track_title);
 
                 $now_playing_track_text = getenv('now_playing_track_text');
-                $now_playing_track_text  = str_replace('{duration}', beautifyTime($results[5] / 1000), $now_playing_track_text);
+                $now_playing_track_text  = str_replace('{duration}', beautifyTime((int)($results[5] / 1000)), $now_playing_track_text);
                 $now_playing_track_text  = str_replace('{track_name}', escapeQuery($results[0]), $now_playing_track_text);
                 $now_playing_track_text  = str_replace('{album_name}', escapeQuery($results[2]), $now_playing_track_text);
                 $now_playing_track_text  = str_replace('{artist_name}', escapeQuery($results[1]), $now_playing_track_text);
