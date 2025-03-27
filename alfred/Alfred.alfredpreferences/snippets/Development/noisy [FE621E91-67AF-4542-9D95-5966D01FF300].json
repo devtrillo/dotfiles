@@ -1,8 +1,0 @@
-{
-  "alfredsnippet" : {
-    "snippet" : "function noisy(f) {\n  return (...args) => {\n    console.log(\"calling with\", args);\n    let result = f(...args);\n    console.log(\"called with\", args, \", returned\", result);\n    return result;\n  };\n}",
-    "uid" : "FE621E91-67AF-4542-9D95-5966D01FF300",
-    "name" : "noisy",
-    "keyword" : "!noisy"
-  }
-}
