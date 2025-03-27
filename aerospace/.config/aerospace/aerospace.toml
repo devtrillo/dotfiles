@@ -70,6 +70,10 @@ if.app-name-regex-substring = '1Password'
 run = ['layout floating']
 
 [[on-window-detected]]
+if.app-name-regex-substring = 'ChatGPT'
+run = ['layout floating']
+
+[[on-window-detected]]
 if.app-name-regex-substring = 'zoom'
 run = 'layout floating'
 
@@ -129,7 +133,12 @@ alt-2 = 'workspace 2'
 alt-3 = 'workspace 3'
 alt-4 = 'workspace 4'
 alt-5 = 'workspace 5'
-alt-6 = 'workspace 6'
+alt-7 = 'workspace 7'
+alt-8 = 'workspace 8'
+alt-9 = 'workspace 9'
+
+
+
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
 alt-shift-1 = 'move-node-to-workspace 1 --focus-follows-window'
@@ -149,9 +158,7 @@ alt-shift-enter = 'mode apps'
 alt-t = 'exec-and-forget open -a "/Applications/Telegram Desktop.app"'
 alt-o = 'exec-and-forget open -a /Applications/Obsidian.app'
 alt-g = 'exec-and-forget open -a /Applications/Kitty.app'
-alt-s = 'exec-and-forget open -a /Applications/Safari.app'
 alt-z = 'exec-and-forget open -a "/Applications/zoom.us.app"'
-alt-b = 'exec-and-forget open -a "/Applications/Google Chrome.app"'
 
 
 # 'service' binding mode declaration.
